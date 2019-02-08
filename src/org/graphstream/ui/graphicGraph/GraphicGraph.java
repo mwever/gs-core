@@ -1,9 +1,9 @@
 /*
  * This file is part of GraphStream <http://graphstream-project.org>.
- * 
+ *
  * GraphStream is a library whose purpose is to handle static or dynamic
  * graph, create them from scratch, file or any source and display them.
- * 
+ *
  * This program is free software distributed under the terms of two licenses, the
  * CeCILL-C license that fits European law, and the GNU Lesser General Public
  * License. You can  use, modify and/ or redistribute the software under the terms
@@ -11,21 +11,21 @@
  * URL <http://www.cecill.info> or under the terms of the GNU LGPL as published by
  * the Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
 
 /**
  * @since 2009-07-05
- * 
+ *
  * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
  * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
  * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
@@ -47,6 +47,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -104,7 +106,7 @@ import org.graphstream.util.GraphListeners;
  * string that contains the whole style sheet, or an URL of the form :
  * </p>
  * <p>
- * 
+ *
  * <pre>
  * url(name)
  * </pre>
@@ -217,24 +219,26 @@ public class GraphicGraph extends AbstractElement implements Graph, StyleGroupLi
 	 */
 	protected boolean feedbackXYZ = true;
 
+	private Lock lock = new ReentrantLock(true);
+
 	/**
 	 * New empty graphic graph.
 	 * <p>
 	 * A default style sheet is created, it then can be "cascaded" with other style
 	 * sheets.
 	 */
-	public GraphicGraph(String id) {
+	public GraphicGraph(final String id) {
 		super(id);
 
-		listeners = new GraphListeners(this);
-		styleSheet = new StyleSheet();
-		styleGroups = new StyleGroupSet(styleSheet);
-		connectivity = new HashMap<GraphicNode, List<GraphicEdge>>();
+		this.listeners = new GraphListeners(this);
+		this.styleSheet = new StyleSheet();
+		this.styleGroups = new StyleGroupSet(this.styleSheet);
+		this.connectivity = new HashMap<GraphicNode, List<GraphicEdge>>();
 
-		styleGroups.addListener(this);
-		styleGroups.addElement(this); // Add style to this graph.
+		this.styleGroups.addListener(this);
+		this.styleGroups.addElement(this); // Add style to this graph.
 
-		style = styleGroups.getStyleFor(this);
+		this.style = this.styleGroups.getStyleFor(this);
 	}
 
 	// Access
@@ -246,7 +250,12 @@ public class GraphicGraph extends AbstractElement implements Graph, StyleGroupLi
 	 * @return true if the graph was changed.
 	 */
 	public boolean graphChangedFlag() {
-		return graphChanged;
+		this.lock.lock();
+		try {
+			return this.graphChanged;
+		} finally {
+			this.lock.unlock();
+		}
 	}
 
 	/**
@@ -255,7 +264,12 @@ public class GraphicGraph extends AbstractElement implements Graph, StyleGroupLi
 	 * @see #graphChangedFlag()
 	 */
 	public void resetGraphChangedFlag() {
-		graphChanged = false;
+		this.lock.lock();
+		try {
+			this.graphChanged = false;
+		} finally {
+			this.lock.unlock();
+		}
 	}
 
 	/**
@@ -265,7 +279,7 @@ public class GraphicGraph extends AbstractElement implements Graph, StyleGroupLi
 	 * @return A style sheet.
 	 */
 	public StyleSheet getStyleSheet() {
-		return styleSheet;
+		return this.styleSheet;
 	}
 
 	/**
@@ -274,7 +288,7 @@ public class GraphicGraph extends AbstractElement implements Graph, StyleGroupLi
 	 * @return A style group.
 	 */
 	public StyleGroup getStyle() {
-		return style;
+		return this.style;
 	}
 
 	/**
@@ -283,16 +297,17 @@ public class GraphicGraph extends AbstractElement implements Graph, StyleGroupLi
 	 * @return The style groups.
 	 */
 	public StyleGroupSet getStyleGroups() {
-		return styleGroups;
+		return this.styleGroups;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("[%s %d nodes %d edges]", getId(), getNodeCount(), getEdgeCount());
+		return String.format("[%s %d nodes %d edges]", this.getId(), this.getNodeCount(), this.getEdgeCount());
 	}
 
+	@Override
 	public double getStep() {
-		return step;
+		return this.step;
 	}
 
 	/**
@@ -302,7 +317,7 @@ public class GraphicGraph extends AbstractElement implements Graph, StyleGroupLi
 	 * @return The maximum node or sprite position.
 	 */
 	public Point3 getMaxPos() {
-		return hi;
+		return this.hi;
 	}
 
 	/**
@@ -312,7 +327,7 @@ public class GraphicGraph extends AbstractElement implements Graph, StyleGroupLi
 	 * @return The minimum node or sprite position.
 	 */
 	public Point3 getMinPos() {
-		return lo;
+		return this.lo;
 	}
 
 	/**
@@ -321,7 +336,7 @@ public class GraphicGraph extends AbstractElement implements Graph, StyleGroupLi
 	 * as there is at least one listener.
 	 */
 	public boolean feedbackXYZ() {
-		return feedbackXYZ;
+		return this.feedbackXYZ;
 	}
 
 	// Command
@@ -330,8 +345,8 @@ public class GraphicGraph extends AbstractElement implements Graph, StyleGroupLi
 	 * Should the graphic graph publish via attribute changes the XYZ changes on
 	 * nodes and sprites when changed ?.
 	 */
-	public void feedbackXYZ(boolean on) {
-		feedbackXYZ = on;
+	public void feedbackXYZ(final boolean on) {
+		this.feedbackXYZ = on;
 	}
 
 	/**
@@ -350,34 +365,40 @@ public class GraphicGraph extends AbstractElement implements Graph, StyleGroupLi
 	 * @see #getMinPos()
 	 */
 	public void computeBounds() {
-		if (boundsChanged) {
+		if (this.boundsChanged) {
 			final AtomicBoolean effectiveChange = new AtomicBoolean(false);
 
-			lo.x = lo.y = lo.z = Double.MAX_VALUE;
-			hi.x = hi.y = hi.z = -Double.MAX_VALUE;
+			this.lo.x = this.lo.y = this.lo.z = Double.MAX_VALUE;
+			this.hi.x = this.hi.y = this.hi.z = -Double.MAX_VALUE;
 
-			nodes().forEach(n -> {
+			this.nodes().forEach(n -> {
 				GraphicNode node = (GraphicNode) n;
 
 				if (!node.hidden && node.positionned) {
 					effectiveChange.set(true);
 
-					if (node.x < lo.x)
-						lo.x = node.x;
-					if (node.x > hi.x)
-						hi.x = node.x;
-					if (node.y < lo.y)
-						lo.y = node.y;
-					if (node.y > hi.y)
-						hi.y = node.y;
-					if (node.z < lo.z)
-						lo.z = node.z;
-					if (node.z > hi.z)
-						hi.z = node.z;
+					if (node.x < this.lo.x) {
+						this.lo.x = node.x;
+					}
+					if (node.x > this.hi.x) {
+						this.hi.x = node.x;
+					}
+					if (node.y < this.lo.y) {
+						this.lo.y = node.y;
+					}
+					if (node.y > this.hi.y) {
+						this.hi.y = node.y;
+					}
+					if (node.z < this.lo.z) {
+						this.lo.z = node.z;
+					}
+					if (node.z > this.hi.z) {
+						this.hi.z = node.z;
+					}
 				}
 			});
 
-			sprites().forEach(sprite -> {
+			this.sprites().forEach(sprite -> {
 				if (!sprite.isAttached() && sprite.getUnits() == StyleConstants.Units.GU) {
 					double x = sprite.getX();
 					double y = sprite.getY();
@@ -386,147 +407,182 @@ public class GraphicGraph extends AbstractElement implements Graph, StyleGroupLi
 					if (!sprite.hidden) {
 						effectiveChange.set(true);
 
-						if (x < lo.x)
-							lo.x = x;
-						if (x > hi.x)
-							hi.x = x;
-						if (y < lo.y)
-							lo.y = y;
-						if (y > hi.y)
-							hi.y = y;
-						if (z < lo.z)
-							lo.z = z;
-						if (z > hi.z)
-							hi.z = z;
+						if (x < this.lo.x) {
+							this.lo.x = x;
+						}
+						if (x > this.hi.x) {
+							this.hi.x = x;
+						}
+						if (y < this.lo.y) {
+							this.lo.y = y;
+						}
+						if (y > this.hi.y) {
+							this.hi.y = y;
+						}
+						if (z < this.lo.z) {
+							this.lo.z = z;
+						}
+						if (z > this.hi.z) {
+							this.hi.z = z;
+						}
 					}
 				}
 			});
 
-			if (hi.x - lo.x < 0.000001) {
-				hi.x = hi.x + 1;
-				lo.x = lo.x - 1;
+			if (this.hi.x - this.lo.x < 0.000001) {
+				this.hi.x = this.hi.x + 1;
+				this.lo.x = this.lo.x - 1;
 			}
-			if (hi.y - lo.y < 0.000001) {
-				hi.y = hi.y + 1;
-				lo.y = lo.y - 1;
+			if (this.hi.y - this.lo.y < 0.000001) {
+				this.hi.y = this.hi.y + 1;
+				this.lo.y = this.lo.y - 1;
 			}
-			if (hi.z - lo.z < 0.000001) {
-				hi.z = hi.z + 1;
-				lo.z = lo.z - 1;
+			if (this.hi.z - this.lo.z < 0.000001) {
+				this.hi.z = this.hi.z + 1;
+				this.lo.z = this.lo.z - 1;
 			}
 
 			//
 			// Prevent infinities that can be produced by Double.MAX_VALUE.
 			//
-			if (effectiveChange.get())
-				boundsChanged = false;
-			else {
-				lo.x = lo.y = lo.z = -1;
-				hi.x = hi.y = hi.z = 1;
+			if (effectiveChange.get()) {
+				this.boundsChanged = false;
+			} else {
+				this.lo.x = this.lo.y = this.lo.z = -1;
+				this.hi.x = this.hi.y = this.hi.z = 1;
 			}
 		}
 	}
 
-	protected void moveNode(String id, double x, double y, double z) {
-		GraphicNode node = (GraphicNode) styleGroups.getNode(id);
+	protected void moveNode(final String id, final double x, final double y, final double z) {
+		this.lock.lock();
+		try {
+			GraphicNode node = (GraphicNode) this.styleGroups.getNode(id);
 
-		if (node != null) {
-			node.x = x;
-			node.y = y;
-			node.z = z;
-			node.setAttribute("x", x);
-			node.setAttribute("y", y);
-			node.setAttribute("z", z);
+			if (node != null) {
+				node.x = x;
+				node.y = y;
+				node.z = z;
+				node.setAttribute("x", x);
+				node.setAttribute("y", y);
+				node.setAttribute("z", z);
 
-			graphChanged = true;
+				this.graphChanged = true;
+			}
+		} finally {
+			this.lock.unlock();
 		}
 	}
 
 	@Override
-	public Node getNode(String id) {
-		return styleGroups.getNode(id);
+	public Node getNode(final String id) {
+		this.lock.lock();
+		try {
+			return this.styleGroups.getNode(id);
+		} finally {
+			this.lock.unlock();
+		}
 	}
 
 	@Override
-	public Edge getEdge(String id) {
-		return styleGroups.getEdge(id);
+	public Edge getEdge(final String id) {
+		this.lock.lock();
+		try {
+			return this.styleGroups.getEdge(id);
+		} finally {
+			this.lock.unlock();
+		}
 	}
 
-	public GraphicSprite getSprite(String id) {
-		return styleGroups.getSprite(id);
+	public GraphicSprite getSprite(final String id) {
+		this.lock.lock();
+		try {
+			return this.styleGroups.getSprite(id);
+		} finally {
+			this.lock.unlock();
+		}
 	}
 
 	@Override
-	protected void attributeChanged(AttributeChangeEvent event, String attribute, Object oldValue, Object newValue) {
+	protected void attributeChanged(final AttributeChangeEvent event, final String attribute, final Object oldValue, final Object newValue) {
 
 		// One of the most important method. Most of the communication comes
 		// from attributes.
-
-		if (attribute.equals("ui.repaint")) {
-			graphChanged = true;
-		} else if (attribute.equals("ui.stylesheet") || attribute.equals("stylesheet")) {
-			if (event == AttributeChangeEvent.ADD || event == AttributeChangeEvent.CHANGE) {
-				if (newValue instanceof String) {
-					try {
-						styleSheet.load((String) newValue);
-						graphChanged = true;
-					} catch (Exception e) {
-						logger.log(Level.WARNING,
-								String.format("Error while parsing style sheet for graph '%s'.", getId()), e);
+		this.lock.lock();
+		try {
+			if (attribute.equals("ui.repaint")) {
+				this.graphChanged = true;
+			} else if (attribute.equals("ui.stylesheet") || attribute.equals("stylesheet")) {
+				if (event == AttributeChangeEvent.ADD || event == AttributeChangeEvent.CHANGE) {
+					if (newValue instanceof String) {
+						try {
+							this.styleSheet.load((String) newValue);
+							this.graphChanged = true;
+						} catch (Exception e) {
+							logger.log(Level.WARNING, String.format("Error while parsing style sheet for graph '%s'.", this.getId()), e);
+						}
+					} else {
+						logger.warning(String.format("Error with stylesheet specification what to do with '%s'.", newValue));
 					}
-				} else {
-					logger.warning(
-							String.format("Error with stylesheet specification what to do with '%s'.", newValue));
+				} else // Remove the style.
+				{
+					this.styleSheet.clear();
+					this.graphChanged = true;
 				}
-			} else // Remove the style.
-			{
-				styleSheet.clear();
-				graphChanged = true;
+			} else if (attribute.startsWith("ui.sprite.")) {
+				// Defers the sprite handling to the sprite API.
+				this.spriteAttribute(event, null, attribute, newValue);
+				this.graphChanged = true;
 			}
-		} else if (attribute.startsWith("ui.sprite.")) {
-			// Defers the sprite handling to the sprite API.
-			spriteAttribute(event, null, attribute, newValue);
-			graphChanged = true;
-		}
 
-		listeners.sendAttributeChangedEvent(getId(), ElementType.GRAPH, attribute, event, oldValue, newValue);
+		} finally {
+			this.lock.unlock();
+		}
+		this.listeners.sendAttributeChangedEvent(this.getId(), ElementType.GRAPH, attribute, event, oldValue, newValue);
 	}
 
 	/**
 	 * Display the node/edge relations.
 	 */
 	public void printConnectivity() {
-		Iterator<GraphicNode> keys = connectivity.keySet().iterator();
+		Iterator<GraphicNode> keys = this.connectivity.keySet().iterator();
 
 		System.err.printf("Graphic graph connectivity:%n");
 
 		while (keys.hasNext()) {
 			GraphicNode node = keys.next();
 			System.err.printf("    [%s] -> ", node.getId());
-			Iterable<GraphicEdge> edges = connectivity.get(node);
-			for (GraphicEdge edge : edges)
+			Iterable<GraphicEdge> edges = this.connectivity.get(node);
+			for (GraphicEdge edge : edges) {
 				System.err.printf(" (%s %d)", edge.getId(), edge.getMultiIndex());
+			}
 			System.err.printf("%n");
 		}
 	}
 
 	// Style group listener interface
 
-	public void elementStyleChanged(Element element, StyleGroup oldStyle, StyleGroup style) {
-		if (element instanceof GraphicElement) {
-			GraphicElement ge = (GraphicElement) element;
-			ge.style = style;
-			graphChanged = true;
-		} else if (element instanceof GraphicGraph) {
-			GraphicGraph gg = (GraphicGraph) element;
-			gg.style = style;
-			graphChanged = true;
-		} else {
-			throw new RuntimeException("WTF ?");
+	@Override
+	public void elementStyleChanged(final Element element, final StyleGroup oldStyle, final StyleGroup style) {
+		this.lock.lock();
+		try {
+			if (element instanceof GraphicElement) {
+				GraphicElement ge = (GraphicElement) element;
+				ge.style = style;
+				this.graphChanged = true;
+			} else if (element instanceof GraphicGraph) {
+				GraphicGraph gg = (GraphicGraph) element;
+				gg.style = style;
+				this.graphChanged = true;
+			} else {
+				throw new RuntimeException("WTF ?");
+			}
+		} finally {
+			this.lock.unlock();
 		}
 	}
 
-	public void styleChanged(StyleGroup style) {
+	public void styleChanged(final StyleGroup style) {
 
 	}
 
@@ -534,242 +590,289 @@ public class GraphicGraph extends AbstractElement implements Graph, StyleGroupLi
 
 	@Override
 	public Stream<Node> nodes() {
-		return styleGroups.nodes();
+		return this.styleGroups.nodes();
 	}
 
 	@Override
 	public Stream<Edge> edges() {
-		return styleGroups.edges();
+		return this.styleGroups.edges();
 	}
 
 	public Stream<GraphicSprite> sprites() {
-		return styleGroups.sprites();
+		return this.styleGroups.sprites();
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public Iterator<Node> iterator() {
-		return (Iterator<Node>) styleGroups.getNodeIterator();
+		return (Iterator<Node>) this.styleGroups.getNodeIterator();
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.stream.Source#addSink(org.graphstream.stream.Sink)
 	 */
-	public void addSink(Sink listener) {
-		listeners.addSink(listener);
+	@Override
+	public void addSink(final Sink listener) {
+		this.listeners.addSink(listener);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.stream.Source#removeSink(org.graphstream.stream.Sink)
 	 */
-	public void removeSink(Sink listener) {
-		listeners.removeSink(listener);
+	@Override
+	public void removeSink(final Sink listener) {
+		this.listeners.removeSink(listener);
 	}
 
 	/*
 	 * *(non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.stream.Source#addAttributeSink(org.graphstream.stream
 	 * .AttributeSink)
 	 */
-	public void addAttributeSink(AttributeSink listener) {
-		listeners.addAttributeSink(listener);
+	@Override
+	public void addAttributeSink(final AttributeSink listener) {
+		this.listeners.addAttributeSink(listener);
 	}
 
 	/*
 	 * *(non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.stream.Source#removeAttributeSink(org.graphstream.stream
 	 * .AttributeSink)
 	 */
-	public void removeAttributeSink(AttributeSink listener) {
-		listeners.removeAttributeSink(listener);
+	@Override
+	public void removeAttributeSink(final AttributeSink listener) {
+		this.listeners.removeAttributeSink(listener);
 	}
 
 	/*
 	 * *(non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.stream.Source#addElementSink(org.graphstream.stream.
 	 * ElementSink)
 	 */
-	public void addElementSink(ElementSink listener) {
-		listeners.addElementSink(listener);
+	@Override
+	public void addElementSink(final ElementSink listener) {
+		this.listeners.addElementSink(listener);
 	}
 
 	/*
 	 * *(non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.stream.Source#removeElementSink(org.graphstream.stream
 	 * .ElementSink)
 	 */
-	public void removeElementSink(ElementSink listener) {
-		listeners.removeElementSink(listener);
+	@Override
+	public void removeElementSink(final ElementSink listener) {
+		this.listeners.removeElementSink(listener);
 	}
 
 	/*
 	 * *(non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.graph.Graph#attributeSinks()
 	 */
+	@Override
 	public Iterable<AttributeSink> attributeSinks() {
-		return listeners.attributeSinks();
+		return this.listeners.attributeSinks();
 	}
 
 	/*
 	 * *(non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.graph.Graph#elementSinks()
 	 */
+	@Override
 	public Iterable<ElementSink> elementSinks() {
-		return listeners.elementSinks();
+		return this.listeners.elementSinks();
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.graph.Graph#addEdge(java.lang.String, java.lang.String,
 	 * java.lang.String, boolean)
 	 */
 	@Override
-	public Edge addEdge(String id, String from, String to, boolean directed)
-			throws IdAlreadyInUseException, ElementNotFoundException {
-		GraphicEdge edge = (GraphicEdge) styleGroups.getEdge(id);
+	public Edge addEdge(final String id, final String from, final String to, final boolean directed) throws IdAlreadyInUseException, ElementNotFoundException {
+		boolean sendEvent = false;
 
-		if (edge == null) {
-			GraphicNode n1 = (GraphicNode) styleGroups.getNode(from);
-			GraphicNode n2 = (GraphicNode) styleGroups.getNode(to);
+		this.lock.lock();
+		try {
+			GraphicEdge edge = (GraphicEdge) this.styleGroups.getEdge(id);
 
-			if (n1 == null)
-				throw new ElementNotFoundException("node \"%s\"", from);
+			if (edge == null) {
+				GraphicNode n1 = (GraphicNode) this.styleGroups.getNode(from);
+				GraphicNode n2 = (GraphicNode) this.styleGroups.getNode(to);
 
-			if (n2 == null)
-				throw new ElementNotFoundException("node \"%s\"", to);
+				if (n1 == null) {
+					throw new ElementNotFoundException("node \"%s\"", from);
+				}
 
-			edge = new GraphicEdge(id, n1, n2, directed, null);// , attributes);
+				if (n2 == null) {
+					throw new ElementNotFoundException("node \"%s\"", to);
+				}
 
-			styleGroups.addElement(edge);
+				edge = new GraphicEdge(id, n1, n2, directed, null);// , attributes);
 
-			List<GraphicEdge> l1 = connectivity.get(n1);
-			List<GraphicEdge> l2 = connectivity.get(n2);
+				this.styleGroups.addElement(edge);
 
-			if (l1 == null) {
-				l1 = new ArrayList<GraphicEdge>();
-				connectivity.put(n1, l1);
+				List<GraphicEdge> l1 = this.connectivity.get(n1);
+				List<GraphicEdge> l2 = this.connectivity.get(n2);
+
+				if (l1 == null) {
+					l1 = new ArrayList<GraphicEdge>();
+					this.connectivity.put(n1, l1);
+				}
+
+				if (l2 == null) {
+					l2 = new ArrayList<GraphicEdge>();
+					this.connectivity.put(n2, l2);
+				}
+
+				l1.add(edge);
+				l2.add(edge);
+				edge.countSameEdges(l1);
+
+				this.graphChanged = true;
+
 			}
 
-			if (l2 == null) {
-				l2 = new ArrayList<GraphicEdge>();
-				connectivity.put(n2, l2);
+			return edge;
+		} finally {
+			this.lock.unlock();
+			if (sendEvent) {
+				this.listeners.sendEdgeAdded(id, from, to, directed);
 			}
-
-			l1.add(edge);
-			l2.add(edge);
-			edge.countSameEdges(l1);
-
-			graphChanged = true;
-
-			listeners.sendEdgeAdded(id, from, to, directed);
 		}
-
-		return edge;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.graph.Graph#addNode(java.lang.String)
 	 */
 	@Override
-	public Node addNode(String id) throws IdAlreadyInUseException {
-		GraphicNode node = (GraphicNode) styleGroups.getNode(id);
+	public Node addNode(final String id) throws IdAlreadyInUseException {
+		boolean sendEvent = false;
+		this.lock.lock();
+		try {
+			GraphicNode node = (GraphicNode) this.styleGroups.getNode(id);
 
-		if (node == null) {
-			node = new GraphicNode(this, id, null);// , attributes);
+			if (node == null) {
+				node = new GraphicNode(this, id, null);// , attributes);
 
-			styleGroups.addElement(node);
+				this.styleGroups.addElement(node);
 
-			graphChanged = true;
+				this.graphChanged = true;
 
-			listeners.sendNodeAdded(id);
+			}
+
+			return node;
+		} finally {
+			this.lock.unlock();
+			if (sendEvent) {
+				this.listeners.sendNodeAdded(id);
+			}
 		}
-
-		return node;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.graph.Graph#clear()
 	 */
 	@Override
 	public void clear() {
-		listeners.sendGraphCleared();
+		this.lock.lock();
+		try {
+			this.listeners.sendGraphCleared();
 
-		clearAttributesWithNoEvent();
+			this.clearAttributesWithNoEvent();
 
-		connectivity.clear();
-		styleGroups.clear();
-		styleSheet.clear();
+			this.connectivity.clear();
+			this.styleGroups.clear();
+			this.styleSheet.clear();
 
-		step = 0;
-		graphChanged = true;
+			this.step = 0;
+			this.graphChanged = true;
 
-		styleGroups.addElement(this);
-		style = styleGroups.getStyleFor(this);
+			this.styleGroups.addElement(this);
+			this.style = this.styleGroups.getStyleFor(this);
+		} finally {
+			this.lock.unlock();
+		}
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.graph.Graph#removeEdge(java.lang.String)
 	 */
 	@Override
-	public Edge removeEdge(String id) throws ElementNotFoundException {
-		GraphicEdge edge = (GraphicEdge) styleGroups.getEdge(id);
+	public Edge removeEdge(final String id) throws ElementNotFoundException {
+		boolean sendEvent = false;
+		this.lock.lock();
+		try {
+			GraphicEdge edge = (GraphicEdge) this.styleGroups.getEdge(id);
 
-		if (edge != null) {
-			listeners.sendEdgeRemoved(id);
+			if (edge != null) {
 
-			if (connectivity.get(edge.from) != null)
-				connectivity.get(edge.from).remove(edge);
-			if (connectivity.get(edge.to) != null)
-				connectivity.get(edge.to).remove(edge);
+				if (this.connectivity.get(edge.from) != null) {
+					this.connectivity.get(edge.from).remove(edge);
+				}
+				if (this.connectivity.get(edge.to) != null) {
+					this.connectivity.get(edge.to).remove(edge);
+				}
 
-			styleGroups.removeElement(edge);
-			edge.removed();
+				this.styleGroups.removeElement(edge);
+				edge.removed();
 
-			graphChanged = true;
+				this.graphChanged = true;
+			}
+
+			return edge;
+		} finally {
+			this.lock.unlock();
+			if (sendEvent) {
+				this.listeners.sendEdgeRemoved(id);
+			}
 		}
-
-		return edge;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.graph.Graph#removeEdge(java.lang.String,
 	 * java.lang.String)
 	 */
 	@Override
-	public Edge removeEdge(String from, String to) throws ElementNotFoundException {
-		GraphicNode node0 = (GraphicNode) styleGroups.getNode(from);
-		GraphicNode node1 = (GraphicNode) styleGroups.getNode(to);
+	public Edge removeEdge(final String from, final String to) throws ElementNotFoundException {
+		this.lock.lock();
+		try {
+			GraphicNode node0 = (GraphicNode) this.styleGroups.getNode(from);
+			GraphicNode node1 = (GraphicNode) this.styleGroups.getNode(to);
 
-		if (node0 != null && node1 != null) {
-			Collection<GraphicEdge> edges0 = connectivity.get(node0);
-			Collection<GraphicEdge> edges1 = connectivity.get(node1);
+			if (node0 != null && node1 != null) {
+				Collection<GraphicEdge> edges0 = this.connectivity.get(node0);
+				Collection<GraphicEdge> edges1 = this.connectivity.get(node1);
 
-			for (GraphicEdge edge0 : edges0) {
-				for (GraphicEdge edge1 : edges1) {
-					if (edge0 == edge1) {
-						removeEdge(edge0.getId());
-						return edge0;
+				for (GraphicEdge edge0 : edges0) {
+					for (GraphicEdge edge1 : edges1) {
+						if (edge0 == edge1) {
+							this.removeEdge(edge0.getId());
+							return edge0;
+						}
 					}
 				}
 			}
+		} finally {
+			this.lock.unlock();
 		}
 
 		return null;
@@ -777,53 +880,64 @@ public class GraphicGraph extends AbstractElement implements Graph, StyleGroupLi
 
 	/*
 	 * *(non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.graph.Graph#removeNode(java.lang.String)
 	 */
 	@Override
-	public Node removeNode(String id) throws ElementNotFoundException {
-		GraphicNode node = (GraphicNode) styleGroups.getNode(id);
+	public Node removeNode(final String id) throws ElementNotFoundException {
+		boolean sendEvent = false;
+		this.lock.lock();
+		try {
+			GraphicNode node = (GraphicNode) this.styleGroups.getNode(id);
 
-		if (node != null) {
-			listeners.sendNodeRemoved(id);
+			if (node != null) {
 
-			if (connectivity.get(node) != null) {
-				// We must do a copy of the connectivity set for the node
-				// since we will be modifying the connectivity as we process
-				// edges.
-				List<GraphicEdge> l = new ArrayList<GraphicEdge>(connectivity.get(node));
+				if (this.connectivity.get(node) != null) {
+					// We must do a copy of the connectivity set for the node
+					// since we will be modifying the connectivity as we process
+					// edges.
+					List<GraphicEdge> l = new ArrayList<GraphicEdge>(this.connectivity.get(node));
 
-				for (GraphicEdge edge : l)
-					removeEdge(edge.getId());
+					for (GraphicEdge edge : l) {
+						this.removeEdge(edge.getId());
+					}
 
-				connectivity.remove(node);
+					this.connectivity.remove(node);
+				}
+
+				this.styleGroups.removeElement(node);
+				node.removed();
+
+				this.graphChanged = true;
 			}
 
-			styleGroups.removeElement(node);
-			node.removed();
-
-			graphChanged = true;
+			return node;
+		} finally {
+			this.lock.unlock();
+			if (sendEvent) {
+				this.listeners.sendNodeRemoved(id);
+			}
 		}
-
-		return node;
 	}
 
+	@Override
 	public Viewer display() {
 		throw new RuntimeException("GraphicGraph is used by display() and cannot recursively define display()");
 	}
 
-	public Viewer display(boolean autoLayout) {
+	@Override
+	public Viewer display(final boolean autoLayout) {
 		throw new RuntimeException("GraphicGraph is used by display() and cannot recursively define display()");
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.graph.Graph#stepBegins(double)
 	 */
 	@Override
-	public void stepBegins(double step) {
-		listeners.sendStepBegins(step);
+	public void stepBegins(final double step) {
+		this.listeners.sendStepBegins(step);
 		this.step = step;
 	}
 
@@ -834,16 +948,26 @@ public class GraphicGraph extends AbstractElement implements Graph, StyleGroupLi
 
 	@Override
 	public int getEdgeCount() {
-		return styleGroups.getEdgeCount();
+		this.lock.lock();
+		try {
+			return this.styleGroups.getEdgeCount();
+		} finally {
+			this.lock.unlock();
+		}
 	}
 
 	@Override
 	public int getNodeCount() {
-		return styleGroups.getNodeCount();
+		this.lock.lock();
+		try {
+			return this.styleGroups.getNodeCount();
+		} finally {
+			this.lock.unlock();
+		}
 	}
 
 	public int getSpriteCount() {
-		return styleGroups.getSpriteCount();
+		return this.styleGroups.getSpriteCount();
 	}
 
 	@Override
@@ -857,7 +981,7 @@ public class GraphicGraph extends AbstractElement implements Graph, StyleGroupLi
 	}
 
 	@Override
-	public void setAutoCreate(boolean on) {
+	public void setAutoCreate(final boolean on) {
 		throw new RuntimeException("GraphicGraph does not support auto-creation");
 	}
 
@@ -867,37 +991,37 @@ public class GraphicGraph extends AbstractElement implements Graph, StyleGroupLi
 	}
 
 	@Override
-	public void setStrict(boolean on) {
+	public void setStrict(final boolean on) {
 		throw new RuntimeException("GraphicGraph does not support strict checking");
 	}
 
 	@Override
-	public void setEdgeFactory(EdgeFactory<? extends Edge> ef) {
+	public void setEdgeFactory(final EdgeFactory<? extends Edge> ef) {
 		throw new RuntimeException("you cannot change the edge factory for graphic graphs !");
 	}
 
 	@Override
-	public void setNodeFactory(NodeFactory<? extends Node> nf) {
+	public void setNodeFactory(final NodeFactory<? extends Node> nf) {
 		throw new RuntimeException("you cannot change the node factory for graphic graphs !");
 	}
 
 	@Override
-	public void read(String filename) throws IOException {
+	public void read(final String filename) throws IOException {
 		throw new RuntimeException("GraphicGraph does not support I/O");
 	}
 
 	@Override
-	public void read(FileSource input, String filename) throws IOException {
+	public void read(final FileSource input, final String filename) throws IOException {
 		throw new RuntimeException("GraphicGraph does not support I/O");
 	}
 
 	@Override
-	public void write(FileSink output, String filename) throws IOException {
+	public void write(final FileSink output, final String filename) throws IOException {
 		throw new RuntimeException("GraphicGraph does not support I/O");
 	}
 
 	@Override
-	public void write(String filename) throws IOException {
+	public void write(final String filename) throws IOException {
 		throw new RuntimeException("GraphicGraph does not support I/O");
 	}
 
@@ -905,427 +1029,456 @@ public class GraphicGraph extends AbstractElement implements Graph, StyleGroupLi
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.graphstream.stream.AttributeSink#edgeAttributeAdded(java.lang.String,
 	 * long, java.lang.String, java.lang.String, java.lang.Object)
 	 */
 	@Override
-	public void edgeAttributeAdded(String sourceId, long timeId, String edgeId, String attribute, Object value) {
-		listeners.edgeAttributeAdded(sourceId, timeId, edgeId, attribute, value);
+	public void edgeAttributeAdded(final String sourceId, final long timeId, final String edgeId, final String attribute, final Object value) {
+		this.listeners.edgeAttributeAdded(sourceId, timeId, edgeId, attribute, value);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.graphstream.stream.AttributeSink#edgeAttributeChanged(java.lang.String ,
 	 * long, java.lang.String, java.lang.String, java.lang.Object, java.lang.Object)
 	 */
 	@Override
-	public void edgeAttributeChanged(String sourceId, long timeId, String edgeId, String attribute, Object oldValue,
-			Object newValue) {
-		listeners.edgeAttributeChanged(sourceId, timeId, edgeId, attribute, oldValue, newValue);
+	public void edgeAttributeChanged(final String sourceId, final long timeId, final String edgeId, final String attribute, final Object oldValue, final Object newValue) {
+		this.listeners.edgeAttributeChanged(sourceId, timeId, edgeId, attribute, oldValue, newValue);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.graphstream.stream.AttributeSink#edgeAttributeRemoved(java.lang.String ,
 	 * long, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void edgeAttributeRemoved(String sourceId, long timeId, String edgeId, String attribute) {
-		listeners.edgeAttributeRemoved(sourceId, timeId, edgeId, attribute);
+	public void edgeAttributeRemoved(final String sourceId, final long timeId, final String edgeId, final String attribute) {
+		this.listeners.edgeAttributeRemoved(sourceId, timeId, edgeId, attribute);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.graphstream.stream.AttributeSink#graphAttributeAdded(java.lang.String ,
 	 * long, java.lang.String, java.lang.Object)
 	 */
 	@Override
-	public void graphAttributeAdded(String sourceId, long timeId, String attribute, Object value) {
-		listeners.graphAttributeAdded(sourceId, timeId, attribute, value);
+	public void graphAttributeAdded(final String sourceId, final long timeId, final String attribute, final Object value) {
+		this.listeners.graphAttributeAdded(sourceId, timeId, attribute, value);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.stream.AttributeSink#graphAttributeChanged(java.lang.
 	 * String, long, java.lang.String, java.lang.Object, java.lang.Object)
 	 */
 	@Override
-	public void graphAttributeChanged(String sourceId, long timeId, String attribute, Object oldValue,
-			Object newValue) {
-		listeners.graphAttributeChanged(sourceId, timeId, attribute, oldValue, newValue);
+	public void graphAttributeChanged(final String sourceId, final long timeId, final String attribute, final Object oldValue, final Object newValue) {
+		this.listeners.graphAttributeChanged(sourceId, timeId, attribute, oldValue, newValue);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.stream.AttributeSink#graphAttributeRemoved(java.lang.
 	 * String, long, java.lang.String)
 	 */
 	@Override
-	public void graphAttributeRemoved(String sourceId, long timeId, String attribute) {
-		listeners.graphAttributeRemoved(sourceId, timeId, attribute);
+	public void graphAttributeRemoved(final String sourceId, final long timeId, final String attribute) {
+		this.listeners.graphAttributeRemoved(sourceId, timeId, attribute);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.graphstream.stream.AttributeSink#nodeAttributeAdded(java.lang.String,
 	 * long, java.lang.String, java.lang.String, java.lang.Object)
 	 */
 	@Override
-	public void nodeAttributeAdded(String sourceId, long timeId, String nodeId, String attribute, Object value) {
-		listeners.nodeAttributeAdded(sourceId, timeId, nodeId, attribute, value);
+	public void nodeAttributeAdded(final String sourceId, final long timeId, final String nodeId, final String attribute, final Object value) {
+		this.listeners.nodeAttributeAdded(sourceId, timeId, nodeId, attribute, value);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.graphstream.stream.AttributeSink#nodeAttributeChanged(java.lang.String ,
 	 * long, java.lang.String, java.lang.String, java.lang.Object, java.lang.Object)
 	 */
 	@Override
-	public void nodeAttributeChanged(String sourceId, long timeId, String nodeId, String attribute, Object oldValue,
-			Object newValue) {
-		listeners.nodeAttributeChanged(sourceId, timeId, nodeId, attribute, oldValue, newValue);
+	public void nodeAttributeChanged(final String sourceId, final long timeId, final String nodeId, final String attribute, final Object oldValue, final Object newValue) {
+		this.listeners.nodeAttributeChanged(sourceId, timeId, nodeId, attribute, oldValue, newValue);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.graphstream.stream.AttributeSink#nodeAttributeRemoved(java.lang.String ,
 	 * long, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void nodeAttributeRemoved(String sourceId, long timeId, String nodeId, String attribute) {
-		listeners.nodeAttributeRemoved(sourceId, timeId, nodeId, attribute);
+	public void nodeAttributeRemoved(final String sourceId, final long timeId, final String nodeId, final String attribute) {
+		this.listeners.nodeAttributeRemoved(sourceId, timeId, nodeId, attribute);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.stream.ElementSink#edgeAdded(java.lang.String, long,
 	 * java.lang.String, java.lang.String, java.lang.String, boolean)
 	 */
 	@Override
-	public void edgeAdded(String sourceId, long timeId, String edgeId, String fromNodeId, String toNodeId,
-			boolean directed) {
-		listeners.edgeAdded(sourceId, timeId, edgeId, fromNodeId, toNodeId, directed);
+	public void edgeAdded(final String sourceId, final long timeId, final String edgeId, final String fromNodeId, final String toNodeId, final boolean directed) {
+		this.listeners.edgeAdded(sourceId, timeId, edgeId, fromNodeId, toNodeId, directed);
 	}
 
 	/*
 	 * *(non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.stream.ElementSink#edgeRemoved(java.lang.String, long,
 	 * java.lang.String)
 	 */
 	@Override
-	public void edgeRemoved(String sourceId, long timeId, String edgeId) {
-		listeners.edgeRemoved(sourceId, timeId, edgeId);
+	public void edgeRemoved(final String sourceId, final long timeId, final String edgeId) {
+		this.listeners.edgeRemoved(sourceId, timeId, edgeId);
 	}
 
 	/*
 	 * *(non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.stream.ElementSink#graphCleared(java.lang.String, long)
 	 */
 	@Override
-	public void graphCleared(String sourceId, long timeId) {
-		listeners.graphCleared(sourceId, timeId);
+	public void graphCleared(final String sourceId, final long timeId) {
+		this.listeners.graphCleared(sourceId, timeId);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.stream.ElementSink#nodeAdded(java.lang.String, long,
 	 * java.lang.String)
 	 */
 	@Override
-	public void nodeAdded(String sourceId, long timeId, String nodeId) {
-		listeners.nodeAdded(sourceId, timeId, nodeId);
+	public void nodeAdded(final String sourceId, final long timeId, final String nodeId) {
+		this.listeners.nodeAdded(sourceId, timeId, nodeId);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.stream.ElementSink#nodeRemoved(java.lang.String, long,
 	 * java.lang.String)
 	 */
 	@Override
-	public void nodeRemoved(String sourceId, long timeId, String nodeId) {
-		listeners.nodeRemoved(sourceId, timeId, nodeId);
+	public void nodeRemoved(final String sourceId, final long timeId, final String nodeId) {
+		this.listeners.nodeRemoved(sourceId, timeId, nodeId);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.stream.ElementSink#stepBegins(java.lang.String, long,
 	 * double)
 	 */
 	@Override
-	public void stepBegins(String sourceId, long timeId, double time) {
-		listeners.sendStepBegins(sourceId, timeId, time);
-		stepBegins(time);
+	public void stepBegins(final String sourceId, final long timeId, final double time) {
+		this.listeners.sendStepBegins(sourceId, timeId, time);
+		this.stepBegins(time);
 	}
 
 	// Sprite interface
 
-	protected void spriteAttribute(AttributeChangeEvent event, Element element, String attribute, Object value) {
-		String spriteId = attribute.substring(10); // Remove the "ui.sprite."
-		// prefix.
-		int pos = spriteId.indexOf('.'); // Look if there is something after the
-		// sprite id.
-		String attr = null;
+	protected void spriteAttribute(final AttributeChangeEvent event, final Element element, final String attribute, final Object value) {
+		this.lock.lock();
+		try {
+			String spriteId = attribute.substring(10); // Remove the "ui.sprite."
+			// prefix.
+			int pos = spriteId.indexOf('.'); // Look if there is something after the
+			// sprite id.
+			String attr = null;
 
-		if (pos > 0) {
-			attr = spriteId.substring(pos + 1); // Cut the sprite id.
-			spriteId = spriteId.substring(0, pos); // Cut the sprite attribute
-			// name.
+			if (pos > 0) {
+				attr = spriteId.substring(pos + 1); // Cut the sprite id.
+				spriteId = spriteId.substring(0, pos); // Cut the sprite attribute
+				// name.
+			}
+
+			if (attr == null) {
+				this.addOrChangeSprite(event, element, spriteId, value);
+			} else {
+				if (event == AttributeChangeEvent.ADD) {
+					GraphicSprite sprite = this.styleGroups.getSprite(spriteId);
+
+					// We add the sprite, in case of a replay, some attributes of
+					// the sprite can be
+					// changed before the sprite is declared.
+					if (sprite == null) {
+						this.addOrChangeSprite(AttributeChangeEvent.ADD, element, spriteId, null);
+						sprite = this.styleGroups.getSprite(spriteId);
+					}
+
+					sprite.setAttribute(attr, value);
+				} else if (event == AttributeChangeEvent.CHANGE) {
+					GraphicSprite sprite = this.styleGroups.getSprite(spriteId);
+
+					if (sprite == null) {
+						this.addOrChangeSprite(AttributeChangeEvent.ADD, element, spriteId, null);
+						sprite = this.styleGroups.getSprite(spriteId);
+					}
+
+					sprite.setAttribute(attr, value);
+				} else if (event == AttributeChangeEvent.REMOVE) {
+					GraphicSprite sprite = this.styleGroups.getSprite(spriteId);
+
+					if (sprite != null) {
+						sprite.removeAttribute(attr);
+					}
+				}
+			}
+		} finally {
+			this.lock.unlock();
 		}
+	}
 
-		if (attr == null) {
-			addOrChangeSprite(event, element, spriteId, value);
-		} else {
-			if (event == AttributeChangeEvent.ADD) {
-				GraphicSprite sprite = styleGroups.getSprite(spriteId);
-
-				// We add the sprite, in case of a replay, some attributes of
-				// the sprite can be
-				// changed before the sprite is declared.
-				if (sprite == null) {
-					addOrChangeSprite(AttributeChangeEvent.ADD, element, spriteId, null);
-					sprite = styleGroups.getSprite(spriteId);
-				}
-
-				sprite.setAttribute(attr, value);
-			} else if (event == AttributeChangeEvent.CHANGE) {
-				GraphicSprite sprite = styleGroups.getSprite(spriteId);
+	protected void addOrChangeSprite(final AttributeChangeEvent event, final Element element, final String spriteId, final Object value) {
+		this.lock.lock();
+		try {
+			if (event == AttributeChangeEvent.ADD || event == AttributeChangeEvent.CHANGE) {
+				GraphicSprite sprite = this.styleGroups.getSprite(spriteId);
 
 				if (sprite == null) {
-					addOrChangeSprite(AttributeChangeEvent.ADD, element, spriteId, null);
-					sprite = styleGroups.getSprite(spriteId);
+					sprite = this.addSprite_(spriteId);
 				}
 
-				sprite.setAttribute(attr, value);
+				if (element != null) {
+					if (element instanceof GraphicNode) {
+						sprite.attachToNode((GraphicNode) element);
+					} else if (element instanceof GraphicEdge) {
+						sprite.attachToEdge((GraphicEdge) element);
+					}
+				}
+
+				if (value != null && (!(value instanceof Boolean))) {
+					this.positionSprite(sprite, value);
+				}
 			} else if (event == AttributeChangeEvent.REMOVE) {
-				GraphicSprite sprite = styleGroups.getSprite(spriteId);
+				if (element == null) {
+					if (this.styleGroups.getSprite(spriteId) != null) {
+						this.removeSprite_(spriteId);
+					}
+				} else {
+					GraphicSprite sprite = this.styleGroups.getSprite(spriteId);
 
-				if (sprite != null)
-					sprite.removeAttribute(attr);
+					if (sprite != null) {
+						sprite.detach();
+					}
+				}
 			}
+		} finally {
+			this.lock.unlock();
 		}
 	}
 
-	protected void addOrChangeSprite(AttributeChangeEvent event, Element element, String spriteId, Object value) {
+	public GraphicSprite addSprite(final String id) {
+		this.lock.lock();
+		try {
+			String prefix = String.format("ui.sprite.%s", id);
+			logger.info(String.format("Added sprite %s.", id));
+			this.setAttribute(prefix, 0, 0, 0);
+			GraphicSprite s = this.styleGroups.getSprite(id);
+			assert (s != null);
+			return s;
+		} finally {
+			this.lock.unlock();
+		}
+	}
 
-		if (event == AttributeChangeEvent.ADD || event == AttributeChangeEvent.CHANGE) {
-			GraphicSprite sprite = styleGroups.getSprite(spriteId);
+	protected GraphicSprite addSprite_(final String id) {
+		this.lock.lock();
+		try {
+			GraphicSprite s = new GraphicSprite(id, this);
+			this.styleGroups.addElement(s);
+			this.graphChanged = true;
+			return s;
+		} finally {
+			this.lock.unlock();
+		}
+	}
 
-			if (sprite == null)
-				sprite = addSprite_(spriteId);
+	public void removeSprite(final String id) {
+		this.lock.lock();
+		try {
+			String prefix = String.format("ui.sprite.%s", id);
+			this.removeAttribute(prefix);
+		} finally {
+			this.lock.unlock();
+		}
+	}
 
-			if (element != null) {
-				if (element instanceof GraphicNode)
-					sprite.attachToNode((GraphicNode) element);
-				else if (element instanceof GraphicEdge)
-					sprite.attachToEdge((GraphicEdge) element);
+	protected GraphicSprite removeSprite_(final String id) {
+		this.lock.lock();
+		try {
+			GraphicSprite sprite = this.styleGroups.getSprite(id);
+
+			if (sprite != null) {
+				sprite.detach();
+				this.styleGroups.removeElement(sprite);
+				sprite.removed();
+
+				this.graphChanged = true;
 			}
 
-			if (value != null && (!(value instanceof Boolean)))
-				positionSprite(sprite, value);
-		} else if (event == AttributeChangeEvent.REMOVE) {
-			if (element == null) {
-				if (styleGroups.getSprite(spriteId) != null) {
-					removeSprite_(spriteId);
+			return sprite;
+		} finally {
+			this.lock.unlock();
+		}
+	}
+
+	protected void positionSprite(final GraphicSprite sprite, final Object value) {
+		this.lock.lock();
+		try {
+			if (value instanceof Object[]) {
+				Object[] values = (Object[]) value;
+
+				if (values.length == 4) {
+					if (values[0] instanceof Number && values[1] instanceof Number && values[2] instanceof Number && values[3] instanceof Style.Units) {
+						sprite.setPosition(((Number) values[0]).doubleValue(), ((Number) values[1]).doubleValue(), ((Number) values[2]).doubleValue(), (Style.Units) values[3]);
+					} else {
+						logger.warning("Cannot parse values[4] for sprite position.");
+					}
+				} else if (values.length == 3) {
+					if (values[0] instanceof Number && values[1] instanceof Number && values[2] instanceof Number) {
+						sprite.setPosition(((Number) values[0]).doubleValue(), ((Number) values[1]).doubleValue(), ((Number) values[2]).doubleValue(), Units.GU);
+					} else {
+						logger.warning("Cannot parse values[3] for sprite position.");
+					}
+				} else if (values.length == 1) {
+					if (values[0] instanceof Number) {
+						sprite.setPosition(((Number) values[0]).doubleValue());
+					} else {
+						logger.warning("Sprite position percent is not a number.");
+					}
+				} else {
+					logger.warning(String.format("Cannot transform value '%s' (length=%d) into a position%n", Arrays.toString(values), values.length));
 				}
+			} else if (value instanceof Number) {
+				sprite.setPosition(((Number) value).doubleValue());
+			} else if (value instanceof Value) {
+				sprite.setPosition(((Value) value).value);
+			} else if (value instanceof Values) {
+				sprite.setPosition((Values) value);
+			} else if (value == null) {
+				throw new RuntimeException("What do you expect with a null value ?");
 			} else {
-				GraphicSprite sprite = styleGroups.getSprite(spriteId);
-
-				if (sprite != null)
-					sprite.detach();
+				logger.warning(String.format("Cannot place sprite with posiiton '%s' (instance of %s)%n", value, value.getClass().getName()));
 			}
-		}
-	}
-
-	public GraphicSprite addSprite(String id) {
-		String prefix = String.format("ui.sprite.%s", id);
-		logger.info(String.format("Added sprite %s.", id));
-		setAttribute(prefix, 0, 0, 0);
-		GraphicSprite s = styleGroups.getSprite(id);
-		assert (s != null);
-		return s;
-	}
-
-	protected GraphicSprite addSprite_(String id) {
-		GraphicSprite s = new GraphicSprite(id, this);
-		styleGroups.addElement(s);
-		graphChanged = true;
-
-		return s;
-	}
-
-	public void removeSprite(String id) {
-		String prefix = String.format("ui.sprite.%s", id);
-		removeAttribute(prefix);
-	}
-
-	protected GraphicSprite removeSprite_(String id) {
-		GraphicSprite sprite = (GraphicSprite) styleGroups.getSprite(id);
-
-		if (sprite != null) {
-			sprite.detach();
-			styleGroups.removeElement(sprite);
-			sprite.removed();
-
-			graphChanged = true;
-		}
-
-		return sprite;
-	}
-
-	protected void positionSprite(GraphicSprite sprite, Object value) {
-		if (value instanceof Object[]) {
-			Object[] values = (Object[]) value;
-
-			if (values.length == 4) {
-				if (values[0] instanceof Number && values[1] instanceof Number && values[2] instanceof Number
-						&& values[3] instanceof Style.Units) {
-					sprite.setPosition(((Number) values[0]).doubleValue(), ((Number) values[1]).doubleValue(),
-							((Number) values[2]).doubleValue(), (Style.Units) values[3]);
-				} else {
-					logger.warning("Cannot parse values[4] for sprite position.");
-				}
-			} else if (values.length == 3) {
-				if (values[0] instanceof Number && values[1] instanceof Number && values[2] instanceof Number) {
-					sprite.setPosition(((Number) values[0]).doubleValue(), ((Number) values[1]).doubleValue(),
-							((Number) values[2]).doubleValue(), Units.GU);
-				} else {
-					logger.warning("Cannot parse values[3] for sprite position.");
-				}
-			} else if (values.length == 1) {
-				if (values[0] instanceof Number) {
-					sprite.setPosition(((Number) values[0]).doubleValue());
-				} else {
-					logger.warning("Sprite position percent is not a number.");
-				}
-			} else {
-				logger.warning(String.format("Cannot transform value '%s' (length=%d) into a position%n",
-						Arrays.toString(values), values.length));
-			}
-		} else if (value instanceof Number) {
-			sprite.setPosition(((Number) value).doubleValue());
-		} else if (value instanceof Value) {
-			sprite.setPosition(((Value) value).value);
-		} else if (value instanceof Values) {
-			sprite.setPosition((Values) value);
-		} else if (value == null) {
-			throw new RuntimeException("What do you expect with a null value ?");
-		} else {
-			logger.warning(String.format("Cannot place sprite with posiiton '%s' (instance of %s)%n", value,
-					value.getClass().getName()));
+		} finally {
+			this.lock.unlock();
 		}
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.stream.Source#clearAttributeSinks()
 	 */
 	@Override
 	public void clearAttributeSinks() {
-		listeners.clearAttributeSinks();
+		this.listeners.clearAttributeSinks();
 	}
 
 	/*
 	 * *(non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.stream.Source#clearElementSinks()
 	 */
 	@Override
 	public void clearElementSinks() {
-		listeners.clearElementSinks();
+		this.listeners.clearElementSinks();
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.stream.Source#clearSinks()
 	 */
 	@Override
 	public void clearSinks() {
-		listeners.clearSinks();
+		this.listeners.clearSinks();
 	}
 
 	// stubs for the new methods
 
 	@Override
-	public Edge addEdge(String id, int index1, int index2) {
+	public Edge addEdge(final String id, final int index1, final int index2) {
 		throw new RuntimeException("not implemented !");
 	}
 
 	@Override
-	public Edge addEdge(String id, int fromIndex, int toIndex, boolean directed) {
+	public Edge addEdge(final String id, final int fromIndex, final int toIndex, final boolean directed) {
 		throw new RuntimeException("not implemented !");
 	}
 
 	@Override
-	public Edge addEdge(String id, Node node1, Node node2) {
+	public Edge addEdge(final String id, final Node node1, final Node node2) {
 		throw new RuntimeException("not implemented !");
 	}
 
 	@Override
-	public Edge addEdge(String id, Node from, Node to, boolean directed) {
+	public Edge addEdge(final String id, final Node from, final Node to, final boolean directed) {
 		throw new RuntimeException("not implemented !");
 	}
 
 	@Override
-	public Edge getEdge(int index) throws IndexOutOfBoundsException {
+	public Edge getEdge(final int index) throws IndexOutOfBoundsException {
 		throw new RuntimeException("not implemented !");
 	}
 
 	@Override
-	public Node getNode(int index) throws IndexOutOfBoundsException {
+	public Node getNode(final int index) throws IndexOutOfBoundsException {
 		throw new RuntimeException("not implemented !");
 	}
 
 	@Override
-	public Edge removeEdge(int index) {
+	public Edge removeEdge(final int index) {
 		throw new RuntimeException("not implemented !");
 	}
 
 	@Override
-	public Edge removeEdge(int fromIndex, int toIndex) {
+	public Edge removeEdge(final int fromIndex, final int toIndex) {
 		throw new RuntimeException("not implemented !");
 	}
 
 	@Override
-	public Edge removeEdge(Node node1, Node node2) {
+	public Edge removeEdge(final Node node1, final Node node2) {
 		throw new RuntimeException("not implemented !");
 	}
 
 	@Override
-	public Edge removeEdge(Edge edge) {
+	public Edge removeEdge(final Edge edge) {
 		throw new RuntimeException("not implemented !");
 	}
 
 	@Override
-	public Node removeNode(int index) {
+	public Node removeNode(final int index) {
 		throw new RuntimeException("not implemented !");
 	}
 
 	@Override
-	public Node removeNode(Node node) {
+	public Node removeNode(final Node node) {
 		throw new RuntimeException("not implemented !");
 	}
 
@@ -1340,28 +1493,27 @@ public class GraphicGraph extends AbstractElement implements Graph, StyleGroupLi
 	public void replay() {
 		// Replay all graph attributes.
 
-		attributeKeys().forEach(key -> {
-			listeners.sendGraphAttributeAdded(id, key, getAttribute(key));
+		this.attributeKeys().forEach(key -> {
+			this.listeners.sendGraphAttributeAdded(this.id, key, this.getAttribute(key));
 		});
 
 		// Replay all nodes and their attributes.
 
-		nodes().forEach(node -> {
-			listeners.sendNodeAdded(id, node.getId());
+		this.nodes().forEach(node -> {
+			this.listeners.sendNodeAdded(this.id, node.getId());
 
 			node.attributeKeys().forEach(key -> {
-				listeners.sendNodeAttributeAdded(id, node.getId(), key, node.getAttribute(key));
+				this.listeners.sendNodeAttributeAdded(this.id, node.getId(), key, node.getAttribute(key));
 			});
 		});
 
 		// Replay all edges and their attributes.
 
-		edges().forEach(edge -> {
-			listeners.sendEdgeAdded(id, edge.getId(), edge.getSourceNode().getId(), edge.getTargetNode().getId(),
-					edge.isDirected());
+		this.edges().forEach(edge -> {
+			this.listeners.sendEdgeAdded(this.id, edge.getId(), edge.getSourceNode().getId(), edge.getTargetNode().getId(), edge.isDirected());
 
 			edge.attributeKeys().forEach(key -> {
-				listeners.sendEdgeAttributeAdded(id, edge.getId(), key, edge.getAttribute(key));
+				this.listeners.sendEdgeAttributeAdded(this.id, edge.getId(), key, edge.getAttribute(key));
 			});
 		});
 	}

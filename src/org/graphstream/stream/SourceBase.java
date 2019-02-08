@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.graphstream.graph.implementations.AbstractElement.AttributeChangeEvent;
 import org.graphstream.stream.sync.SourceTime;
@@ -85,6 +87,7 @@ public abstract class SourceBase implements Source {
 	 * the right order.
 	 */
 	protected Queue<GraphEvent> eventQueue = new ConcurrentLinkedQueue<GraphEvent>();
+	private final Lock lock = new ReentrantLock(true);
 
 	/**
 	 * A boolean that indicates whether or not an Sink event is being sent during
@@ -836,9 +839,14 @@ public abstract class SourceBase implements Source {
 	 */
 	protected void manageEvents() {
 		if (this.eventProcessing) {
-			while (!this.eventQueue.isEmpty()) {
-				System.out.println("#############" + Thread.currentThread().getName());
-				this.eventQueue.remove().trigger();
+			this.lock.lock();
+			try {
+				while (!this.eventQueue.isEmpty()) {
+					System.out.println("#############" + Thread.currentThread().getName());
+					this.eventQueue.remove().trigger();
+				}
+			} finally {
+				this.lock.unlock();
 			}
 		}
 	}
