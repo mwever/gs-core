@@ -842,7 +842,6 @@ public abstract class SourceBase implements Source {
 			this.lock.lock();
 			try {
 				while (!this.eventQueue.isEmpty()) {
-					System.out.println("#############" + Thread.currentThread().getName());
 					this.eventQueue.remove().trigger();
 				}
 			} finally {
