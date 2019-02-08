@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,14 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2009-07-13
+ * 
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.ui.graphicGraph.stylesheet;
 
@@ -116,9 +117,9 @@ public class Values implements Iterable<Double> {
 	}
 
 	/**
-	 * The i-th value of this set. If the index is less than zero, the first
-	 * value is given, if the index if greater or equal to the number of values,
-	 * the last value is given.
+	 * The i-th value of this set. If the index is less than zero, the first value
+	 * is given, if the index if greater or equal to the number of values, the last
+	 * value is given.
 	 * 
 	 * @param i
 	 *            The value index.

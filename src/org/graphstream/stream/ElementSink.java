@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,15 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2009-03-22
+ * 
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.stream;
 
@@ -75,8 +77,7 @@ public interface ElementSink {
 	 * @param directed
 	 *            If true, the edge is directed.
 	 */
-	void edgeAdded(String sourceId, long timeId, String edgeId,
-			String fromNodeId, String toNodeId, boolean directed);
+	void edgeAdded(String sourceId, long timeId, String edgeId, String fromNodeId, String toNodeId, boolean directed);
 
 	/**
 	 * An edge of graph was removed.The nodes the edge connects may already have
@@ -90,8 +91,8 @@ public interface ElementSink {
 	void edgeRemoved(String sourceId, long timeId, String edgeId);
 
 	/**
-	 * The whole graph was cleared. All the nodes, edges and attributes of the
-	 * graph are removed.
+	 * The whole graph was cleared. All the nodes, edges and attributes of the graph
+	 * are removed.
 	 * 
 	 * @param sourceId
 	 *            The graph cleared.
@@ -100,11 +101,10 @@ public interface ElementSink {
 
 	/**
 	 * <p>
-	 * Since dynamic graphs are based on discrete event modifications, the
-	 * notion of step is defined to simulate elapsed time between events. So a
-	 * step is a event that occurs in the graph, it does not modify it but it
-	 * gives a kind of timestamp that allow the tracking of the progress of the
-	 * graph over the time.
+	 * Since dynamic graphs are based on discrete event modifications, the notion of
+	 * step is defined to simulate elapsed time between events. So a step is a event
+	 * that occurs in the graph, it does not modify it but it gives a kind of
+	 * timestamp that allow the tracking of the progress of the graph over the time.
 	 * </p>
 	 * 
 	 * <p>
@@ -115,8 +115,8 @@ public interface ElementSink {
 	 * @param sourceId
 	 *            Identifier of the graph where the step starts.
 	 * @param timeId
-	 *            A numerical value that may give a timestamp to track the
-	 *            evolution of the graph over the time.
+	 *            A numerical value that may give a timestamp to track the evolution
+	 *            of the graph over the time.
 	 */
 	void stepBegins(String sourceId, long timeId, double step);
 }

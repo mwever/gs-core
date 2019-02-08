@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,9 +22,18 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2009-02-19
+ * 
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author kitskub <kitskub@gmail.com>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.ui.layout.springbox;
 
-import org.graphstream.ui.geom.Vector3;
+import org.graphstream.ui.geom.Point3;
 
 /**
  * Edge representation.
@@ -65,7 +67,7 @@ public class EdgeSpring {
 	/**
 	 * The attraction force on this edge.
 	 */
-	public Vector3 spring = new Vector3();
+	public Point3 spring = new Point3();
 
 	/**
 	 * Make this edge ignored by the layout algorithm ?.
@@ -94,8 +96,8 @@ public class EdgeSpring {
 	}
 
 	/**
-	 * Considering the two nodes of the edge, return the one that was not given
-	 * as argument.
+	 * Considering the two nodes of the edge, return the one that was not given as
+	 * argument.
 	 * 
 	 * @param node
 	 *            One of the nodes of the edge.

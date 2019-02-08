@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,6 +22,13 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2013-07-31
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.util.cumulative;
 
 import java.util.LinkedList;
@@ -45,8 +45,7 @@ public class CumulativeSpells {
 
 		private Object data;
 
-		public Spell(double start, boolean startOpen, double end,
-				boolean endOpen) {
+		public Spell(double start, boolean startOpen, double end, boolean endOpen) {
 			this.start = start;
 			this.startOpen = startOpen;
 			this.end = end;
@@ -188,8 +187,7 @@ public class CumulativeSpells {
 	}
 
 	public boolean isEternal() {
-		return spells.size() == 1 && !spells.get(0).isStarted()
-				&& !spells.get(0).isEnded();
+		return spells.size() == 1 && !spells.get(0).isStarted() && !spells.get(0).isEnded();
 	}
 
 	public String toString() {

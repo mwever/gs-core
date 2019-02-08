@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,6 +22,14 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2014-11-03
+ * 
+ * @author Thibaut Démare <fdhp_76@hotmail.com>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.stream.file;
 
 import java.util.ArrayList;
@@ -39,12 +40,15 @@ import org.graphstream.stream.file.FileSinkBase;
  * Base implementation for filtered graph output to files.
  * 
  * <p>
- * This class provides the list of possible filters which could be used by the final user to write graphs into files using a specific file format. 
- * Thus, it allows to create an output stream where the dynamic events of addition/deletion/modification can be filtered.
+ * This class provides the list of possible filters which could be used by the
+ * final user to write graphs into files using a specific file format. Thus, it
+ * allows to create an output stream where the dynamic events of
+ * addition/deletion/modification can be filtered.
  * </p>
  * 
  * <p>
- * Since it extends FileSinkBase, you have to override the same methods in order to implement an output.
+ * Since it extends FileSinkBase, you have to override the same methods in order
+ * to implement an output.
  * </p>
  */
 public abstract class FileSinkBaseFiltered extends FileSinkBase {
@@ -69,11 +73,11 @@ public abstract class FileSinkBaseFiltered extends FileSinkBase {
 	protected ArrayList<String> graphAttributesFiltered;
 	protected ArrayList<String> nodeAttributesFiltered;
 	protected ArrayList<String> edgeAttributesFiltered;
-	
+
 	/**
-	 * Initialize with no filter 
+	 * Initialize with no filter
 	 */
-	public FileSinkBaseFiltered(){
+	public FileSinkBaseFiltered() {
 		noFilterGraphAttributeAdded = true;
 		noFilterGraphAttributeChanged = true;
 		noFilterGraphAttributeRemoved = true;
@@ -103,7 +107,9 @@ public abstract class FileSinkBaseFiltered extends FileSinkBase {
 
 	/**
 	 * Set the whole list of graph attributes filtered
-	 * @param graphAttributesFiltered the new list
+	 * 
+	 * @param graphAttributesFiltered
+	 *            the new list
 	 */
 	public void setGraphAttributesFiltered(ArrayList<String> graphAttributesFiltered) {
 		this.graphAttributesFiltered = graphAttributesFiltered;
@@ -111,19 +117,23 @@ public abstract class FileSinkBaseFiltered extends FileSinkBase {
 
 	/**
 	 * Add a new attribute to filter
-	 * @param attr the filtered attribute
+	 * 
+	 * @param attr
+	 *            the filtered attribute
 	 * @return true if the attribute has been added, false otherwise
 	 */
-	public boolean addGraphAttributeFiltered(String attr){
+	public boolean addGraphAttributeFiltered(String attr) {
 		return graphAttributesFiltered.add(attr);
 	}
 
 	/**
 	 * Remove an attribute to filter
-	 * @param attr the no more filtered attribute
+	 * 
+	 * @param attr
+	 *            the no more filtered attribute
 	 * @return true if the attribute has been removed, false otherwise
 	 */
-	public boolean removeGraphAttributeFilter(String attr){
+	public boolean removeGraphAttributeFilter(String attr) {
 		return graphAttributesFiltered.remove(attr);
 	}
 
@@ -136,7 +146,9 @@ public abstract class FileSinkBaseFiltered extends FileSinkBase {
 
 	/**
 	 * Set the whole list of node attributes filtered
-	 * @param nodeAttributesFiltered the new list
+	 * 
+	 * @param nodeAttributesFiltered
+	 *            the new list
 	 */
 	public void setNodeAttributesFiltered(ArrayList<String> nodeAttributesFiltered) {
 		this.nodeAttributesFiltered = nodeAttributesFiltered;
@@ -144,19 +156,23 @@ public abstract class FileSinkBaseFiltered extends FileSinkBase {
 
 	/**
 	 * Add a new attribute to filter
-	 * @param attr the filtered attribute
+	 * 
+	 * @param attr
+	 *            the filtered attribute
 	 * @return true if the attribute has been added, false otherwise
 	 */
-	public boolean addNodeAttributeFiltered(String attr){
+	public boolean addNodeAttributeFiltered(String attr) {
 		return nodeAttributesFiltered.add(attr);
 	}
 
 	/**
 	 * Remove an attribute to filter
-	 * @param attr the no more filtered attribute
+	 * 
+	 * @param attr
+	 *            the no more filtered attribute
 	 * @return true if the attribute has been removed, false otherwise
 	 */
-	public boolean removeNodeAttributeFilter(String attr){
+	public boolean removeNodeAttributeFilter(String attr) {
 		return nodeAttributesFiltered.remove(attr);
 	}
 
@@ -169,7 +185,9 @@ public abstract class FileSinkBaseFiltered extends FileSinkBase {
 
 	/**
 	 * Set the whole list of edge attributes filtered
-	 * @param edgeAttributesFiltered the new list
+	 * 
+	 * @param edgeAttributesFiltered
+	 *            the new list
 	 */
 	public void setEdgeAttributesFiltered(ArrayList<String> edgeAttributesFiltered) {
 		this.edgeAttributesFiltered = edgeAttributesFiltered;
@@ -177,22 +195,26 @@ public abstract class FileSinkBaseFiltered extends FileSinkBase {
 
 	/**
 	 * Add a new attribute to filter
-	 * @param attr the filtered attribute
+	 * 
+	 * @param attr
+	 *            the filtered attribute
 	 * @return true if the attribute has been added, false otherwise
 	 */
-	public boolean addEdgeAttributeFiltered(String attr){
+	public boolean addEdgeAttributeFiltered(String attr) {
 		return edgeAttributesFiltered.add(attr);
 	}
 
 	/**
 	 * Remove an attribute to filter
-	 * @param attr the filtered attribute
+	 * 
+	 * @param attr
+	 *            the filtered attribute
 	 * @return true if the attribute has been removed, false otherwise
 	 */
-	public boolean removeEdgeAttributeFilter(String attr){
+	public boolean removeEdgeAttributeFilter(String attr) {
 		return edgeAttributesFiltered.remove(attr);
 	}
-	
+
 	/**
 	 * 
 	 * @return true if this filter is disable, false otherwise
@@ -203,6 +225,7 @@ public abstract class FileSinkBaseFiltered extends FileSinkBase {
 
 	/**
 	 * Disable or enable this filter
+	 * 
 	 * @param noFilterGraphAttributeAdded
 	 */
 	public void setNoFilterGraphAttributeAdded(boolean noFilterGraphAttributeAdded) {
@@ -219,10 +242,10 @@ public abstract class FileSinkBaseFiltered extends FileSinkBase {
 
 	/**
 	 * Disable or enable this filter
+	 * 
 	 * @param noFilterGraphAttributeChanged
 	 */
-	public void setNoFilterGraphAttributeChanged(
-			boolean noFilterGraphAttributeChanged) {
+	public void setNoFilterGraphAttributeChanged(boolean noFilterGraphAttributeChanged) {
 		this.noFilterGraphAttributeChanged = noFilterGraphAttributeChanged;
 	}
 
@@ -236,10 +259,10 @@ public abstract class FileSinkBaseFiltered extends FileSinkBase {
 
 	/**
 	 * Disable or enable this filter
+	 * 
 	 * @param noFilterGraphAttributeRemoved
 	 */
-	public void setNoFilterGraphAttributeRemoved(
-			boolean noFilterGraphAttributeRemoved) {
+	public void setNoFilterGraphAttributeRemoved(boolean noFilterGraphAttributeRemoved) {
 		this.noFilterGraphAttributeRemoved = noFilterGraphAttributeRemoved;
 	}
 
@@ -253,6 +276,7 @@ public abstract class FileSinkBaseFiltered extends FileSinkBase {
 
 	/**
 	 * Disable or enable this filter
+	 * 
 	 * @param noFilterNodeAttributeAdded
 	 */
 	public void setNoFilterNodeAttributeAdded(boolean noFilterNodeAttributeAdded) {
@@ -269,6 +293,7 @@ public abstract class FileSinkBaseFiltered extends FileSinkBase {
 
 	/**
 	 * Disable or enable this filter
+	 * 
 	 * @param noFilterNodeAttributeChanged
 	 */
 	public void setNoFilterNodeAttributeChanged(boolean noFilterNodeAttributeChanged) {
@@ -285,6 +310,7 @@ public abstract class FileSinkBaseFiltered extends FileSinkBase {
 
 	/**
 	 * Disable or enable this filter
+	 * 
 	 * @param noFilterNodeAttributeRemoved
 	 */
 	public void setNoFilterNodeAttributeRemoved(boolean noFilterNodeAttributeRemoved) {
@@ -301,6 +327,7 @@ public abstract class FileSinkBaseFiltered extends FileSinkBase {
 
 	/**
 	 * Disable or enable this filter
+	 * 
 	 * @param noFilterNodeAdded
 	 */
 	public void setNoFilterNodeAdded(boolean noFilterNodeAdded) {
@@ -317,6 +344,7 @@ public abstract class FileSinkBaseFiltered extends FileSinkBase {
 
 	/**
 	 * Disable or enable this filter
+	 * 
 	 * @param noFilterNodeRemoved
 	 */
 	public void setNoFilterNodeRemoved(boolean noFilterNodeRemoved) {
@@ -333,6 +361,7 @@ public abstract class FileSinkBaseFiltered extends FileSinkBase {
 
 	/**
 	 * Disable or enable this filter
+	 * 
 	 * @param noFilterEdgeAttributeAdded
 	 */
 	public void setNoFilterEdgeAttributeAdded(boolean noFilterEdgeAttributeAdded) {
@@ -397,6 +426,7 @@ public abstract class FileSinkBaseFiltered extends FileSinkBase {
 
 	/**
 	 * Disable or enable this filter
+	 * 
 	 * @param noFilterEdgeRemoved
 	 */
 	public void setNoFilterEdgeRemoved(boolean noFilterEdgeRemoved) {
@@ -413,6 +443,7 @@ public abstract class FileSinkBaseFiltered extends FileSinkBase {
 
 	/**
 	 * Disable or enable this filter
+	 * 
 	 * @param noFilterGraphCleared
 	 */
 	public void setNoFilterGraphCleared(boolean noFilterGraphCleared) {
@@ -429,6 +460,7 @@ public abstract class FileSinkBaseFiltered extends FileSinkBase {
 
 	/**
 	 * Disable or enable this filter
+	 * 
 	 * @param noFilterStepBegins
 	 */
 	public void setNoFilterStepBegins(boolean noFilterStepBegins) {

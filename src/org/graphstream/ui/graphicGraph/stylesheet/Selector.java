@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,14 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2009-02-19
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.ui.graphicGraph.stylesheet;
 
@@ -77,12 +78,12 @@ public class Selector {
 	}
 
 	/**
-	 * New selector for a given type of element. This constructor allows to
-	 * specify either an identifier or a class to restrict this selector. If the
-	 * identifier is given, the class will never be used (as identifiers are
-	 * finer than classes). If the identifier is null the class will be used.
-	 * The identifier allow to select only one element by its name. The class
-	 * allows to select several elements.
+	 * New selector for a given type of element. This constructor allows to specify
+	 * either an identifier or a class to restrict this selector. If the identifier
+	 * is given, the class will never be used (as identifiers are finer than
+	 * classes). If the identifier is null the class will be used. The identifier
+	 * allow to select only one element by its name. The class allows to select
+	 * several elements.
 	 * 
 	 * @param type
 	 *            The element type of this selector.
@@ -169,8 +170,8 @@ public class Selector {
 	}
 
 	/**
-	 * The identifier of the element this selector uniquely applies to. This can
-	 * be null if this selector is general.
+	 * The identifier of the element this selector uniquely applies to. This can be
+	 * null if this selector is general.
 	 * 
 	 * @return The identifier or null if the selector is general.
 	 */
@@ -199,8 +200,7 @@ public class Selector {
 
 	@Override
 	public String toString() {
-		return String.format("%s%s%s%s", type.toString(),
-				id != null ? String.format("#%s", id) : "",
+		return String.format("%s%s%s%s", type.toString(), id != null ? String.format("#%s", id) : "",
 				clazz != null ? String.format(".%s", clazz) : "",
 				pseudoClass != null ? String.format(":%s", pseudoClass) : "");
 	}

@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,14 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2011-05-11
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.ui.graphicGraph.test;
 
@@ -72,7 +73,7 @@ public class TestGraphSynchronisationProxyThread {
 		Graph main = new MultiGraph("main");
 		ThreadProxyPipe toGraphic = new ThreadProxyPipe();
 		toGraphic.init(main);
-		
+
 		InTheSwingThread viewerThread = new InTheSwingThread(toGraphic);
 		ThreadProxyPipe toMain = viewerThread.getProxy();
 
@@ -100,10 +101,10 @@ public class TestGraphSynchronisationProxyThread {
 		S3.setPosition(2, 3, 2);
 		S3.setPosition(3, 2, 1);
 
-		A.addAttribute("ui.foo", "bar");
-		B.addAttribute("ui.bar", "foo");
-		C.addAttribute("truc"); // Not prefixed by UI, will not pass.
-		S1.addAttribute("ui.foo", "bar");
+		A.setAttribute("ui.foo", "bar");
+		B.setAttribute("ui.bar", "foo");
+		C.setAttribute("truc"); // Not prefixed by UI, will not pass.
+		S1.setAttribute("ui.foo", "bar");
 		main.stepBegins(1);
 
 		toMain.pump();
@@ -111,7 +112,7 @@ public class TestGraphSynchronisationProxyThread {
 		// We ask the Swing thread to modify the graphic graph.
 
 		main.stepBegins(2);
-		main.addAttribute("ui.EQUIP"); // Remember GraphicGraph filters
+		main.setAttribute("ui.EQUIP"); // Remember GraphicGraph filters
 										// attributes.
 
 		// Wait and stop.
@@ -120,7 +121,7 @@ public class TestGraphSynchronisationProxyThread {
 		sleep(1000);
 		toMain.pump();
 
-		main.addAttribute("ui.STOP");
+		main.setAttribute("ui.STOP");
 
 		toMain.pump();
 		sleep(1000);
@@ -170,27 +171,24 @@ public class TestGraphSynchronisationProxyThread {
 		Object xyz2[] = { 2, 1, 0 };
 		Object xyz3[] = { 3, 2, 1 };
 
-		assertArrayEquals(xyz1, (Object[]) main.getNode("A")
-				.getAttribute("xyz"));
-		assertArrayEquals(xyz2, (Object[]) main.getNode("B")
-				.getAttribute("xyz"));
-		assertArrayEquals(xyz3, (Object[]) main.getNode("C")
-				.getAttribute("xyz"));
+		assertArrayEquals(xyz1, (Object[]) main.getNode("A").getAttribute("xyz"));
+		assertArrayEquals(xyz2, (Object[]) main.getNode("B").getAttribute("xyz"));
+		assertArrayEquals(xyz3, (Object[]) main.getNode("C").getAttribute("xyz"));
 
 		assertEquals("foobar", S2.getAttribute("ui.foobar"));
 
 		GraphicSprite gs3 = graphic.getSprite("S3");
 
-		assertEquals(0.5f, S1.getX(),0);
-		assertEquals(0, S1.getY(),0);
-		assertEquals(0, S1.getZ(),0);
-		assertEquals(1, S2.getX(),0);
-		assertEquals(2, S2.getY(),0);
-		assertEquals(3, S2.getZ(),0);
+		assertEquals(0.5f, S1.getX(), 0);
+		assertEquals(0, S1.getY(), 0);
+		assertEquals(0, S1.getZ(), 0);
+		assertEquals(1, S2.getX(), 0);
+		assertEquals(2, S2.getY(), 0);
+		assertEquals(3, S2.getZ(), 0);
 
-		assertEquals(3, gs3.getX(),0);
-		assertEquals(2, gs3.getY(),0);
-		assertEquals(1, gs3.getZ(),0);
+		assertEquals(3, gs3.getX(), 0);
+		assertEquals(2, gs3.getY(), 0);
+		assertEquals(1, gs3.getZ(), 0);
 	}
 
 	protected void sleep(int millis) {
@@ -243,17 +241,17 @@ public class TestGraphSynchronisationProxyThread {
 				Node C = graphic.getNode("C");
 
 				if (A != null)
-					A.addAttribute("xyz", 4, 3, 2);
+					A.setAttribute("xyz", 4, 3, 2);
 				if (B != null)
-					B.addAttribute("xyz", 2, 1, 0);
+					B.setAttribute("xyz", 2, 1, 0);
 				if (C != null)
-					C.addAttribute("xyz", 3, 2, 1);
+					C.setAttribute("xyz", 3, 2, 1);
 
 				GraphicSprite S1 = graphic.getSprite("S1");
 				GraphicSprite S2 = graphic.getSprite("S2");
 
 				if (S2 != null) {
-					S2.addAttribute("ui.foobar", "foobar");
+					S2.setAttribute("ui.foobar", "foobar");
 					S2.setPosition(1, 2, 3, Style.Units.GU);
 				}
 

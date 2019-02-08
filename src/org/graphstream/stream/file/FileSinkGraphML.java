@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,10 +22,21 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2011-12-06
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hans Schulz <hans.schulz@sap.com>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.stream.file;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
@@ -58,148 +62,177 @@ public class FileSinkGraphML extends FileSinkBase {
 
 	@Override
 	protected void exportGraph(Graph g) {
+		final Consumer<Exception> onException = Exception::printStackTrace;
+
+		AtomicInteger attribute = new AtomicInteger(0);
+		HashMap<String, String> nodeAttributes = new HashMap<>();
+		HashMap<String, String> edgeAttributes = new HashMap<>();
+
+		g.nodes().forEach(n -> {
+			n.attributeKeys().forEach(k -> {
+				if (!nodeAttributes.containsKey(k)) {
+					Object value = n.getAttribute(k);
+					String type;
+
+					if (value == null)
+						return;
+
+					String id = String.format("attr%04X", attribute.getAndIncrement());
+
+					if (value instanceof Boolean)
+						type = "boolean";
+					else if (value instanceof Long)
+						type = "long";
+					else if (value instanceof Integer)
+						type = "int";
+					else if (value instanceof Double)
+						type = "double";
+					else if (value instanceof Float)
+						type = "float";
+					else
+						type = "string";
+
+					nodeAttributes.put(k, id);
+
+					try {
+						print("\t<key id=\"%s\" for=\"node\" attr.name=\"%s\" attr.type=\"%s\"/>\n", id,
+								escapeXmlString(k), type);
+					} catch (Exception ex) {
+						onException.accept(ex);
+					}
+				}
+			});
+		});
+
+		g.edges().forEach(n -> {
+			n.attributeKeys().forEach(k -> {
+				if (!edgeAttributes.containsKey(k)) {
+					Object value = n.getAttribute(k);
+					String type;
+
+					if (value == null)
+						return;
+
+					String id = String.format("attr%04X", attribute.getAndIncrement());
+
+					if (value instanceof Boolean)
+						type = "boolean";
+					else if (value instanceof Long)
+						type = "long";
+					else if (value instanceof Integer)
+						type = "int";
+					else if (value instanceof Double)
+						type = "double";
+					else if (value instanceof Float)
+						type = "float";
+					else
+						type = "string";
+
+					edgeAttributes.put(k, id);
+
+					try {
+						print("\t<key id=\"%s\" for=\"edge\" attr.name=\"%s\" attr.type=\"%s\"/>\n", id,
+								escapeXmlString(k), type);
+					} catch (Exception ex) {
+						onException.accept(ex);
+					}
+				}
+			});
+		});
+
 		try {
-			int attribute = 0;
-			HashMap<String, String> nodeAttributes = new HashMap<String, String>();
-			HashMap<String, String> edgeAttributes = new HashMap<String, String>();
-
-			for (Node n : g.getEachNode()) {
-				for (String k : n.getAttributeKeySet()) {
-					if (!nodeAttributes.containsKey(k)) {
-						Object value = n.getAttribute(k);
-						String type;
-
-						if (value == null)
-							continue;
-
-						String id = String.format("attr%04X", attribute++);
-
-						if (value instanceof Boolean)
-							type = "boolean";
-						else if (value instanceof Long)
-							type = "long";
-						else if (value instanceof Integer)
-							type = "int";
-						else if (value instanceof Double)
-							type = "double";
-						else if (value instanceof Float)
-							type = "float";
-						else
-							type = "string";
-
-						nodeAttributes.put(k, id);
-
-						print("\t<key id=\"%s\" for=\"node\" attr.name=\"%s\" attr.type=\"%s\"/>\n",
-								id, escapeXmlString(k), type);
-					}
-				}
-			}
-
-			for (Edge n : g.getEachEdge()) {
-				for (String k : n.getAttributeKeySet()) {
-					if (!edgeAttributes.containsKey(k)) {
-						Object value = n.getAttribute(k);
-						String type;
-
-						if (value == null)
-							continue;
-
-						String id = String.format("attr%04X", attribute++);
-
-						if (value instanceof Boolean)
-							type = "boolean";
-						else if (value instanceof Long)
-							type = "long";
-						else if (value instanceof Integer)
-							type = "int";
-						else if (value instanceof Double)
-							type = "double";
-						else if (value instanceof Float)
-							type = "float";
-						else
-							type = "string";
-
-						edgeAttributes.put(k, id);
-						print("\t<key id=\"%s\" for=\"edge\" attr.name=\"%s\" attr.type=\"%s\"/>\n",
-								id, escapeXmlString(k), type);
-					}
-				}
-			}
-
 			print("\t<graph id=\"%s\" edgedefault=\"undirected\">\n", escapeXmlString(g.getId()));
+		} catch (Exception e) {
+			onException.accept(e);
+		}
 
-			for (Node n : g.getEachNode()) {
+		g.nodes().forEach(n -> {
+			try {
 				print("\t\t<node id=\"%s\">\n", n.getId());
-				for (String k : n.getAttributeKeySet()) {
-					print("\t\t\t<data key=\"%s\">%s</data>\n", nodeAttributes
-							.get(k), escapeXmlString(n.getAttribute(k).toString()));
-				}
+
+				n.attributeKeys().forEach(k -> {
+					try {
+						print("\t\t\t<data key=\"%s\">%s</data>\n", nodeAttributes.get(k),
+								escapeXmlString(n.getAttribute(k).toString()));
+					} catch (IOException e) {
+						onException.accept(e);
+					}
+				});
+
 				print("\t\t</node>\n");
+			} catch (Exception ex) {
+				onException.accept(ex);
 			}
-			for (Edge e : g.getEachEdge()) {
-				print(
-						"\t\t<edge id=\"%s\" source=\"%s\" target=\"%s\" directed=\"%s\">\n",
-						e.getId(), e.getSourceNode().getId(), e.getTargetNode()
-								.getId(), e.isDirected());
-				for (String k : e.getAttributeKeySet()) {
-					print("\t\t\t<data key=\"%s\">%s</data>\n", edgeAttributes
-							.get(k), escapeXmlString(e.getAttribute(k).toString()));
-				}
+		});
+
+		g.edges().forEach(e -> {
+			try {
+				print("\t\t<edge id=\"%s\" source=\"%s\" target=\"%s\" directed=\"%s\">\n", e.getId(),
+						e.getSourceNode().getId(), e.getTargetNode().getId(), e.isDirected());
+
+				e.attributeKeys().forEach(k -> {
+					try {
+						print("\t\t\t<data key=\"%s\">%s</data>\n", edgeAttributes.get(k),
+								escapeXmlString(e.getAttribute(k).toString()));
+					} catch (IOException e1) {
+						onException.accept(e1);
+					}
+				});
+
 				print("\t\t</edge>\n");
+			} catch (Exception ex) {
+				onException.accept(ex);
 			}
+		});
+
+		try {
 			print("\t</graph>\n");
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			onException.accept(e);
 		}
 	}
 
-	public void edgeAttributeAdded(String sourceId, long timeId, String edgeId,
-			String attribute, Object value) {
+	public void edgeAttributeAdded(String sourceId, long timeId, String edgeId, String attribute, Object value) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void edgeAttributeChanged(String sourceId, long timeId,
-			String edgeId, String attribute, Object oldValue, Object newValue) {
+	public void edgeAttributeChanged(String sourceId, long timeId, String edgeId, String attribute, Object oldValue,
+			Object newValue) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void edgeAttributeRemoved(String sourceId, long timeId,
-			String edgeId, String attribute) {
+	public void edgeAttributeRemoved(String sourceId, long timeId, String edgeId, String attribute) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void graphAttributeAdded(String sourceId, long timeId,
-			String attribute, Object value) {
+	public void graphAttributeAdded(String sourceId, long timeId, String attribute, Object value) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void graphAttributeChanged(String sourceId, long timeId,
-			String attribute, Object oldValue, Object newValue) {
+	public void graphAttributeChanged(String sourceId, long timeId, String attribute, Object oldValue,
+			Object newValue) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void graphAttributeRemoved(String sourceId, long timeId,
-			String attribute) {
+	public void graphAttributeRemoved(String sourceId, long timeId, String attribute) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void nodeAttributeAdded(String sourceId, long timeId, String nodeId,
-			String attribute, Object value) {
+	public void nodeAttributeAdded(String sourceId, long timeId, String nodeId, String attribute, Object value) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void nodeAttributeChanged(String sourceId, long timeId,
-			String nodeId, String attribute, Object oldValue, Object newValue) {
+	public void nodeAttributeChanged(String sourceId, long timeId, String nodeId, String attribute, Object oldValue,
+			Object newValue) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void nodeAttributeRemoved(String sourceId, long timeId,
-			String nodeId, String attribute) {
+	public void nodeAttributeRemoved(String sourceId, long timeId, String nodeId, String attribute) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void edgeAdded(String sourceId, long timeId, String edgeId,
-			String fromNodeId, String toNodeId, boolean directed) {
+	public void edgeAdded(String sourceId, long timeId, String edgeId, String fromNodeId, String toNodeId,
+			boolean directed) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -222,17 +255,13 @@ public class FileSinkGraphML extends FileSinkBase {
 	public void stepBegins(String sourceId, long timeId, double step) {
 		throw new UnsupportedOperationException();
 	}
-	
+
 	private static String escapeXmlString(String string) {
-	    /*
-	     * Thankfully, the unescaping part is done by the xml parser
-	     * used in FileSourceGraphML
-	     */
-	    return string
-	            .replace("&", "&amp;")
-	            .replace("<", "&lt;")
-                .replace(">", "&gt;")
-                .replace("\"", "&quot;")
-                .replace("'", "&apos;");
+		/*
+		 * Thankfully, the unescaping part is done by the xml parser used in
+		 * FileSourceGraphML
+		 */
+		return string.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;")
+				.replace("'", "&apos;");
 	}
 }

@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,13 +22,23 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2009-02-19
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Alex Bowen <bowen.a@gmail.com>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.graph;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 /**
  * Path description.
@@ -67,10 +70,10 @@ import java.util.logging.Logger;
  */
 public class Path implements Structure {
 
-    /**
-     * class level logger
-     */
-    private static final Logger logger = Logger.getLogger(Path.class.getSimpleName());
+	/**
+	 * class level logger
+	 */
+	private static final Logger logger = Logger.getLogger(Path.class.getSimpleName());
 
 	// ------------- ATTRIBUTES ------------
 
@@ -121,7 +124,7 @@ public class Path implements Structure {
 			this.root = root;
 			nodePath.push(root);
 		} else {
-            logger.warning("Root node is not null - first use the clear method.");
+			logger.warning("Root node is not null - first use the clear method.");
 		}
 	}
 
@@ -200,9 +203,9 @@ public class Path implements Structure {
 	// -------------- MODIFIERS -------------
 
 	/**
-	 * Method that adds a node (and an edge) to the path. Parameters are the
-	 * start node : the one who already belong to the path or the first one if
-	 * the path is empty. The other parameter is the the new edge to add.
+	 * Method that adds a node (and an edge) to the path. Parameters are the start
+	 * node : the one who already belong to the path or the first one if the path is
+	 * empty. The other parameter is the the new edge to add.
 	 * 
 	 * @param from
 	 *            The start node.
@@ -222,10 +225,8 @@ public class Path implements Structure {
 			from = nodePath.peek();
 		}
 
-		if (nodePath.size() == 1
-				|| ((nodePath.peek() == from) && (from == edgePath.peek()
-						.getSourceNode() || from == edgePath.peek()
-						.getTargetNode()))) {
+		if (nodePath.size() == 1 || ((nodePath.peek() == from)
+				&& (from == edgePath.peek().getSourceNode() || from == edgePath.peek().getTargetNode()))) {
 
 			nodePath.push(edge.getOpposite(from));
 			edgePath.push(edge);
@@ -235,8 +236,7 @@ public class Path implements Structure {
 	}
 
 	/**
-	 * Method that adds an edge an a node to the path. The new edge to add is
-	 * given.
+	 * Method that adds an edge an a node to the path. The new edge to add is given.
 	 * 
 	 * @param edge
 	 *            The edge to add to the path.
@@ -286,8 +286,7 @@ public class Path implements Structure {
 	}
 
 	/**
-	 * Looks at the node at the top of the stack without removing it from the
-	 * stack.
+	 * Looks at the node at the top of the stack without removing it from the stack.
 	 * 
 	 * @return The node at the top of the stack.
 	 */
@@ -296,8 +295,7 @@ public class Path implements Structure {
 	}
 
 	/**
-	 * Looks at the edge at the top of the stack without removing it from the
-	 * stack.
+	 * Looks at the edge at the top of the stack without removing it from the stack.
 	 * 
 	 * @return The edge at the top of the stack.
 	 */
@@ -355,7 +353,7 @@ public class Path implements Structure {
 				}
 			}
 		}
-    }
+	}
 
 	/**
 	 * Compare the content of the current path and the specified path to decide
@@ -395,6 +393,7 @@ public class Path implements Structure {
 	 * 
 	 * @return The size of the path.
 	 */
+	@Override
 	public int getNodeCount() {
 		return nodePath.size();
 	}
@@ -404,53 +403,34 @@ public class Path implements Structure {
 	 * 
 	 * @see org.graphstream.graph.Structure#getEdgeCount()
 	 */
+	@Override
 	public int getEdgeCount() {
 		return edgePath.size();
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see org.graphstream.graph.Structure#getNodeIterator()
+	 *
+	 * @see org.graphstream.graph.Structure#nodes()
 	 */
-	@SuppressWarnings("unchecked")
-	public <T extends Node> Iterator<T> getNodeIterator() {
-		return (Iterator<T>) nodePath.iterator();
+	@Override
+	public Stream<Node> nodes() {
+		return nodePath.stream();
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see org.graphstream.graph.Structure#getEdgeIterator()
+	 *
+	 * @see org.graphstream.graph.Structure#edges()
 	 */
-	@SuppressWarnings("unchecked")
-	public <T extends Edge> Iterator<T> getEdgeIterator() {
-		return (Iterator<T>) edgePath.iterator();
+	@Override
+	public Stream<Edge> edges() {
+		return edgePath.stream();
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see org.graphstream.graph.Structure#getEachNode()
-	 */
-	@SuppressWarnings("unchecked")
-	public <T extends Node> Iterable<? extends T> getEachNode() {
-		return (Iterable<? extends T>) nodePath;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.graphstream.graph.Structure#getEachEdge()
-	 */
-	@SuppressWarnings("unchecked")
-	public <T extends Edge> Iterable<? extends T> getEachEdge() {
-		return (Iterable<? extends T>) edgePath;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.graphstream.graph.Structure#getNodeSet()
 	 */
 	@SuppressWarnings("unchecked")

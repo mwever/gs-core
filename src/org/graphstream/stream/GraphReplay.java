@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,6 +22,15 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2010-02-18
+ * 
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.stream;
 
 import org.graphstream.graph.Edge;
@@ -38,7 +40,7 @@ import org.graphstream.graph.Node;
 /**
  * A simple source of graph events that takes an existing graph and creates a
  * flow of events by enumerating all nodes, edges and attributes of the graph.
- * 
+ * <p>
  * <p>
  * The only method of this class is {@link #replay(Graph)} that takes a graph as
  * argument and :
@@ -59,7 +61,7 @@ import org.graphstream.graph.Node;
  * </ul>
  * In this order.
  * </p>
- * 
+ * <p>
  * <p>
  * Note that this is a source, not a pipe. This means that it has its own
  * identifier and is a producer of "new" events. Also note that is does not
@@ -76,33 +78,29 @@ public class GraphReplay extends SourceBase implements Source {
 
 	/**
 	 * Echo each element and attribute of the graph to the registered sinks.
-	 * 
+	 *
 	 * @param graph
 	 *            The graph to export.
 	 */
 	public void replay(Graph graph) {
-		for (String key : graph.getAttributeKeySet())
-			sendGraphAttributeAdded(sourceId, key, graph.getAttribute(key));
+		graph.attributeKeys().forEach(key -> sendGraphAttributeAdded(sourceId, key, graph.getAttribute(key)));
 
-		for (Node node : graph) {
+		graph.nodes().forEach(node -> {
 			String nodeId = node.getId();
 			sendNodeAdded(sourceId, nodeId);
 
 			if (node.getAttributeCount() > 0)
-				for (String key : node.getAttributeKeySet())
-					sendNodeAttributeAdded(sourceId, nodeId, key,
-							node.getAttribute(key));
-		}
+				node.attributeKeys()
+						.forEach(key -> sendNodeAttributeAdded(sourceId, nodeId, key, node.getAttribute(key)));
+		});
 
-		for (Edge edge : graph.getEachEdge()) {
+		graph.edges().forEach(edge -> {
 			String edgeId = edge.getId();
-			sendEdgeAdded(sourceId, edgeId, edge.getNode0().getId(), edge
-					.getNode1().getId(), edge.isDirected());
+			sendEdgeAdded(sourceId, edgeId, edge.getNode0().getId(), edge.getNode1().getId(), edge.isDirected());
 
 			if (edge.getAttributeCount() > 0)
-				for (String key : edge.getAttributeKeySet())
-					sendEdgeAttributeAdded(sourceId, edgeId, key,
-							edge.getAttribute(key));
-		}
+				edge.attributeKeys()
+						.forEach(key -> sendEdgeAttributeAdded(sourceId, edgeId, key, edge.getAttribute(key)));
+		});
 	}
 }

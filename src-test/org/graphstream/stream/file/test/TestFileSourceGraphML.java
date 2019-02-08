@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,6 +22,13 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2010-03-05
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.stream.file.test;
 
 import org.graphstream.graph.Graph;
@@ -43,65 +43,65 @@ import static org.junit.Assert.*;
 
 public class TestFileSourceGraphML {
 
-    protected Graph readRessource(String url, boolean strict) {
-        Graph g = new AdjacencyListGraph(url);
-        FileSourceGraphML graphml = new FileSourceGraphML();
-        graphml.setStrictMode(strict);
-        graphml.addSink(g);
+	protected Graph readRessource(String url, boolean strict) {
+		Graph g = new AdjacencyListGraph(url);
+		FileSourceGraphML graphml = new FileSourceGraphML();
+		graphml.setStrictMode(strict);
+		graphml.addSink(g);
 
-        try {
-            graphml.readAll(getClass().getResourceAsStream(url));
-        } catch (IOException e) {
-            fail("IOException occured : " + e.getMessage());
-        }
+		try {
+			graphml.readAll(getClass().getResourceAsStream(url));
+		} catch (IOException e) {
+			fail("IOException occured : " + e.getMessage());
+		}
 
-        graphml.removeSink(g);
+		graphml.removeSink(g);
 
-        return g;
-    }
+		return g;
+	}
 
-    @Test
-    public void testBasic() {
-        Graph g = readRessource("data/example.graphml", true);
+	@Test
+	public void testBasic() {
+		Graph g = readRessource("data/example.graphml", true);
 
-        Node n1 = g.getNode("1");
-        Node n2 = g.getNode("2");
-        Node n3 = g.getNode("3");
+		Node n1 = g.getNode("1");
+		Node n2 = g.getNode("2");
+		Node n3 = g.getNode("3");
 
-        assertNotNull(n1);
-        assertNotNull(n2);
-        assertNotNull(n3);
+		assertNotNull(n1);
+		assertNotNull(n2);
+		assertNotNull(n3);
 
-        assertNotNull(n1.getEdgeToward(n2));
-        assertNotNull(n2.getEdgeToward(n3));
-        assertNotNull(n3.getEdgeToward(n1));
+		assertNotNull(n1.getEdgeToward(n2));
+		assertNotNull(n2.getEdgeToward(n3));
+		assertNotNull(n3.getEdgeToward(n1));
 
-        assertTrue(g.hasAttribute("label"));
-        assertEquals("This is a label", g.getAttribute("label"));
+		assertTrue(g.hasAttribute("label"));
+		assertEquals("This is a label", g.getAttribute("label"));
 
-        assertTrue(g.getNode("1").hasAttribute("ordering"));
-        assertEquals("1 2", g.getNode("1").getAttribute("ordering"));
-        assertTrue(g.getNode("2").hasAttribute("ordering"));
-        assertEquals("2 3", g.getNode("2").getAttribute("ordering"));
-        assertTrue(g.getNode("3").hasAttribute("ordering"));
-        assertEquals("3 1", g.getNode("3").getAttribute("ordering"));
-    }
+		assertTrue(g.getNode("1").hasAttribute("ordering"));
+		assertEquals("1 2", g.getNode("1").getAttribute("ordering"));
+		assertTrue(g.getNode("2").hasAttribute("ordering"));
+		assertEquals("2 3", g.getNode("2").getAttribute("ordering"));
+		assertTrue(g.getNode("3").hasAttribute("ordering"));
+		assertEquals("3 1", g.getNode("3").getAttribute("ordering"));
+	}
 
-    @Test
-    public void testUndeclaredAttributes() {
-        Graph g = readRessource("data/example-extraattributes.graphml", false);
+	@Test
+	public void testUndeclaredAttributes() {
+		Graph g = readRessource("data/example-extraattributes.graphml", false);
 
-        Node n1 = g.getNode("1");
-        Node n2 = g.getNode("2");
-        Node n3 = g.getNode("3");
+		Node n1 = g.getNode("1");
+		Node n2 = g.getNode("2");
+		Node n3 = g.getNode("3");
 
-        assertNotNull(n1);
-        assertNotNull(n2);
-        assertNotNull(n3);
+		assertNotNull(n1);
+		assertNotNull(n2);
+		assertNotNull(n3);
 
-        assertTrue(g.getNode("1").hasAttribute("label"));
-        assertEquals("My label 1", g.getNode("1").getAttribute("label"));
-        assertTrue(g.getNode("2").hasAttribute("other"));
-        assertEquals("Other undeclared attribute", g.getNode("2").getAttribute("other"));
-    }
+		assertTrue(g.getNode("1").hasAttribute("label"));
+		assertEquals("My label 1", g.getNode("1").getAttribute("label"));
+		assertTrue(g.getNode("2").hasAttribute("other"));
+		assertEquals("Other undeclared attribute", g.getNode("2").getAttribute("other"));
+	}
 }

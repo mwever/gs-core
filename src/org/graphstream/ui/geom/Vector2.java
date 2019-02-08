@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,17 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2009-12-22
+ * 
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Richard O. Legendi <richard.legendi@gmail.com>
+ * @author Alex Bowen <bowen.a@gmail.com>
+ * @author kitskub <kitskub@gmail.com>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.ui.geom;
 
@@ -78,7 +82,7 @@ public class Vector2 implements java.io.Serializable {
 		data = new double[2];
 		copy(point);
 	}
-	
+
 	public Vector2(Point2 from, Point2 to) {
 		data = new double[2];
 		data[0] = to.x - from.x;
@@ -127,11 +131,11 @@ public class Vector2 implements java.io.Serializable {
 	public double at(int i) {
 		return data[i];
 	}
-	
+
 	public double x() {
 		return data[0];
 	}
-	
+
 	public double y() {
 		return data[1];
 	}
@@ -289,10 +293,8 @@ public class Vector2 implements java.io.Serializable {
 		return sb.toString();
 	}
 
-
-    @Override
-    public int hashCode()
-    {
-        return data != null ? Arrays.hashCode(data) : 0;
-    }
+	@Override
+	public int hashCode() {
+		return data != null ? Arrays.hashCode(data) : 0;
+	}
 }

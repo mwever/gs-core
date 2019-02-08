@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,13 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2011-10-06
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.stream.file.test;
 
@@ -87,8 +87,7 @@ public class TestFileSourceGEXF {
 
 		String[] nodeLabels = { "Gephi", "Webatlas", "RTGI", "BarabasiLab" };
 		String[] edges = { "0", "1", "0", "2", "1", "0", "2", "1", "0", "3" };
-		String[] urlValues = { "http://gephi.org", "http://webatlas.fr",
-				"http://rtgi.fr", "http://barabasilab.com" };
+		String[] urlValues = { "http://gephi.org", "http://webatlas.fr", "http://rtgi.fr", "http://barabasilab.com" };
 		Float[] indegreeValues = { 1.0f, 2.0f, 1.0f, 1.0f };
 		Boolean[] frogValues = { true, true, true, false };
 
@@ -104,8 +103,7 @@ public class TestFileSourceGEXF {
 			assertEquals(g.getNode(nid).getLabel("label"), nodeLabels[i]);
 
 			assertEquals(g.getNode(nid).getAttribute("url"), urlValues[i]);
-			assertEquals(g.getNode(nid).getAttribute("indegree"),
-					indegreeValues[i]);
+			assertEquals(g.getNode(nid).getAttribute("indegree"), indegreeValues[i]);
 			assertEquals(g.getNode(nid).getAttribute("frog"), frogValues[i]);
 		}
 
@@ -116,8 +114,7 @@ public class TestFileSourceGEXF {
 			assertTrue(g.getEdge(eid).isDirected());
 
 			assertEquals(g.getEdge(eid).getSourceNode().getId(), edges[2 * i]);
-			assertEquals(g.getEdge(eid).getTargetNode().getId(),
-					edges[2 * i + 1]);
+			assertEquals(g.getEdge(eid).getTargetNode().getId(), edges[2 * i + 1]);
 		}
 	}
 }

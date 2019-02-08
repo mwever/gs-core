@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,6 +22,13 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2011-10-04
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.util.time;
 
 import java.text.ParseException;
@@ -46,8 +46,8 @@ import org.graphstream.util.time.ISODateComponent.TextComponent;
  * The <i>parse()</i> return a {@link java.util.Calendar} for convenience.
  * 
  * Format of the scanner can be composed of %? directive which define components
- * of the time. These directives are listed below. For example, the format
- * "%F %T", which is equivalent to "%Y-%m-%d %H:%M:%S" can parse the following
+ * of the time. These directives are listed below. For example, the format "%F
+ * %T", which is equivalent to "%Y-%m-%d %H:%M:%S" can parse the following
  * timestamp: "2010-12-09 03:45:39";
  * 
  * <dl>
@@ -133,38 +133,25 @@ import org.graphstream.util.time.ISODateComponent.TextComponent;
  */
 public class ISODateIO {
 
-	private static final ISODateComponent[] KNOWN_COMPONENTS = {
-			ISODateComponent.ABBREVIATED_WEEKDAY_NAME,
-			ISODateComponent.FULL_WEEKDAY_NAME,
-			ISODateComponent.ABBREVIATED_MONTH_NAME,
-			ISODateComponent.FULL_MONTH_NAME,
-			ISODateComponent.LOCALE_DATE_AND_TIME, ISODateComponent.CENTURY,
-			ISODateComponent.DAY_OF_MONTH_2_DIGITS, ISODateComponent.DATE,
-			ISODateComponent.DAY_OF_MONTH, ISODateComponent.DATE_ISO8601,
-			ISODateComponent.WEEK_BASED_YEAR_2_DIGITS,
-			ISODateComponent.WEEK_BASED_YEAR_4_DIGITS,
-			ISODateComponent.ABBREVIATED_MONTH_NAME_ALIAS,
-			ISODateComponent.HOUR_OF_DAY, ISODateComponent.HOUR,
-			ISODateComponent.DAY_OF_YEAR, ISODateComponent.MILLISECOND,
-			ISODateComponent.EPOCH, ISODateComponent.MONTH,
-			ISODateComponent.MINUTE, ISODateComponent.NEW_LINE,
-			ISODateComponent.AM_PM, ISODateComponent.LOCALE_CLOCK_TIME_12_HOUR,
-			ISODateComponent.HOUR_AND_MINUTE, ISODateComponent.SECOND,
-			ISODateComponent.TABULATION, ISODateComponent.TIME_ISO8601,
-			ISODateComponent.DAY_OF_WEEK_1_7,
-			ISODateComponent.WEEK_OF_YEAR_FROM_SUNDAY,
-			ISODateComponent.WEEK_NUMBER_ISO8601,
-			ISODateComponent.DAY_OF_WEEK_0_6,
-			ISODateComponent.WEEK_OF_YEAR_FROM_MONDAY,
-			ISODateComponent.LOCALE_DATE_REPRESENTATION,
-			ISODateComponent.LOCALE_TIME_REPRESENTATION,
-			ISODateComponent.YEAR_2_DIGITS, ISODateComponent.YEAR_4_DIGITS,
-			ISODateComponent.UTC_OFFSET,
-			ISODateComponent.LOCALE_TIME_ZONE_NAME, ISODateComponent.PERCENT };
+	private static final ISODateComponent[] KNOWN_COMPONENTS = { ISODateComponent.ABBREVIATED_WEEKDAY_NAME,
+			ISODateComponent.FULL_WEEKDAY_NAME, ISODateComponent.ABBREVIATED_MONTH_NAME,
+			ISODateComponent.FULL_MONTH_NAME, ISODateComponent.LOCALE_DATE_AND_TIME, ISODateComponent.CENTURY,
+			ISODateComponent.DAY_OF_MONTH_2_DIGITS, ISODateComponent.DATE, ISODateComponent.DAY_OF_MONTH,
+			ISODateComponent.DATE_ISO8601, ISODateComponent.WEEK_BASED_YEAR_2_DIGITS,
+			ISODateComponent.WEEK_BASED_YEAR_4_DIGITS, ISODateComponent.ABBREVIATED_MONTH_NAME_ALIAS,
+			ISODateComponent.HOUR_OF_DAY, ISODateComponent.HOUR, ISODateComponent.DAY_OF_YEAR,
+			ISODateComponent.MILLISECOND, ISODateComponent.EPOCH, ISODateComponent.MONTH, ISODateComponent.MINUTE,
+			ISODateComponent.NEW_LINE, ISODateComponent.AM_PM, ISODateComponent.LOCALE_CLOCK_TIME_12_HOUR,
+			ISODateComponent.HOUR_AND_MINUTE, ISODateComponent.SECOND, ISODateComponent.TABULATION,
+			ISODateComponent.TIME_ISO8601, ISODateComponent.DAY_OF_WEEK_1_7, ISODateComponent.WEEK_OF_YEAR_FROM_SUNDAY,
+			ISODateComponent.WEEK_NUMBER_ISO8601, ISODateComponent.DAY_OF_WEEK_0_6,
+			ISODateComponent.WEEK_OF_YEAR_FROM_MONDAY, ISODateComponent.LOCALE_DATE_REPRESENTATION,
+			ISODateComponent.LOCALE_TIME_REPRESENTATION, ISODateComponent.YEAR_2_DIGITS, ISODateComponent.YEAR_4_DIGITS,
+			ISODateComponent.UTC_OFFSET, ISODateComponent.LOCALE_TIME_ZONE_NAME, ISODateComponent.PERCENT };
 
 	/**
-	 * List of components, build from a string format. Some of these components
-	 * can just be text.
+	 * List of components, build from a string format. Some of these components can
+	 * just be text.
 	 */
 	protected LinkedList<ISODateComponent> components;
 	/**
@@ -211,8 +198,7 @@ public class ISODateIO {
 	 * @throws ParseException
 	 *             if invalid component found
 	 */
-	protected LinkedList<ISODateComponent> findComponents(String format)
-			throws ParseException {
+	protected LinkedList<ISODateComponent> findComponents(String format) throws ParseException {
 		LinkedList<ISODateComponent> components = new LinkedList<ISODateComponent>();
 		int offset = 0;
 
@@ -220,12 +206,10 @@ public class ISODateIO {
 			if (format.charAt(offset) == '%') {
 				boolean found = false;
 				for (int i = 0; !found && i < KNOWN_COMPONENTS.length; i++) {
-					if (format.startsWith(KNOWN_COMPONENTS[i].getDirective(),
-							offset)) {
+					if (format.startsWith(KNOWN_COMPONENTS[i].getDirective(), offset)) {
 						found = true;
 						if (KNOWN_COMPONENTS[i].isAlias()) {
-							LinkedList<ISODateComponent> sub = findComponents(KNOWN_COMPONENTS[i]
-									.getReplacement());
+							LinkedList<ISODateComponent> sub = findComponents(KNOWN_COMPONENTS[i].getReplacement());
 							components.addAll(sub);
 						} else
 							components.addLast(KNOWN_COMPONENTS[i]);
@@ -239,8 +223,7 @@ public class ISODateIO {
 				int from = offset;
 				while (offset < format.length() && format.charAt(offset) != '%')
 					offset++;
-				components.addLast(new TextComponent(format.substring(from,
-						offset)));
+				components.addLast(new TextComponent(format.substring(from, offset)));
 			}
 		}
 

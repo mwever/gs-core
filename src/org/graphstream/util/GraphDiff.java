@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,14 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2013-06-06
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author kitskub <kitskub@gmail.com>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.util;
 
@@ -74,19 +75,21 @@ public class GraphDiff {
 	public GraphDiff(Graph g1, Graph g2) {
 		this();
 
-		if (g2.getNodeCount() == 0 && g2.getEdgeCount() == 0
-				&& g2.getAttributeCount() == 0
+		if (g2.getNodeCount() == 0 && g2.getEdgeCount() == 0 && g2.getAttributeCount() == 0
 				&& (g1.getNodeCount() > 0 || g1.getEdgeCount() > 0)) {
 			events.add(new GraphCleared(g1));
 		} else {
-			for (int idx = 0; idx < g2.getNodeCount(); idx++) {
-				Node n2 = g2.getNode(idx);
-				Node n1 = g1.getNode(n2.getId());
+			attributeDiff(ElementType.GRAPH, g1, g2);
 
-				if (n1 == null)
-					events.add(new NodeAdded(n2.getId()));
+			for (int idx = 0; idx < g1.getEdgeCount(); idx++) {
+				Edge e1 = g1.getEdge(idx);
+				Edge e2 = g2.getEdge(e1.getId());
 
-				attributeDiff(ElementType.NODE, n1, n2);
+				if (e2 == null) {
+					attributeDiff(ElementType.EDGE, e1, e2);
+					events.add(new EdgeRemoved(e1.getId(), e1.getSourceNode().getId(), e1.getTargetNode().getId(),
+							e1.isDirected()));
+				}
 			}
 
 			for (int idx = 0; idx < g1.getNodeCount(); idx++) {
@@ -99,31 +102,26 @@ public class GraphDiff {
 				}
 			}
 
+			for (int idx = 0; idx < g2.getNodeCount(); idx++) {
+				Node n2 = g2.getNode(idx);
+				Node n1 = g1.getNode(n2.getId());
+
+				if (n1 == null)
+					events.add(new NodeAdded(n2.getId()));
+
+				attributeDiff(ElementType.NODE, n1, n2);
+			}
+
 			for (int idx = 0; idx < g2.getEdgeCount(); idx++) {
 				Edge e2 = g2.getEdge(idx);
 				Edge e1 = g1.getEdge(e2.getId());
 
 				if (e1 == null)
-					events.add(new EdgeAdded(e2.getId(), e2.getSourceNode()
-							.getId(), e2.getTargetNode().getId(), e2
-							.isDirected()));
+					events.add(new EdgeAdded(e2.getId(), e2.getSourceNode().getId(), e2.getTargetNode().getId(),
+							e2.isDirected()));
 
 				attributeDiff(ElementType.EDGE, e1, e2);
 			}
-
-			for (int idx = 0; idx < g1.getEdgeCount(); idx++) {
-				Edge e1 = g1.getEdge(idx);
-				Edge e2 = g2.getEdge(e1.getId());
-
-				if (e2 == null) {
-					attributeDiff(ElementType.EDGE, e1, e2);
-					events.add(new EdgeRemoved(e1.getId(), e1.getSourceNode()
-							.getId(), e1.getTargetNode().getId(), e1
-							.isDirected()));
-				}
-			}
-
-			attributeDiff(ElementType.GRAPH, g1, g2);
 		}
 	}
 
@@ -160,8 +158,8 @@ public class GraphDiff {
 	}
 
 	/**
-	 * Considering this object is a diff between g1 and g2, calling this method
-	 * will applied changes on g1 such that g1 will look like g2.
+	 * Considering this object is a diff between g1 and g2, calling this method will
+	 * applied changes on g1 such that g1 will look like g2.
 	 * 
 	 * @param g1
 	 */
@@ -176,8 +174,8 @@ public class GraphDiff {
 	}
 
 	/**
-	 * Considering this object is a diff between g1 and g2, calling this method
-	 * will applied changes on g2 such that g2 will look like g1.
+	 * Considering this object is a diff between g1 and g2, calling this method will
+	 * applied changes on g2 such that g2 will look like g1.
 	 * 
 	 * @param g2
 	 */
@@ -195,32 +193,27 @@ public class GraphDiff {
 		if (e1 == null && e2 == null)
 			return;
 		else if (e1 == null) {
-			for (String key : e2.getAttributeKeySet())
-				events.add(new AttributeAdded(type, e2.getId(), key, e2
-						.getAttribute(key)));
+			e2.attributeKeys()
+					.forEach(key -> events.add(new AttributeAdded(type, e2.getId(), key, e2.getAttribute(key))));
 		} else if (e2 == null) {
-			for (String key : e1.getAttributeKeySet())
-				events.add(new AttributeRemoved(type, e1.getId(), key, e1
-						.getAttribute(key)));
+			e1.attributeKeys()
+					.forEach(key -> events.add(new AttributeRemoved(type, e1.getId(), key, e1.getAttribute(key))));
 		} else {
-			for (String key : e2.getAttributeKeySet()) {
+			e2.attributeKeys().forEach(key -> {
 				if (e1.hasAttribute(key)) {
 					Object o1 = e1.getAttribute(key);
 					Object o2 = e2.getAttribute(key);
 
 					if (!(o1 == null ? o2 == null : o1.equals(o2)))
-						events.add(new AttributeChanged(type, e1.getId(), key,
-								o2, o1));
+						events.add(new AttributeChanged(type, e1.getId(), key, o2, o1));
 				} else
-					events.add(new AttributeAdded(type, e1.getId(), key, e2
-							.getAttribute(key)));
-			}
+					events.add(new AttributeAdded(type, e1.getId(), key, e2.getAttribute(key)));
+			});
 
-			for (String key : e1.getAttributeKeySet()) {
+			e1.attributeKeys().forEach(key -> {
 				if (!e2.hasAttribute(key))
-					events.add(new AttributeRemoved(type, e1.getId(), key, e1
-							.getAttribute(key)));
-			}
+					events.add(new AttributeRemoved(type, e1.getId(), key, e1.getAttribute(key)));
+			});
 		}
 	}
 
@@ -267,9 +260,7 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.util.GraphDiff.Event#apply(org.graphstream.graph.
-		 * Graph)
+		 * @see org.graphstream.util.GraphDiff.Event#apply(org.graphstream.graph. Graph)
 		 */
 		public void apply(String sourceId, long timeId, Sink g) {
 			g.nodeAdded(sourceId, timeId, nodeId);
@@ -278,8 +269,7 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.util.GraphDiff.Event#reverse(org.graphstream.graph
+		 * @see org.graphstream.util.GraphDiff.Event#reverse(org.graphstream.graph
 		 * .Graph)
 		 */
 		public void reverse(String sourceId, long timeId, Sink g) {
@@ -305,8 +295,7 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.util.GraphDiff.NodeAdded#apply(org.graphstream.graph
+		 * @see org.graphstream.util.GraphDiff.NodeAdded#apply(org.graphstream.graph
 		 * .Graph)
 		 */
 		public void apply(String sourceId, long timeId, Sink g) {
@@ -316,8 +305,7 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.util.GraphDiff.NodeAdded#reverse(org.graphstream.
+		 * @see org.graphstream.util.GraphDiff.NodeAdded#reverse(org.graphstream.
 		 * graph.Graph)
 		 */
 		public void reverse(String sourceId, long timeId, Sink g) {
@@ -404,17 +392,14 @@ public class GraphDiff {
 		String attrId;
 		Object value;
 
-		public AttributeAdded(ElementType type, String elementId,
-				String attrId, Object value) {
+		public AttributeAdded(ElementType type, String elementId, String attrId, Object value) {
 			super(type, elementId);
 
 			this.attrId = attrId;
 			this.value = value;
 
-			if (value != null && value.getClass().isArray()
-					&& Array.getLength(value) > 0) {
-				Object o = Array.newInstance(Array.get(value, 0).getClass(),
-						Array.getLength(value));
+			if (value != null && value.getClass().isArray() && Array.getLength(value) > 0) {
+				Object o = Array.newInstance(Array.get(value, 0).getClass(), Array.getLength(value));
 
 				for (int i = 0; i < Array.getLength(value); i++)
 					Array.set(o, i, Array.get(value, i));
@@ -426,9 +411,7 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.util.GraphDiff.Event#apply(org.graphstream.graph.
-		 * Graph)
+		 * @see org.graphstream.util.GraphDiff.Event#apply(org.graphstream.graph. Graph)
 		 */
 		public void apply(String sourceId, long timeId, Sink g) {
 			switch (type) {
@@ -447,8 +430,7 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.util.GraphDiff.Event#reverse(org.graphstream.graph
+		 * @see org.graphstream.util.GraphDiff.Event#reverse(org.graphstream.graph
 		 * .Graph)
 		 */
 		public void reverse(String sourceId, long timeId, Sink g) {
@@ -472,8 +454,7 @@ public class GraphDiff {
 		 */
 		@Override
 		public String toString() {
-			return String.format("%s +\"%s\":%s", toStringHeader(), attrId,
-					toStringValue(value));
+			return String.format("%s +\"%s\":%s", toStringHeader(), attrId, toStringValue(value));
 		}
 	}
 
@@ -482,18 +463,15 @@ public class GraphDiff {
 		Object newValue;
 		Object oldValue;
 
-		public AttributeChanged(ElementType type, String elementId,
-				String attrId, Object newValue, Object oldValue) {
+		public AttributeChanged(ElementType type, String elementId, String attrId, Object newValue, Object oldValue) {
 			super(type, elementId);
 
 			this.attrId = attrId;
 			this.newValue = newValue;
 			this.oldValue = oldValue;
 
-			if (newValue != null && newValue.getClass().isArray()
-					&& Array.getLength(newValue) > 0) {
-				Object o = Array.newInstance(Array.get(newValue, 0).getClass(),
-						Array.getLength(newValue));
+			if (newValue != null && newValue.getClass().isArray() && Array.getLength(newValue) > 0) {
+				Object o = Array.newInstance(Array.get(newValue, 0).getClass(), Array.getLength(newValue));
 
 				for (int i = 0; i < Array.getLength(newValue); i++)
 					Array.set(o, i, Array.get(newValue, i));
@@ -501,10 +479,8 @@ public class GraphDiff {
 				this.newValue = o;
 			}
 
-			if (oldValue != null && oldValue.getClass().isArray()
-					&& Array.getLength(oldValue) > 0) {
-				Object o = Array.newInstance(Array.get(oldValue, 0).getClass(),
-						Array.getLength(oldValue));
+			if (oldValue != null && oldValue.getClass().isArray() && Array.getLength(oldValue) > 0) {
+				Object o = Array.newInstance(Array.get(oldValue, 0).getClass(), Array.getLength(oldValue));
 
 				for (int i = 0; i < Array.getLength(oldValue); i++)
 					Array.set(o, i, Array.get(oldValue, i));
@@ -516,23 +492,18 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.util.GraphDiff.Event#apply(org.graphstream.graph.
-		 * Graph)
+		 * @see org.graphstream.util.GraphDiff.Event#apply(org.graphstream.graph. Graph)
 		 */
 		public void apply(String sourceId, long timeId, Sink g) {
 			switch (type) {
 			case NODE:
-				g.nodeAttributeChanged(sourceId, timeId, elementId, attrId,
-						oldValue, newValue);
+				g.nodeAttributeChanged(sourceId, timeId, elementId, attrId, oldValue, newValue);
 				break;
 			case EDGE:
-				g.edgeAttributeChanged(sourceId, timeId, elementId, attrId,
-						oldValue, newValue);
+				g.edgeAttributeChanged(sourceId, timeId, elementId, attrId, oldValue, newValue);
 				break;
 			case GRAPH:
-				g.graphAttributeChanged(sourceId, timeId, attrId, oldValue,
-						newValue);
+				g.graphAttributeChanged(sourceId, timeId, attrId, oldValue, newValue);
 				break;
 			}
 		}
@@ -540,23 +511,19 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.util.GraphDiff.Event#reverse(org.graphstream.graph
+		 * @see org.graphstream.util.GraphDiff.Event#reverse(org.graphstream.graph
 		 * .Graph)
 		 */
 		public void reverse(String sourceId, long timeId, Sink g) {
 			switch (type) {
 			case NODE:
-				g.nodeAttributeChanged(sourceId, timeId, elementId, attrId,
-						newValue, oldValue);
+				g.nodeAttributeChanged(sourceId, timeId, elementId, attrId, newValue, oldValue);
 				break;
 			case EDGE:
-				g.edgeAttributeChanged(sourceId, timeId, elementId, attrId,
-						newValue, oldValue);
+				g.edgeAttributeChanged(sourceId, timeId, elementId, attrId, newValue, oldValue);
 				break;
 			case GRAPH:
-				g.graphAttributeChanged(sourceId, timeId, attrId, newValue,
-						oldValue);
+				g.graphAttributeChanged(sourceId, timeId, attrId, newValue, oldValue);
 				break;
 			}
 		}
@@ -568,8 +535,7 @@ public class GraphDiff {
 		 */
 		@Override
 		public String toString() {
-			return String.format("%s \"%s\":%s", toStringHeader(), attrId,
-					toStringValue(newValue));
+			return String.format("%s \"%s\":%s", toStringHeader(), attrId, toStringValue(newValue));
 		}
 	}
 
@@ -577,8 +543,7 @@ public class GraphDiff {
 		String attrId;
 		Object oldValue;
 
-		public AttributeRemoved(ElementType type, String elementId,
-				String attrId, Object oldValue) {
+		public AttributeRemoved(ElementType type, String elementId, String attrId, Object oldValue) {
 			super(type, elementId);
 
 			this.attrId = attrId;
@@ -588,9 +553,7 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.util.GraphDiff.Event#apply(org.graphstream.graph.
-		 * Graph)
+		 * @see org.graphstream.util.GraphDiff.Event#apply(org.graphstream.graph. Graph)
 		 */
 		public void apply(String sourceId, long timeId, Sink g) {
 			switch (type) {
@@ -609,19 +572,16 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.util.GraphDiff.Event#reverse(org.graphstream.graph
+		 * @see org.graphstream.util.GraphDiff.Event#reverse(org.graphstream.graph
 		 * .Graph)
 		 */
 		public void reverse(String sourceId, long timeId, Sink g) {
 			switch (type) {
 			case NODE:
-				g.nodeAttributeAdded(sourceId, timeId, elementId, attrId,
-						oldValue);
+				g.nodeAttributeAdded(sourceId, timeId, elementId, attrId, oldValue);
 				break;
 			case EDGE:
-				g.edgeAttributeAdded(sourceId, timeId, elementId, attrId,
-						oldValue);
+				g.edgeAttributeAdded(sourceId, timeId, elementId, attrId, oldValue);
 				break;
 			case GRAPH:
 				g.graphAttributeAdded(sourceId, timeId, attrId, oldValue);
@@ -636,8 +596,7 @@ public class GraphDiff {
 		 */
 		@Override
 		public String toString() {
-			return String.format("%s -\"%s\":%s", toStringHeader(), attrId,
-					toStringValue(oldValue));
+			return String.format("%s -\"%s\":%s", toStringHeader(), attrId, toStringValue(oldValue));
 		}
 	}
 
@@ -646,8 +605,7 @@ public class GraphDiff {
 		String source, target;
 		boolean directed;
 
-		public EdgeAdded(String edgeId, String source, String target,
-				boolean directed) {
+		public EdgeAdded(String edgeId, String source, String target, boolean directed) {
 			this.edgeId = edgeId;
 			this.source = source;
 			this.target = target;
@@ -657,9 +615,7 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.util.GraphDiff.Event#apply(org.graphstream.graph.
-		 * Graph)
+		 * @see org.graphstream.util.GraphDiff.Event#apply(org.graphstream.graph. Graph)
 		 */
 		public void apply(String sourceId, long timeId, Sink g) {
 			g.edgeAdded(sourceId, timeId, edgeId, source, target, directed);
@@ -668,8 +624,7 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.util.GraphDiff.Event#reverse(org.graphstream.graph
+		 * @see org.graphstream.util.GraphDiff.Event#reverse(org.graphstream.graph
 		 * .Graph)
 		 */
 		public void reverse(String sourceId, long timeId, Sink g) {
@@ -683,22 +638,19 @@ public class GraphDiff {
 		 */
 		@Override
 		public String toString() {
-			return String.format("ae \"%s\" \"%s\" %s \"%s\"", edgeId, source,
-					directed ? ">" : "--", target);
+			return String.format("ae \"%s\" \"%s\" %s \"%s\"", edgeId, source, directed ? ">" : "--", target);
 		}
 	}
 
 	protected class EdgeRemoved extends EdgeAdded {
-		public EdgeRemoved(String edgeId, String source, String target,
-				boolean directed) {
+		public EdgeRemoved(String edgeId, String source, String target, boolean directed) {
 			super(edgeId, source, target, directed);
 		}
 
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.util.GraphDiff.EdgeAdded#apply(org.graphstream.graph
+		 * @see org.graphstream.util.GraphDiff.EdgeAdded#apply(org.graphstream.graph
 		 * .Graph)
 		 */
 		public void apply(String sourceId, long timeId, Sink g) {
@@ -708,8 +660,7 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.util.GraphDiff.EdgeAdded#reverse(org.graphstream.
+		 * @see org.graphstream.util.GraphDiff.EdgeAdded#reverse(org.graphstream.
 		 * graph.Graph)
 		 */
 		public void reverse(String sourceId, long timeId, Sink g) {
@@ -738,9 +689,7 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.util.GraphDiff.Event#apply(org.graphstream.graph.
-		 * Graph)
+		 * @see org.graphstream.util.GraphDiff.Event#apply(org.graphstream.graph. Graph)
 		 */
 		public void apply(String sourceId, long timeId, Sink g) {
 			g.stepBegins(sourceId, timeId, newStep);
@@ -749,8 +698,7 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.util.GraphDiff.Event#reverse(org.graphstream.graph
+		 * @see org.graphstream.util.GraphDiff.Event#reverse(org.graphstream.graph
 		 * .Graph)
 		 */
 		public void reverse(String sourceId, long timeId, Sink g) {
@@ -787,9 +735,7 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.util.GraphDiff.Event#apply(org.graphstream.graph.
-		 * Graph)
+		 * @see org.graphstream.util.GraphDiff.Event#apply(org.graphstream.graph. Graph)
 		 */
 		public void apply(String sourceId, long timeId, Sink g) {
 			g.graphCleared(sourceId, timeId);
@@ -798,8 +744,7 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.util.GraphDiff.Event#reverse(org.graphstream.graph
+		 * @see org.graphstream.util.GraphDiff.Event#reverse(org.graphstream.graph
 		 * .Graph)
 		 */
 		public void reverse(String sourceId, long timeId, Sink g) {
@@ -845,12 +790,10 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.stream.AttributeSink#graphAttributeAdded(java.lang
+		 * @see org.graphstream.stream.AttributeSink#graphAttributeAdded(java.lang
 		 * .String, long, java.lang.String, java.lang.Object)
 		 */
-		public void graphAttributeAdded(String sourceId, long timeId,
-				String attribute, Object value) {
+		public void graphAttributeAdded(String sourceId, long timeId, String attribute, Object value) {
 			Event e;
 			e = new AttributeAdded(ElementType.GRAPH, null, attribute, value);
 			events.add(e);
@@ -859,42 +802,35 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.stream.AttributeSink#graphAttributeChanged(java.lang
+		 * @see org.graphstream.stream.AttributeSink#graphAttributeChanged(java.lang
 		 * .String, long, java.lang.String, java.lang.Object, java.lang.Object)
 		 */
-		public void graphAttributeChanged(String sourceId, long timeId,
-				String attribute, Object oldValue, Object newValue) {
+		public void graphAttributeChanged(String sourceId, long timeId, String attribute, Object oldValue,
+				Object newValue) {
 			Event e;
-			e = new AttributeChanged(ElementType.GRAPH, null, attribute,
-					newValue, g.getAttribute(attribute));
+			e = new AttributeChanged(ElementType.GRAPH, null, attribute, newValue, g.getAttribute(attribute));
 			events.add(e);
 		}
 
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.stream.AttributeSink#graphAttributeRemoved(java.lang
+		 * @see org.graphstream.stream.AttributeSink#graphAttributeRemoved(java.lang
 		 * .String, long, java.lang.String)
 		 */
-		public void graphAttributeRemoved(String sourceId, long timeId,
-				String attribute) {
+		public void graphAttributeRemoved(String sourceId, long timeId, String attribute) {
 			Event e;
-			e = new AttributeRemoved(ElementType.GRAPH, null, attribute,
-					g.getAttribute(attribute));
+			e = new AttributeRemoved(ElementType.GRAPH, null, attribute, g.getAttribute(attribute));
 			events.add(e);
 		}
 
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.stream.AttributeSink#nodeAttributeAdded(java.lang
+		 * @see org.graphstream.stream.AttributeSink#nodeAttributeAdded(java.lang
 		 * .String, long, java.lang.String, java.lang.String, java.lang.Object)
 		 */
-		public void nodeAttributeAdded(String sourceId, long timeId,
-				String nodeId, String attribute, Object value) {
+		public void nodeAttributeAdded(String sourceId, long timeId, String nodeId, String attribute, Object value) {
 			Event e;
 			e = new AttributeAdded(ElementType.NODE, nodeId, attribute, value);
 			events.add(e);
@@ -903,44 +839,37 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.stream.AttributeSink#nodeAttributeChanged(java.lang
+		 * @see org.graphstream.stream.AttributeSink#nodeAttributeChanged(java.lang
 		 * .String, long, java.lang.String, java.lang.String, java.lang.Object,
 		 * java.lang.Object)
 		 */
-		public void nodeAttributeChanged(String sourceId, long timeId,
-				String nodeId, String attribute, Object oldValue,
+		public void nodeAttributeChanged(String sourceId, long timeId, String nodeId, String attribute, Object oldValue,
 				Object newValue) {
 			Event e;
-			e = new AttributeChanged(ElementType.NODE, nodeId, attribute,
-					newValue, g.getNode(nodeId).getAttribute(attribute));
+			e = new AttributeChanged(ElementType.NODE, nodeId, attribute, newValue,
+					g.getNode(nodeId).getAttribute(attribute));
 			events.add(e);
 		}
 
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.stream.AttributeSink#nodeAttributeRemoved(java.lang
+		 * @see org.graphstream.stream.AttributeSink#nodeAttributeRemoved(java.lang
 		 * .String, long, java.lang.String, java.lang.String)
 		 */
-		public void nodeAttributeRemoved(String sourceId, long timeId,
-				String nodeId, String attribute) {
+		public void nodeAttributeRemoved(String sourceId, long timeId, String nodeId, String attribute) {
 			Event e;
-			e = new AttributeRemoved(ElementType.NODE, nodeId, attribute, g
-					.getNode(nodeId).getAttribute(attribute));
+			e = new AttributeRemoved(ElementType.NODE, nodeId, attribute, g.getNode(nodeId).getAttribute(attribute));
 			events.add(e);
 		}
 
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.stream.AttributeSink#edgeAttributeAdded(java.lang
+		 * @see org.graphstream.stream.AttributeSink#edgeAttributeAdded(java.lang
 		 * .String, long, java.lang.String, java.lang.String, java.lang.Object)
 		 */
-		public void edgeAttributeAdded(String sourceId, long timeId,
-				String edgeId, String attribute, Object value) {
+		public void edgeAttributeAdded(String sourceId, long timeId, String edgeId, String attribute, Object value) {
 			Event e;
 			e = new AttributeAdded(ElementType.EDGE, edgeId, attribute, value);
 			events.add(e);
@@ -949,40 +878,35 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.stream.AttributeSink#edgeAttributeChanged(java.lang
+		 * @see org.graphstream.stream.AttributeSink#edgeAttributeChanged(java.lang
 		 * .String, long, java.lang.String, java.lang.String, java.lang.Object,
 		 * java.lang.Object)
 		 */
-		public void edgeAttributeChanged(String sourceId, long timeId,
-				String edgeId, String attribute, Object oldValue,
+		public void edgeAttributeChanged(String sourceId, long timeId, String edgeId, String attribute, Object oldValue,
 				Object newValue) {
 			Event e;
-			e = new AttributeChanged(ElementType.EDGE, edgeId, attribute,
-					newValue, g.getEdge(edgeId).getAttribute(attribute));
+			e = new AttributeChanged(ElementType.EDGE, edgeId, attribute, newValue,
+					g.getEdge(edgeId).getAttribute(attribute));
 			events.add(e);
 		}
 
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.stream.AttributeSink#edgeAttributeRemoved(java.lang
+		 * @see org.graphstream.stream.AttributeSink#edgeAttributeRemoved(java.lang
 		 * .String, long, java.lang.String, java.lang.String)
 		 */
-		public void edgeAttributeRemoved(String sourceId, long timeId,
-				String edgeId, String attribute) {
+		public void edgeAttributeRemoved(String sourceId, long timeId, String edgeId, String attribute) {
 			Event e;
-			e = new AttributeRemoved(ElementType.EDGE, edgeId, attribute, g
-					.getEdge(edgeId).getAttribute(attribute));
+			e = new AttributeRemoved(ElementType.EDGE, edgeId, attribute, g.getEdge(edgeId).getAttribute(attribute));
 			events.add(e);
 		}
 
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.graphstream.stream.ElementSink#nodeAdded(java.lang.String,
-		 * long, java.lang.String)
+		 * @see org.graphstream.stream.ElementSink#nodeAdded(java.lang.String, long,
+		 * java.lang.String)
 		 */
 		public void nodeAdded(String sourceId, long timeId, String nodeId) {
 			Event e;
@@ -993,14 +917,13 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.graphstream.stream.ElementSink#nodeRemoved(java.lang.String,
-		 * long, java.lang.String)
+		 * @see org.graphstream.stream.ElementSink#nodeRemoved(java.lang.String, long,
+		 * java.lang.String)
 		 */
 		public void nodeRemoved(String sourceId, long timeId, String nodeId) {
 			Node n = g.getNode(nodeId);
 
-			for (String key : n.getAttributeKeySet())
-				nodeAttributeRemoved(sourceId, timeId, nodeId, key);
+			n.attributeKeys().forEach(key -> nodeAttributeRemoved(sourceId, timeId, nodeId, key));
 
 			Event e;
 			e = new NodeRemoved(nodeId);
@@ -1010,11 +933,11 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.graphstream.stream.ElementSink#edgeAdded(java.lang.String,
-		 * long, java.lang.String, java.lang.String, java.lang.String, boolean)
+		 * @see org.graphstream.stream.ElementSink#edgeAdded(java.lang.String, long,
+		 * java.lang.String, java.lang.String, java.lang.String, boolean)
 		 */
-		public void edgeAdded(String sourceId, long timeId, String edgeId,
-				String fromNodeId, String toNodeId, boolean directed) {
+		public void edgeAdded(String sourceId, long timeId, String edgeId, String fromNodeId, String toNodeId,
+				boolean directed) {
 			Event e;
 			e = new EdgeAdded(edgeId, fromNodeId, toNodeId, directed);
 			events.add(e);
@@ -1023,27 +946,23 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.graphstream.stream.ElementSink#edgeRemoved(java.lang.String,
-		 * long, java.lang.String)
+		 * @see org.graphstream.stream.ElementSink#edgeRemoved(java.lang.String, long,
+		 * java.lang.String)
 		 */
 		public void edgeRemoved(String sourceId, long timeId, String edgeId) {
 			Edge edge = g.getEdge(edgeId);
 
-			for (String key : edge.getAttributeKeySet())
-				edgeAttributeRemoved(sourceId, timeId, edgeId, key);
+			edge.attributeKeys().forEach(key -> edgeAttributeRemoved(sourceId, timeId, edgeId, key));
 
 			Event e;
-			e = new EdgeRemoved(edgeId, edge.getSourceNode().getId(), edge
-					.getTargetNode().getId(), edge.isDirected());
+			e = new EdgeRemoved(edgeId, edge.getSourceNode().getId(), edge.getTargetNode().getId(), edge.isDirected());
 			events.add(e);
 		}
 
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.graphstream.stream.ElementSink#graphCleared(java.lang.String,
-		 * long)
+		 * @see org.graphstream.stream.ElementSink#graphCleared(java.lang.String, long)
 		 */
 		public void graphCleared(String sourceId, long timeId) {
 			Event e = new GraphCleared(g);
@@ -1053,8 +972,8 @@ public class GraphDiff {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.graphstream.stream.ElementSink#stepBegins(java.lang.String,
-		 * long, double)
+		 * @see org.graphstream.stream.ElementSink#stepBegins(java.lang.String, long,
+		 * double)
 		 */
 		public void stepBegins(String sourceId, long timeId, double step) {
 			Event e = new StepBegins(g.getStep(), step);
@@ -1067,13 +986,13 @@ public class GraphDiff {
 		Graph g2 = new AdjacencyListGraph("g2");
 
 		Node a1 = g1.addNode("A");
-		a1.addAttribute("attr1", "test");
-		a1.addAttribute("attr2", 10.0);
-		a1.addAttribute("attr3", 12);
+		a1.setAttribute("attr1", "test");
+		a1.setAttribute("attr2", 10.0);
+		a1.setAttribute("attr3", 12);
 
 		Node a2 = g2.addNode("A");
-		a2.addAttribute("attr1", "test1");
-		a2.addAttribute("attr2", 10.0);
+		a2.setAttribute("attr1", "test1");
+		a2.setAttribute("attr2", 10.0);
 		g2.addNode("B");
 		g2.addNode("C");
 

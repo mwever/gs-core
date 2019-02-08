@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,56 +22,54 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2009-05-14
+ * 
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.stream.rmi;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface RMIAdapterIn extends Remote {
-	void edgeAttributeAdded(String graphId, long timeId, String edgeId,
-			String attribute, Object value) throws RemoteException;
-
-	void edgeAttributeChanged(String graphId, long timeId, String edgeId,
-			String attribute, Object oldValue, Object newValue)
+	void edgeAttributeAdded(String graphId, long timeId, String edgeId, String attribute, Object value)
 			throws RemoteException;
 
-	void edgeAttributeRemoved(String graphId, long timeId, String edgeId,
-			String attribute) throws RemoteException;
+	void edgeAttributeChanged(String graphId, long timeId, String edgeId, String attribute, Object oldValue,
+			Object newValue) throws RemoteException;
 
-	void graphAttributeAdded(String graphId, long timeId, String attribute,
-			Object value) throws RemoteException;
+	void edgeAttributeRemoved(String graphId, long timeId, String edgeId, String attribute) throws RemoteException;
 
-	void graphAttributeChanged(String graphId, long timeId, String attribute,
-			Object oldValue, Object newValue) throws RemoteException;
+	void graphAttributeAdded(String graphId, long timeId, String attribute, Object value) throws RemoteException;
 
-	void graphAttributeRemoved(String graphId, long timeId, String attribute)
+	void graphAttributeChanged(String graphId, long timeId, String attribute, Object oldValue, Object newValue)
 			throws RemoteException;
 
-	void nodeAttributeAdded(String graphId, long timeId, String nodeId,
-			String attribute, Object value) throws RemoteException;
+	void graphAttributeRemoved(String graphId, long timeId, String attribute) throws RemoteException;
 
-	void nodeAttributeChanged(String graphId, long timeId, String nodeId,
-			String attribute, Object oldValue, Object newValue)
+	void nodeAttributeAdded(String graphId, long timeId, String nodeId, String attribute, Object value)
 			throws RemoteException;
 
-	void nodeAttributeRemoved(String graphId, long timeId, String nodeId,
-			String attribute) throws RemoteException;
+	void nodeAttributeChanged(String graphId, long timeId, String nodeId, String attribute, Object oldValue,
+			Object newValue) throws RemoteException;
 
-	void edgeAdded(String graphId, long timeId, String edgeId,
-			String fromNodeId, String toNodeId, boolean directed)
+	void nodeAttributeRemoved(String graphId, long timeId, String nodeId, String attribute) throws RemoteException;
+
+	void edgeAdded(String graphId, long timeId, String edgeId, String fromNodeId, String toNodeId, boolean directed)
 			throws RemoteException;
 
-	void edgeRemoved(String graphId, long timeId, String edgeId)
-			throws RemoteException;
+	void edgeRemoved(String graphId, long timeId, String edgeId) throws RemoteException;
 
 	void graphCleared(String graphId, long timeId) throws RemoteException;
 
-	void nodeAdded(String graphId, long timeId, String nodeId)
-			throws RemoteException;
+	void nodeAdded(String graphId, long timeId, String nodeId) throws RemoteException;
 
-	void nodeRemoved(String graphId, long timeId, String nodeId)
-			throws RemoteException;
+	void nodeRemoved(String graphId, long timeId, String nodeId) throws RemoteException;
 
-	void stepBegins(String graphId, long timeId, double step)
-			throws RemoteException;
+	void stepBegins(String graphId, long timeId, double step) throws RemoteException;
 }

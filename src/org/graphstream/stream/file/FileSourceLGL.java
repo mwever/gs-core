@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,6 +22,14 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2009-05-07
+ * 
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.stream.file;
 
 import java.io.IOException;
@@ -41,9 +42,9 @@ import java.util.HashSet;
  * Reader for the "LGL" graph format.
  * 
  * <p>
- * The LGL graph format is a simple format where each line beginning by a
- * sharp sign "#" describes a source vertex, and each subsequent line
- * not beginning by a sharp sign describe an edge target for this source.
+ * The LGL graph format is a simple format where each line beginning by a sharp
+ * sign "#" describes a source vertex, and each subsequent line not beginning by
+ * a sharp sign describe an edge target for this source.
  * </p>
  * 
  * <p>
@@ -58,12 +59,13 @@ import java.util.HashSet;
  * issue "add node" events only when a node is encountered for the first time.
  * </p>
  * 
- * </p> This hash set consumes memory, but is the only way to ensure "add node"
+ * </p>
+ * This hash set consumes memory, but is the only way to ensure "add node"
  * events are correctly issued. If this input is directly connected to a graph,
  * as graphs can create non-existing nodes automatically, you can disable the
- * hash set of nodes using the constructor
- * {@link #FileSourceLGL(boolean)}, and giving "false" for the first
- * argument. </p>
+ * hash set of nodes using the constructor {@link #FileSourceLGL(boolean)}, and
+ * giving "false" for the first argument.
+ * </p>
  * 
  * The usual file name extension for this format is ".lgl".
  */
@@ -86,7 +88,7 @@ public class FileSourceLGL extends FileSourceBase {
 	protected String source;
 
 	protected String graphName = "LGL_";
-	
+
 	// Construction
 
 	/**
@@ -124,35 +126,35 @@ public class FileSourceLGL extends FileSourceBase {
 		} else if (id1.equals("#")) {
 			// A new sequence of edges starts
 			String src = getWordOrNumberOrStringOrEolOrEof();
-			
-			if(!src.equals("EOL") && !src.equals("EOF")) {
+
+			if (!src.equals("EOL") && !src.equals("EOF")) {
 				source = src;
 			} else {
 				source = null;
 			}
 		} else {
 			// we got a new target.
-			if(source != null) {
+			if (source != null) {
 				String weight = getWordOrNumberOrStringOrEolOrEof();
 				double w = 0.0;
-				
-				if(weight.equals("EOL") || weight.equals("EOF")) {
+
+				if (weight.equals("EOL") || weight.equals("EOF")) {
 					weight = null;
 					pushBack();
 				} else {
 					try {
 						w = Double.parseDouble(weight);
-					} catch(Exception e) {
+					} catch (Exception e) {
 						throw new IOException(String.format("cannot transform weight %s into a number", weight));
 					}
 				}
-				
+
 				String edgeId = Integer.toString(edgeid++);
-				
+
 				sendEdgeAdded(graphName, edgeId, source, id1, false);
-				
-				if(weight != null) {
-					sendEdgeAttributeAdded(graphName, edgeId, "weight", (Double)w);
+
+				if (weight != null) {
+					sendEdgeAttributeAdded(graphName, edgeId, "weight", (Double) w);
 				}
 			}
 		}
@@ -197,8 +199,7 @@ public class FileSourceLGL extends FileSourceBase {
 		st.eolIsSignificant(true);
 		st.commentChar('%');
 
-		graphName = String.format("%s_%d", graphName,
-				System.currentTimeMillis() + ((long) Math.random() * 10));
+		graphName = String.format("%s_%d", graphName, System.currentTimeMillis() + ((long) Math.random() * 10));
 	}
 
 	public boolean nextStep() throws IOException {

@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,16 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2009-04-17
+ * 
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Richard O. Legendi <richard.legendi@gmail.com>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.stream.file;
 
@@ -55,12 +58,12 @@ import org.graphstream.stream.Sink;
  */
 public interface FileSink extends Sink {
 	/**
-	 * Write the current graph state in one big non-interruptible operation.
-	 * This operation is a "snapshot" of the graph, it will never convey the
-	 * dynamics of the graph. To ensure you store the graph
-	 * "as it evolves in time" you must use the {@link #begin(OutputStream)} or
-	 * {@link #begin(String)} as soon as the graph appears (or any source of
-	 * graph event, any descendant of {@link Source} will do).
+	 * Write the current graph state in one big non-interruptible operation. This
+	 * operation is a "snapshot" of the graph, it will never convey the dynamics of
+	 * the graph. To ensure you store the graph "as it evolves in time" you must use
+	 * the {@link #begin(OutputStream)} or {@link #begin(String)} as soon as the
+	 * graph appears (or any source of graph event, any descendant of {@link Source}
+	 * will do).
 	 * 
 	 * @param graph
 	 *            The graph to send as events to the file.
@@ -72,13 +75,12 @@ public interface FileSink extends Sink {
 	void writeAll(Graph graph, String fileName) throws IOException;
 
 	/**
-	 * Write the current graph state in one big non-interruptible operation.
-	 * This operation is a "snapshot" of the graph, it will never convey the
-	 * dynamics of the graph. To ensure you store the graph
-	 * "as it evolves in time" you must use the {@link #begin(Writer)} or
-	 * {@link #begin(OutputStream)} or {@link #begin(String)} as soon as the
-	 * graph appears (or any source of graph event, any descendant of
-	 * {@link Source} will do).
+	 * Write the current graph state in one big non-interruptible operation. This
+	 * operation is a "snapshot" of the graph, it will never convey the dynamics of
+	 * the graph. To ensure you store the graph "as it evolves in time" you must use
+	 * the {@link #begin(Writer)} or {@link #begin(OutputStream)} or
+	 * {@link #begin(String)} as soon as the graph appears (or any source of graph
+	 * event, any descendant of {@link Source} will do).
 	 * 
 	 * @param graph
 	 *            The graph to send as events to the file.
@@ -90,13 +92,12 @@ public interface FileSink extends Sink {
 	void writeAll(Graph graph, OutputStream stream) throws IOException;
 
 	/**
-	 * Write the current graph state in one big non-interruptible operation.
-	 * This operation is a "snapshot" of the graph, it will never convey the
-	 * dynamics of the graph. To ensure you store the graph
-	 * "as it evolves in time" you must use the {@link #begin(Writer)} or
-	 * {@link #begin(OutputStream)} or {@link #begin(String)} as soon as the
-	 * graph appears (or any source of graph event, any descendant of
-	 * {@link Source} will do).
+	 * Write the current graph state in one big non-interruptible operation. This
+	 * operation is a "snapshot" of the graph, it will never convey the dynamics of
+	 * the graph. To ensure you store the graph "as it evolves in time" you must use
+	 * the {@link #begin(Writer)} or {@link #begin(OutputStream)} or
+	 * {@link #begin(String)} as soon as the graph appears (or any source of graph
+	 * event, any descendant of {@link Source} will do).
 	 * 
 	 * @param graph
 	 *            The graph to send as events to the file.
@@ -108,11 +109,11 @@ public interface FileSink extends Sink {
 	void writeAll(Graph graph, Writer writer) throws IOException;
 
 	/**
-	 * Begin the output of the given stream of graph events. The graph events
-	 * can come from any input (implementation of {@link Source} or you can
-	 * directly use the methods inherited from {@link Sink}. Once the writing is
-	 * started using begin(), you must close it using {@link #end()} when done
-	 * to ensure data is correctly stored in the file.
+	 * Begin the output of the given stream of graph events. The graph events can
+	 * come from any input (implementation of {@link Source} or you can directly use
+	 * the methods inherited from {@link Sink}. Once the writing is started using
+	 * begin(), you must close it using {@link #end()} when done to ensure data is
+	 * correctly stored in the file.
 	 * 
 	 * @param fileName
 	 *            The name of the file where to output the graph events.
@@ -122,11 +123,11 @@ public interface FileSink extends Sink {
 	void begin(String fileName) throws IOException;
 
 	/**
-	 * Begin the output of the given stream of graph events. The graph events
-	 * can come from any input (implementation of {@link Source} or you can
-	 * directly use the methods inherited from {@link Sink}. Once the writing is
-	 * started using begin(), you must close it using {@link #end()} when done
-	 * to ensure data is correctly stored in the file.
+	 * Begin the output of the given stream of graph events. The graph events can
+	 * come from any input (implementation of {@link Source} or you can directly use
+	 * the methods inherited from {@link Sink}. Once the writing is started using
+	 * begin(), you must close it using {@link #end()} when done to ensure data is
+	 * correctly stored in the file.
 	 * 
 	 * @param stream
 	 *            The file stream where to output the graph events.
@@ -136,11 +137,11 @@ public interface FileSink extends Sink {
 	void begin(OutputStream stream) throws IOException;
 
 	/**
-	 * Begin the output of the given stream of graph events. The graph events
-	 * can come from any input (implementation of {@link Source} or you can
-	 * directly use the methods inherited from {@link Sink}. Once the writing is
-	 * started using begin(), you must close it using {@link #end()} when done
-	 * to ensure data is correctly stored in the file.
+	 * Begin the output of the given stream of graph events. The graph events can
+	 * come from any input (implementation of {@link Source} or you can directly use
+	 * the methods inherited from {@link Sink}. Once the writing is started using
+	 * begin(), you must close it using {@link #end()} when done to ensure data is
+	 * correctly stored in the file.
 	 * 
 	 * @param writer
 	 *            The writer where to output the graph events.

@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,9 +22,18 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2011-05-11
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ */
 package org.graphstream.ui.graphicGraph.test;
 
-import java.awt.Color;
+import org.graphstream.ui.graphicGraph.stylesheet.Color;
 import java.util.HashSet;
 
 import org.graphstream.graph.*;
@@ -125,9 +127,8 @@ public class TestGraphicGraph {
 		assertEquals(0, outGraph.getSpriteCount());
 	}
 
-	protected static String styleSheet1 = "graph  { fill-color: black; }"
-			+ "node   { fill-color: white; }" + "edge   { fill-color: white; }"
-			+ "node#A { fill-color: red;   }" + "node#B { fill-color: blue;  }";
+	protected static String styleSheet1 = "graph  { fill-color: black; }" + "node   { fill-color: white; }"
+			+ "edge   { fill-color: white; }" + "node#A { fill-color: red;   }" + "node#B { fill-color: blue;  }";
 
 	@Test
 	public void testStyleSheetLoading() {
@@ -155,7 +156,7 @@ public class TestGraphicGraph {
 
 		// Load a style sheet by URL.
 
-		outGraph.addAttribute("stylesheet", styleSheet1);
+		outGraph.setAttribute("stylesheet", styleSheet1);
 
 		assertNotNull(outGraph.getStyle());
 		assertNotNull(((GraphicNode) outGraph.getNode("A")).getStyle());
@@ -169,7 +170,7 @@ public class TestGraphicGraph {
 
 		// Cascade a style sheet by string.
 
-		outGraph.addAttribute("stylesheet", "node#A { fill-color: green; }");
+		outGraph.setAttribute("stylesheet", "node#A { fill-color: green; }");
 
 		assertNotNull(outGraph.getStyle());
 		assertNotNull(((GraphicNode) outGraph.getNode("A")).getStyle());
@@ -183,7 +184,7 @@ public class TestGraphicGraph {
 
 		// Cascade individual styles on elements.
 
-		outGraph.getNode("A").addAttribute("ui.style", "fill-color: blue;");
+		outGraph.getNode("A").setAttribute("ui.style", "fill-color: blue;");
 
 		assertNotNull(((GraphicNode) outGraph.getNode("A")).getStyle());
 		testStyle(((GraphicNode) outGraph.getNode("A")).getStyle(), Color.BLUE);
@@ -204,8 +205,7 @@ public class TestGraphicGraph {
 	}
 
 	protected void testStyle(Style style, Color colorBase) {
-		assertTrue(style.getFillColors() != null
-				&& style.getFillColors().size() == 1);
+		assertTrue(style.getFillColors() != null && style.getFillColors().size() == 1);
 		Color color = style.getFillColor(0);
 		assertEquals(StyleConstants.FillMode.PLAIN, style.getFillMode());
 		assertEquals(StyleConstants.StrokeMode.NONE, style.getStrokeMode());
@@ -310,10 +310,8 @@ public class TestGraphicGraph {
 		spriteIds.add("S1");
 		spriteIds.add("S2");
 
-		for (GraphicSprite sprite : outGraph.spriteSet()) {
-			if (spriteIds.contains(sprite.getId()))
-				spriteIds.remove(sprite.getId());
-		}
+		outGraph.sprites().filter(sprite -> spriteIds.contains(sprite.getId()))
+				.forEach(sprite -> spriteIds.remove(sprite.getId()));
 
 		assertTrue(spriteIds.isEmpty());
 
@@ -332,9 +330,9 @@ public class TestGraphicGraph {
 		// "ui." are transfered. So we also check that a "foo" attribute does
 		// not pass.
 
-		s1.addAttribute("ui.foo", "bar");
-		s1.addAttribute("ui.foo1", 1, 2, 3);
-		s1.addAttribute("foo", "bar");
+		s1.setAttribute("ui.foo", "bar");
+		s1.setAttribute("ui.foo1", 1, 2, 3);
+		s1.setAttribute("foo", "bar");
 
 		GraphicSprite gs1 = outGraph.getSprite("S1");
 
@@ -381,8 +379,8 @@ public class TestGraphicGraph {
 		s2 = sman.addSprite("S2");
 		Sprite s3 = sman.addSprite("S3");
 
-		s2.addAttribute("ui.foo", "bar");
-		s3.addAttribute("ui.foo", "bar");
+		s2.setAttribute("ui.foo", "bar");
+		s3.setAttribute("ui.foo", "bar");
 
 		assertEquals(3, sman.getSpriteCount());
 		assertEquals(3, outGraph.getSpriteCount());
@@ -487,12 +485,12 @@ public class TestGraphicGraph {
 		// only these
 		// will pass toward the graphic graph.
 
-		inGraph.addAttribute("ui.foo", "bar");
-		outGraph.addAttribute("ui.bar", "foo");
-		inGraph.getNode("A").addAttribute("ui.foo", "bar");
-		outGraph.getNode("A").addAttribute("ui.bar", "foo");
-		inGraph.getEdge("AB").addAttribute("ui.foo", "bar");
-		outGraph.getEdge("AB").addAttribute("ui.bar", "foo");
+		inGraph.setAttribute("ui.foo", "bar");
+		outGraph.setAttribute("ui.bar", "foo");
+		inGraph.getNode("A").setAttribute("ui.foo", "bar");
+		outGraph.getNode("A").setAttribute("ui.bar", "foo");
+		inGraph.getEdge("AB").setAttribute("ui.foo", "bar");
+		outGraph.getEdge("AB").setAttribute("ui.bar", "foo");
 
 		assertEquals("bar", outGraph.getAttribute("ui.foo"));
 		assertEquals("foo", inGraph.getAttribute("ui.bar"));
@@ -510,8 +508,8 @@ public class TestGraphicGraph {
 
 		assertNotNull(gs1);
 
-		s1.addAttribute("ui.foo", "bar");
-		gs1.addAttribute("ui.bar", "foo");
+		s1.setAttribute("ui.foo", "bar");
+		gs1.setAttribute("ui.bar", "foo");
 
 		assertEquals("bar", gs1.getAttribute("ui.foo"));
 		assertEquals("foo", s1.getAttribute("ui.bar"));
@@ -530,8 +528,8 @@ public class TestGraphicGraph {
 
 		assertNotNull(s2);
 
-		gs2.addAttribute("ui.foo", "bar");
-		s2.addAttribute("ui.bar", "foo");
+		gs2.setAttribute("ui.foo", "bar");
+		s2.setAttribute("ui.bar", "foo");
 
 		assertEquals("bar", s2.getAttribute("ui.foo"));
 		assertEquals("foo", gs2.getAttribute("ui.bar"));

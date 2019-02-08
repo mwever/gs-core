@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,15 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2009-07-22
+ * 
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.stream;
 
@@ -82,17 +84,15 @@ package org.graphstream.stream;
  */
 public interface ProxyPipe extends Pipe {
 	/**
-	 * Check if some events are pending and dispatch them to the registered
-	 * outputs.
+	 * Check if some events are pending and dispatch them to the registered outputs.
 	 */
 	void pump();
 
 	/**
 	 * Same as {@link #pump()} but try to block until new events were available.
-	 * Note that this feature will not be available on all proxy pipe
-	 * implementation and may throws an
-	 * {@link java.lang.UnsupportedOperationException}. It can throw an
-	 * {@link java.lang.InterruptedException} if the current thread is
+	 * Note that this feature will not be available on all proxy pipe implementation
+	 * and may throws an {@link java.lang.UnsupportedOperationException}. It can
+	 * throw an {@link java.lang.InterruptedException} if the current thread is
 	 * interrupted while proxy is waiting for events.
 	 */
 	void blockingPump() throws InterruptedException;

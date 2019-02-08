@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,12 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2011-05-11
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
  */
 package org.graphstream.stream.thread.test;
 
@@ -75,8 +74,8 @@ public class TestThreadProxyPipe {
 		source.addEdge("BC", "B", "C");
 		source.addEdge("CA", "C", "A");
 
-		source.getNode("A").addAttribute("A1", "foo");
-		source.getNode("A").addAttribute("A2", "foo");
+		source.getNode("A").setAttribute("A1", "foo");
+		source.getNode("A").setAttribute("A2", "foo");
 
 		ThreadProxyPipe proxy = new ThreadProxyPipe();
 		proxy.addSink(target);
@@ -113,11 +112,11 @@ public class TestThreadProxyPipe {
 		source.addEdge("XA", "X", "A");
 		source.removeEdge("AB");
 		source.removeNode("B");
-		source.getNode("X").addAttribute("X1", "foo");
+		source.getNode("X").setAttribute("X1", "foo");
 		source.getNode("X").setAttribute("X1", "bar");
 		source.getNode("A").removeAttribute("A1");
 
-		source.addAttribute("STOP!");
+		source.setAttribute("STOP!");
 
 		// End of the test, wait for the other thread to terminate
 

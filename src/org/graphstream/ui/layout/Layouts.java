@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,6 +22,15 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2010-03-05
+ * 
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Alex Bowen <bowen.a@gmail.com>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.ui.layout;
 
 import java.security.AccessControlException;
@@ -48,17 +50,18 @@ import java.util.logging.Logger;
  */
 public class Layouts {
 
-    /**
-     * class level logger
-     */
-    private static final Logger logger = Logger.getLogger(Layouts.class.getSimpleName());
+	/**
+	 * class level logger
+	 */
+	private static final Logger logger = Logger.getLogger(Layouts.class.getSimpleName());
 
 	/**
-	 * Creates a layout according to the "org.graphstream.ui.layout" system property.
+	 * Creates a layout according to the "org.graphstream.ui.layout" system
+	 * property.
 	 * 
-	 * @return The new layout or the default GraphStream "Spring-Box" layout if
-	 *         the "gs.ui.layout" system property is either not set or contains
-	 *         a class that cannot be found.
+	 * @return The new layout or the default GraphStream "Spring-Box" layout if the
+	 *         "gs.ui.layout" system property is either not set or contains a class
+	 *         that cannot be found.
 	 */
 	public static Layout newLayoutAlgorithm() {
 		String layoutClassName;
@@ -66,7 +69,7 @@ public class Layouts {
 		try {
 			layoutClassName = System.getProperty("gs.ui.layout");
 			if (layoutClassName != null) {
-                logger.log(Level.WARNING, "\"gs.ui.layout\" is deprecated, use \"org.graphstream.ui.layout\" instead.");
+				logger.log(Level.WARNING, "\"gs.ui.layout\" is deprecated, use \"org.graphstream.ui.layout\" instead.");
 			} else {
 				layoutClassName = System.getProperty("org.graphstream.ui.layout");
 			}
@@ -82,14 +85,13 @@ public class Layouts {
 				if (object instanceof Layout) {
 					return (Layout) object;
 				} else {
-                    logger.warning(String.format("class '%s' is not a 'GraphRenderer'%n", object));
+					logger.warning(String.format("class '%s' is not a 'GraphRenderer'%n", object));
 				}
 			} catch (Exception e) {
-                logger.log(Level.WARNING, "Cannot create layout.", e);
+				logger.log(Level.WARNING, "Cannot create layout.", e);
 			}
 		}
 
-		return new org.graphstream.ui.layout.springbox.implementations.SpringBox(
-				false);
+		return new org.graphstream.ui.layout.springbox.implementations.SpringBox(false);
 	}
 }

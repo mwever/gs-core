@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,6 +22,14 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2015-10-15
+ * 
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.stream.test;
 
 import org.graphstream.graph.Graph;
@@ -46,114 +47,115 @@ import java.util.LinkedList;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Test the ability of Graphs to insert events in between actual streams. Two cases are envisioned.
- * First, while autocreate mode is activated, when an Add Edge event is created  with non existing nodes,
- * the forwarded stream of events must include Add Node events prior to the Add Edge Event.
- * Second, when a node is removed, Graphs should generate and stream Edge Remove events for all edges connected to the
- * node to be removed.
+ * Test the ability of Graphs to insert events in between actual streams. Two
+ * cases are envisioned. First, while autocreate mode is activated, when an Add
+ * Edge event is created with non existing nodes, the forwarded stream of events
+ * must include Add Node events prior to the Add Edge Event. Second, when a node
+ * is removed, Graphs should generate and stream Edge Remove events for all
+ * edges connected to the node to be removed.
  */
 public class TestAutoCreateInStreams {
 
-    @Test
-    public void testAutoCreate(){
-        Graph g = new AdjacencyListGraph("ok", false, true);
+	@Test
+	public void testAutoCreate() {
+		Graph g = new AdjacencyListGraph("ok", false, true);
 
-        final LinkedList<String> an= new LinkedList<>();
-        final String[] expectedAn = {"a","b","c","d","e"};
+		final LinkedList<String> an = new LinkedList<>();
+		final String[] expectedAn = { "a", "b", "c", "d", "e" };
 
-        Sink sink = new SinkAdapter(){
-            @Override
-            public void nodeAdded(String sourceId, long timeId, String nodeId) {
-                an.add(nodeId);
-            }
-        };
-        g.addSink(sink);
+		Sink sink = new SinkAdapter() {
+			@Override
+			public void nodeAdded(String sourceId, long timeId, String nodeId) {
+				an.add(nodeId);
+			}
+		};
+		g.addSink(sink);
 
-        // event from the constructivist API
-        g.addEdge("ab", "a","b");
+		// event from the constructivist API
+		g.addEdge("ab", "a", "b");
 
-        // events from a pipe
-        FileSource fs = new FileSourceDGS();
-        try {
-            fs.begin(new ByteArrayInputStream("DGS004\n0 0\nae bc b c\nae ac a c".getBytes()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        fs.addSink(g);
-        try {
-            while(fs.nextEvents());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+		// events from a pipe
+		FileSource fs = new FileSourceDGS();
+		try {
+			fs.begin(new ByteArrayInputStream("DGS004\n0 0\nae bc b c\nae ac a c".getBytes()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		fs.addSink(g);
+		try {
+			while (fs.nextEvents())
+				;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-        // events from another pipe
-        fs = new FileSourceDGS();
-        try {
-            fs.begin(new ByteArrayInputStream("DGS004\n0 0\nae dc d c\nae de d e".getBytes()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        fs.addSink(g);
-        try {
-            while(fs.nextEvents());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+		// events from another pipe
+		fs = new FileSourceDGS();
+		try {
+			fs.begin(new ByteArrayInputStream("DGS004\n0 0\nae dc d c\nae de d e".getBytes()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		fs.addSink(g);
+		try {
+			while (fs.nextEvents())
+				;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-        assertEquals(expectedAn.length, an.size());
+		assertEquals(expectedAn.length, an.size());
 
-        for(String nId :  expectedAn){
-            assertEquals(nId, an.remove(0));
-        }
-    }
+		for (String nId : expectedAn) {
+			assertEquals(nId, an.remove(0));
+		}
+	}
 
+	@Test
+	public void testAutoRemove() {
+		Graph g = new AdjacencyListGraph("ok");
 
-    @Test
-    public void testAutoRemove() {
-        Graph g = new AdjacencyListGraph("ok");
+		final LinkedList<String> de = new LinkedList<>();
+		final String[] expectedDe = { "ab", "ca", "bc" };
 
-        final LinkedList<String> de = new LinkedList<>();
-        final String[] expectedDe = {"ab", "ca", "bc"};
+		Sink sink = new SinkAdapter() {
+			@Override
+			public void edgeRemoved(String sourceId, long timeId, String edgeId) {
+				de.add(edgeId);
+			}
+		};
+		g.addSink(sink);
 
-        Sink sink = new SinkAdapter() {
-            @Override
-            public void edgeRemoved(String sourceId, long timeId, String edgeId) {
-                de.add(edgeId);
-            }
-        };
-        g.addSink(sink);
+		g.addNode("a");
+		g.addNode("b");
+		g.addNode("c");
 
+		g.addEdge("ab", "a", "b");
+		g.addEdge("bc", "b", "c");
+		g.addEdge("ca", "c", "a");
 
-        g.addNode("a");
-        g.addNode("b");
-        g.addNode("c");
+		// event from the constructivist API
+		g.removeNode("a");
 
-        g.addEdge("ab", "a", "b");
-        g.addEdge("bc", "b", "c");
-        g.addEdge("ca", "c", "a");
+		// events from a pipe
+		FileSource fs = new FileSourceDGS();
+		try {
+			fs.begin(new ByteArrayInputStream("DGS004\n0 0\ndn b".getBytes()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		fs.addSink(g);
+		try {
+			while (fs.nextEvents())
+				;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-        // event from the constructivist API
-        g.removeNode("a");
+		assertEquals(expectedDe.length, de.size());
 
-
-        // events from a pipe
-        FileSource fs = new FileSourceDGS();
-        try {
-            fs.begin(new ByteArrayInputStream("DGS004\n0 0\ndn b".getBytes()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        fs.addSink(g);
-        try {
-            while (fs.nextEvents()) ;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        assertEquals(expectedDe.length, de.size());
-
-        for (String eId : expectedDe) {
-            assertEquals(eId, de.remove(0));
-        }
-    }
+		for (String eId : expectedDe) {
+			assertEquals(eId, de.remove(0));
+		}
+	}
 }

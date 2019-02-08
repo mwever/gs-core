@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,6 +22,13 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2011-07-21
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.stream.file.dot;
 
 import java.io.InputStream;
@@ -41,6 +41,7 @@ import java.util.LinkedList;
 
 import org.graphstream.stream.SourceBase.ElementType;
 import org.graphstream.stream.file.FileSourceDOT;
+import org.graphstream.graph.IdAlreadyInUseException;
 import org.graphstream.graph.implementations.AbstractElement.AttributeChangeEvent;
 
 import org.graphstream.util.parser.ParseException;
@@ -52,8 +53,8 @@ import org.graphstream.util.parser.TokenMgrError;
 /**
  * This class defines a DOT parser.
  * 
- * It respects the specifications of the DOT language that can be found <a
- * href="http://www.graphviz.org/doc/info/lang.html">here</a>.
+ * It respects the specifications of the DOT language that can be found
+ * <a href="http://www.graphviz.org/doc/info/lang.html">here</a>.
  * 
  * Subgraph produces no error but has no effect on the graph.
  */
@@ -127,13 +128,11 @@ public class DOTParser implements Parser, DOTParserConstants {
 		nodeAdded = new HashSet<String>();
 	}
 
-	private void addNode(String nodeId, String[] port,
-			HashMap<String, Object> attr) {
+	private void addNode(String nodeId, String[] port, HashMap<String, Object> attr) {
 		if (nodeAdded.contains(nodeId)) {
 			if (attr != null) {
 				for (String key : attr.keySet())
-					dot.sendAttributeChangedEvent(sourceId, nodeId,
-							ElementType.NODE, key, AttributeChangeEvent.ADD,
+					dot.sendAttributeChangedEvent(sourceId, nodeId, ElementType.NODE, key, AttributeChangeEvent.ADD,
 							null, attr.get(key));
 			}
 		} else {
@@ -142,21 +141,17 @@ public class DOTParser implements Parser, DOTParserConstants {
 
 			if (attr == null) {
 				for (String key : globalNodesAttributes.keySet())
-					dot.sendAttributeChangedEvent(sourceId, nodeId,
-							ElementType.NODE, key, AttributeChangeEvent.ADD,
+					dot.sendAttributeChangedEvent(sourceId, nodeId, ElementType.NODE, key, AttributeChangeEvent.ADD,
 							null, globalNodesAttributes.get(key));
 			} else {
 				for (String key : globalNodesAttributes.keySet()) {
 					if (!attr.containsKey(key))
-						dot.sendAttributeChangedEvent(sourceId, nodeId,
-								ElementType.NODE, key,
-								AttributeChangeEvent.ADD, null,
-								globalNodesAttributes.get(key));
+						dot.sendAttributeChangedEvent(sourceId, nodeId, ElementType.NODE, key, AttributeChangeEvent.ADD,
+								null, globalNodesAttributes.get(key));
 				}
 
 				for (String key : attr.keySet())
-					dot.sendAttributeChangedEvent(sourceId, nodeId,
-							ElementType.NODE, key, AttributeChangeEvent.ADD,
+					dot.sendAttributeChangedEvent(sourceId, nodeId, ElementType.NODE, key, AttributeChangeEvent.ADD,
 							null, attr.get(key));
 			}
 		}
@@ -199,26 +194,30 @@ public class DOTParser implements Parser, DOTParserConstants {
 		}
 
 		for (int i = 0; i < count; i++) {
-			dot.sendEdgeAdded(sourceId, ids[i], edges.get(i * 2), edges
-					.get((i + 1) * 2), directed[i]);
+			boolean addedEdge = false;
+			String IDtoTry = ids[i];
+			while (!addedEdge) {
+				try {
+					dot.sendEdgeAdded(sourceId, ids[i], edges.get(i * 2), edges.get((i + 1) * 2), directed[i]);
+					addedEdge = true;
+				} catch (IdAlreadyInUseException e) {
+					IDtoTry += "'";
+				}
+			}
 
 			if (attr == null) {
 				for (String key : globalEdgesAttributes.keySet())
-					dot.sendAttributeChangedEvent(sourceId, ids[i],
-							ElementType.EDGE, key, AttributeChangeEvent.ADD,
+					dot.sendAttributeChangedEvent(sourceId, ids[i], ElementType.EDGE, key, AttributeChangeEvent.ADD,
 							null, globalEdgesAttributes.get(key));
 			} else {
 				for (String key : globalEdgesAttributes.keySet()) {
 					if (!attr.containsKey(key))
-						dot.sendAttributeChangedEvent(sourceId, ids[i],
-								ElementType.EDGE, key,
-								AttributeChangeEvent.ADD, null,
-								globalEdgesAttributes.get(key));
+						dot.sendAttributeChangedEvent(sourceId, ids[i], ElementType.EDGE, key, AttributeChangeEvent.ADD,
+								null, globalEdgesAttributes.get(key));
 				}
 
 				for (String key : attr.keySet())
-					dot.sendAttributeChangedEvent(sourceId, ids[i],
-							ElementType.EDGE, key, AttributeChangeEvent.ADD,
+					dot.sendAttributeChangedEvent(sourceId, ids[i], ElementType.EDGE, key, AttributeChangeEvent.ADD,
 							null, attr.get(key));
 			}
 		}
@@ -227,9 +226,8 @@ public class DOTParser implements Parser, DOTParserConstants {
 	private void setGlobalAttributes(String who, HashMap<String, Object> attr) {
 		if (who.equalsIgnoreCase("graph")) {
 			for (String key : attr.keySet())
-				dot.sendAttributeChangedEvent(sourceId, sourceId,
-						ElementType.GRAPH, key, AttributeChangeEvent.ADD, null,
-						attr.get(key));
+				dot.sendAttributeChangedEvent(sourceId, sourceId, ElementType.GRAPH, key, AttributeChangeEvent.ADD,
+						null, attr.get(key));
 		} else if (who.equalsIgnoreCase("node"))
 			globalNodesAttributes.putAll(attr);
 		else if (who.equalsIgnoreCase("edge"))
@@ -580,8 +578,7 @@ public class DOTParser implements Parser, DOTParserConstants {
 		setGlobalAttributes(t.image, attr);
 	}
 
-	final private HashMap<String, Object> attributesList()
-			throws ParseException {
+	final private HashMap<String, Object> attributesList() throws ParseException {
 		HashMap<String, Object> attributes = new HashMap<String, Object>();
 		label_3: while (true) {
 			jj_consume_token(LSQBR);
@@ -621,8 +618,7 @@ public class DOTParser implements Parser, DOTParserConstants {
 		return attributes;
 	}
 
-	final private void attributeList(HashMap<String, Object> attributes)
-			throws ParseException {
+	final private void attributeList(HashMap<String, Object> attributes) throws ParseException {
 		String key;
 		Object val;
 
@@ -760,16 +756,14 @@ public class DOTParser implements Parser, DOTParserConstants {
 	}
 
 	private static void jj_la1_init_0() {
-		jj_la1_0 = new int[] { 0x73a0000, 0x73a2001, 0x400000, 0x60000,
-				0x7000000, 0x7000000, 0x73a0000, 0x7000000, 0x73a0000, 0x4000,
-				0x400, 0xf0000000, 0x4000, 0xf7000000, 0x400, 0x800000,
-				0x320000, 0x8000, 0x7000000, 0x400, 0x7000000, 0x10000, };
+		jj_la1_0 = new int[] { 0x73a0000, 0x73a2001, 0x400000, 0x60000, 0x7000000, 0x7000000, 0x73a0000, 0x7000000,
+				0x73a0000, 0x4000, 0x400, 0xf0000000, 0x4000, 0xf7000000, 0x400, 0x800000, 0x320000, 0x8000, 0x7000000,
+				0x400, 0x7000000, 0x10000, };
 	}
 
 	private static void jj_la1_init_1() {
-		jj_la1_1 = new int[] { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-				0x0, 0x0, 0x3f, 0x0, 0x3f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-				0x0, };
+		jj_la1_1 = new int[] { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3f, 0x0, 0x3f, 0x0, 0x0, 0x0,
+				0x0, 0x0, 0x0, 0x0, 0x0, };
 	}
 
 	final private JJCalls[] jj_2_rtns = new JJCalls[2];
@@ -907,8 +901,7 @@ public class DOTParser implements Parser, DOTParserConstants {
 		if (jj_scanpos == jj_lastpos) {
 			jj_la--;
 			if (jj_scanpos.next == null) {
-				jj_lastpos = jj_scanpos = jj_scanpos.next = token_source
-						.getNextToken();
+				jj_lastpos = jj_scanpos = jj_scanpos.next = token_source.getNextToken();
 			} else {
 				jj_lastpos = jj_scanpos = jj_scanpos.next;
 			}
@@ -978,8 +971,7 @@ public class DOTParser implements Parser, DOTParserConstants {
 			for (int i = 0; i < jj_endpos; i++) {
 				jj_expentry[i] = jj_lasttokens[i];
 			}
-			jj_entries_loop: for (java.util.Iterator<?> it = jj_expentries
-					.iterator(); it.hasNext();) {
+			jj_entries_loop: for (java.util.Iterator<?> it = jj_expentries.iterator(); it.hasNext();) {
 				int[] oldentry = (int[]) (it.next());
 				if (oldentry.length == jj_expentry.length) {
 					for (int i = 0; i < jj_expentry.length; i++) {

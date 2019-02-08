@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,13 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2011-05-11
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.stream.file.test;
 
@@ -58,30 +58,26 @@ public class TestFileSourceDOT extends TestFileSourceBase {
 		return TEST1_TRIANGLE;
 	}
 
-	protected static String TEST1_TRIANGLE = "graph test1 {\n"
-			+ "    graph [ id=\"test1\" ];\n" + "    A -- B [ id=AB ];\n"
-			+ "    B -- C [ id=BC ];\n" + "    C -- A [ id=CA ];\n" + "}\n";
+	protected static String TEST1_TRIANGLE = "graph test1 {\n" + "    graph [ id=\"test1\" ];\n"
+			+ "    A -- B [ id=AB ];\n" + "    B -- C [ id=BC ];\n" + "    C -- A [ id=CA ];\n" + "}\n";
 
 	@Override
 	public String aDirectedTriangle() {
 		return TEST2_DIRECTED_TRIANGLE;
 	}
 
-	protected static String TEST2_DIRECTED_TRIANGLE = "graph test2 {\n"
-			+ "    graph [ id=\"test2\" ];\n" + "    A -> B [ id=AB ];\n"
-			+ "    B -- C [ id=BC ];\n" + "    A -> C [ id=CA ];\n" + "}\n";
+	protected static String TEST2_DIRECTED_TRIANGLE = "graph test2 {\n" + "    graph [ id=\"test2\" ];\n"
+			+ "    A -> B [ id=AB ];\n" + "    B -- C [ id=BC ];\n" + "    A -> C [ id=CA ];\n" + "}\n";
 
 	@Override
 	public String basicAttributes() {
 		return TEST3_ATTRIBUTES;
 	}
 
-	protected static String TEST3_ATTRIBUTES = "graph test3 {\n"
-			+ "    graph [ id=\"test3\" ];\n"
-			+ "    A [ a=1, b=truc, c=true ];\n"
-			+ "    B [ aa=\"1,2,3,4\", bb=\"foo\", cc=bar ];\n"
-			+ "    C [ aaa=1.234 ];\n" + "" + "    A -- B [ id=AB ];\n"
-			+ "    B -- C [ id=BC ];\n" + "    C -- A [ id=CA ];\n" + "}\n";
+	protected static String TEST3_ATTRIBUTES = "graph test3 {\n" + "    graph [ id=\"test3\" ];\n"
+			+ "    A [ a=1, b=truc, c=true ];\n" + "    B [ aa=\"1,2,3,4\", bb=\"foo\", cc=bar ];\n"
+			+ "    C [ aaa=1.234 ];\n" + "" + "    A -- B [ id=AB ];\n" + "    B -- C [ id=BC ];\n"
+			+ "    C -- A [ id=CA ];\n" + "}\n";
 
 	@Override
 	public String anUndirectedTriangleFileName() {

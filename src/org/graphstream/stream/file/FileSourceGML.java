@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,6 +22,15 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2009-02-19
+ * 
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.stream.file;
 
 import java.io.IOException;
@@ -43,91 +45,99 @@ import org.graphstream.util.parser.ParserFactory;
 /**
  * A GML parser.
  * 
- * This parser should understand the whole GML syntax. It transforms any
- * unknown tag into an attribute. Depending on the location of the unknown
- * tag, the attribute is added to the graph, to nodes or to the edges.
+ * This parser should understand the whole GML syntax. It transforms any unknown
+ * tag into an attribute. Depending on the location of the unknown tag, the
+ * attribute is added to the graph, to nodes or to the edges.
  * 
  * The "graphics" attributes are, as far as possible, transformed into
  * "ui.style" attributes that are merged with the style sheet. The understood
- * graphics tags are "x", "y", "z", "w", "h", "d" for position and size,
- * "fill" for the background color (becomes "fill-color"), "outline" (becomes
- * "stroke-color"), "type" (becomes "shape", the known shapes being
- * the ones of the GraphStream CSS, plus the "ellipse" tag wich maps
- * to "circle" and the "rectangle" tag that maps to "box"), "outline_width" (becomes
- * "stroke-width", in pixels).
+ * graphics tags are "x", "y", "z", "w", "h", "d" for position and size, "fill"
+ * for the background color (becomes "fill-color"), "outline" (becomes
+ * "stroke-color"), "type" (becomes "shape", the known shapes being the ones of
+ * the GraphStream CSS, plus the "ellipse" tag wich maps to "circle" and the
+ * "rectangle" tag that maps to "box"), "outline_width" (becomes "stroke-width",
+ * in pixels).
  * 
- * If edges have no "id" tag, the id is the concatenation of the source
- * and target node identifiers separated by a "_" character and a random
- * number.
+ * If edges have no "id" tag, the id is the concatenation of the source and
+ * target node identifiers separated by a "_" character and a random number.
  * 
  * You can declare nodes either with the full declaration:
+ * 
  * <pre>
  * 		node [ Id "foo" ]
  * </pre>
+ * 
  * Which is useful when adding attributes to it. Or you can use a lighter
  * declaration with:
+ * 
  * <pre>
  *      node "foo"
- * </pre> 
+ * </pre>
  * 
  * You can also remove nodes and edges by using:
+ * 
  * <pre>
  *      -node "foo"
  *      del-node "foo"
  *      -node [ Id "foo" ]
  *      del-node [ Id "foo" ]
  * </pre>
+ * 
  * And the same for edges with "-edge" or "del-edge".
  * 
  * All the dynamic events of GraphStream are supported as an extension.
  * 
- * You can add or remove attributes to or from a node or edge using a
- * minus sign in front of the attribute name and following the attribute
- * name by [].
+ * You can add or remove attributes to or from a node or edge using a minus sign
+ * in front of the attribute name and following the attribute name by [].
  * 
- * You can remove a node or edge using a minus sign in front of the
- * node and edge tags:
+ * You can remove a node or edge using a minus sign in front of the node and
+ * edge tags:
+ * 
  * <pre>
  *     -node [ id "foo" ]
  * </pre>
+ * 
  * Or
+ * 
  * <pre>
  *     -node "foo"
  * </pre>
  * 
- * You can change the attributes of a node or edge using a plus sign
- * in front of the node and edge tags:
+ * You can change the attributes of a node or edge using a plus sign in front of
+ * the node and edge tags:
+ * 
  * <pre>
  *     +node [ id "foo" someAttribute "added" -removedAttribute [] ]
  * </pre>
  * 
- * Be careful, that files exported with the dynamic extensions will not
- * be compatible with most GML readers of other programs.
+ * Be careful, that files exported with the dynamic extensions will not be
+ * compatible with most GML readers of other programs.
  * 
- * The standard extension for GML files is ".gml". If your file contains
- * dynamic additions, you can use the ".dgml" (Dynamic GML) extensions.
- * The parser will handle both dynamic and non dynamic files with the
- * extension ".gml".
+ * The standard extension for GML files is ".gml". If your file contains dynamic
+ * additions, you can use the ".dgml" (Dynamic GML) extensions. The parser will
+ * handle both dynamic and non dynamic files with the extension ".gml".
  */
 public class FileSourceGML extends FileSourceParser {
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.graphstream.stream.file.FileSourceParser#nextStep()
 	 */
 	public boolean nextStep() throws IOException {
 		try {
 			return ((GMLParser) parser).step();
-		} catch(ParseException e) {
+		} catch (ParseException e) {
 			throw new IOException(e);
 		}
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.graphstream.stream.file.FileSourceParser#getNewParserFactory()
 	 */
-	public ParserFactory getNewParserFactory() { 
+	public ParserFactory getNewParserFactory() {
 		return new ParserFactory() {
 			public Parser newParser(Reader reader) {
 				return new GMLParser(FileSourceGML.this, reader);

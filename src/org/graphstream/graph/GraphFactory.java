@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,6 +22,17 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2009-02-19
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Julien Baudry <julien.baudry@gmail.com>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Alex Bowen <bowen.a@gmail.com>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.graph;
 
 import java.util.logging.Level;
@@ -42,7 +46,7 @@ import java.util.logging.Logger;
  */
 public class GraphFactory {
 
-    private static final Logger logger = Logger.getLogger(GraphFactory.class.getSimpleName());
+	private static final Logger logger = Logger.getLogger(GraphFactory.class.getSimpleName());
 
 	/**
 	 * Create a new instance of graph.
@@ -59,8 +63,7 @@ public class GraphFactory {
 		try {
 			String completeGraphClass;
 			if (graphClass.split("[.]").length < 2) {
-				completeGraphClass = "org.graphstream.graph.implementations."
-						+ graphClass;
+				completeGraphClass = "org.graphstream.graph.implementations." + graphClass;
 			} else {
 				completeGraphClass = graphClass;
 			}
@@ -68,12 +71,11 @@ public class GraphFactory {
 			// ).newInstance();
 			// res.setId( id );
 			Class<?> clazz = Class.forName(completeGraphClass);
-			Graph res = (Graph) clazz.getConstructor(String.class).newInstance(
-					id);
+			Graph res = (Graph) clazz.getConstructor(String.class).newInstance(id);
 			return res;
-		}  catch (final Exception e) {
-            logger.log(Level.SEVERE, "Error executing GraphFactory#newInstance.", e);
-        }
+		} catch (final Exception e) {
+			logger.log(Level.SEVERE, "Error executing GraphFactory#newInstance.", e);
+		}
 		return null;
 	}
 }

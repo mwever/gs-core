@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,12 +22,23 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2009-02-19
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Stefan Balev <stefan.balev@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.graph.implementations;
 
 import java.security.AccessControlException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
@@ -186,49 +190,58 @@ public class AdjacencyListNode extends AbstractNode {
 		return degree - ioStart;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends Edge> T getEdge(int i) {
+	public Edge getEdge(int i) {
 		if (i < 0 || i >= degree)
-			throw new IndexOutOfBoundsException("Node \"" + this + "\""
-					+ " has no edge " + i);
-		return (T) edges[i];
+			throw new IndexOutOfBoundsException("Node \"" + this + "\"" + " has no edge " + i);
+		return edges[i];
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends Edge> T getEnteringEdge(int i) {
+	public Edge getEnteringEdge(int i) {
 		if (i < 0 || i >= getInDegree())
-			throw new IndexOutOfBoundsException("Node \"" + this + "\""
-					+ " has no entering edge " + i);
-		return (T) edges[i];
+			throw new IndexOutOfBoundsException("Node \"" + this + "\"" + " has no entering edge " + i);
+		return edges[i];
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends Edge> T getLeavingEdge(int i) {
+	public Edge getLeavingEdge(int i) {
 		if (i < 0 || i >= getOutDegree())
-			throw new IndexOutOfBoundsException("Node \"" + this + "\""
-					+ " has no edge " + i);
-		return (T) edges[ioStart + i];
+			throw new IndexOutOfBoundsException("Node \"" + this + "\"" + " has no edge " + i);
+		return edges[ioStart + i];
 	}
 
 	@Override
-	public <T extends Edge> T getEdgeBetween(Node node) {
+	public Edge getEdgeBetween(Node node) {
 		return locateEdge(node, IO_EDGE);
 	}
 
 	@Override
-	public <T extends Edge> T getEdgeFrom(Node node) {
+	public Edge getEdgeFrom(Node node) {
 		return locateEdge(node, I_EDGE);
 	}
 
 	@Override
-	public <T extends Edge> T getEdgeToward(Node node) {
+	public Edge getEdgeToward(Node node) {
 		return locateEdge(node, O_EDGE);
 	}
 
 	// *** Iterators ***
+
+	@Override
+	public Stream<Edge> edges() {
+		return Arrays.stream(edges, 0, degree);
+	}
+
+	@Override
+	public Stream<Edge> enteringEdges() {
+		return Arrays.stream(edges, 0, oStart);
+	}
+
+	@Override
+	public Stream<Edge> leavingEdges() {
+		return Arrays.stream(edges, ioStart, degree);
+	}
 
 	protected class EdgeIterator<T extends Edge> implements Iterator<T> {
 		protected int iPrev, iNext, iEnd;
@@ -260,27 +273,11 @@ public class AdjacencyListNode extends AbstractNode {
 				throw new IllegalStateException();
 			AbstractEdge e = edges[iPrev];
 			// do not call the callback because we already know the index
-			graph.removeEdge(e, true, e.source != AdjacencyListNode.this,
-					e.target != AdjacencyListNode.this);
+			graph.removeEdge(e, true, e.source != AdjacencyListNode.this, e.target != AdjacencyListNode.this);
 			removeEdge(iPrev);
 			iNext = iPrev;
 			iPrev = -1;
 			iEnd--;
 		}
-	}
-
-	@Override
-	public <T extends Edge> Iterator<T> getEdgeIterator() {
-		return new EdgeIterator<T>(IO_EDGE);
-	}
-
-	@Override
-	public <T extends Edge> Iterator<T> getEnteringEdgeIterator() {
-		return new EdgeIterator<T>(I_EDGE);
-	}
-
-	@Override
-	public <T extends Edge> Iterator<T> getLeavingEdgeIterator() {
-		return new EdgeIterator<T>(O_EDGE);
 	}
 }

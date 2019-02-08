@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,14 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2011-05-11
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Stefan Balev <stefan.balev@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.graph.test;
 
@@ -57,10 +58,9 @@ public class TestGraphSynchronisation {
 
 		testGraphSyncBase(new MultiGraph("g1"), new MultiGraph("g2"));
 		testGraphSyncBase(new SingleGraph("g1"), new SingleGraph("g2"));
-		testGraphSyncBase(new AdjacencyListGraph("g1"), new AdjacencyListGraph(
-				"g2"));
+		testGraphSyncBase(new AdjacencyListGraph("g1"), new AdjacencyListGraph("g2"));
 		testGraphSyncBase(new MultiGraph("g1"), new AdjacencyListGraph("g2"));
-		
+
 	}
 
 	protected void testGraphSyncBase(Graph g1, Graph g2) {
@@ -105,8 +105,8 @@ public class TestGraphSynchronisation {
 
 		// Test with attribute addition.
 
-		g1.getNode("A").addAttribute("foo", "bar");
-		g2.getEdge("AB").addAttribute("foo", "bar");
+		g1.getNode("A").setAttribute("foo", "bar");
+		g2.getEdge("AB").setAttribute("foo", "bar");
 
 		assertEquals(1, g1.getNode("A").getAttributeCount());
 		assertEquals(1, g2.getNode("A").getAttributeCount());
@@ -175,14 +175,11 @@ public class TestGraphSynchronisation {
 		// | |
 		// g1 <--------------------/
 
-		testGraphSyncCycleSimple(new MultiGraph("g1"), new MultiGraph("g2"),
-				new MultiGraph("g3"));
-		testGraphSyncCycleSimple(new SingleGraph("g1"), new SingleGraph("g2"),
-				new SingleGraph("g3"));
-		testGraphSyncCycleSimple(new AdjacencyListGraph("g1"),
-				new AdjacencyListGraph("g2"), new AdjacencyListGraph("g3"));
-		testGraphSyncCycleSimple(new MultiGraph("g1"), new SingleGraph("g2"),
+		testGraphSyncCycleSimple(new MultiGraph("g1"), new MultiGraph("g2"), new MultiGraph("g3"));
+		testGraphSyncCycleSimple(new SingleGraph("g1"), new SingleGraph("g2"), new SingleGraph("g3"));
+		testGraphSyncCycleSimple(new AdjacencyListGraph("g1"), new AdjacencyListGraph("g2"),
 				new AdjacencyListGraph("g3"));
+		testGraphSyncCycleSimple(new MultiGraph("g1"), new SingleGraph("g2"), new AdjacencyListGraph("g3"));
 	}
 
 	protected void testGraphSyncCycleSimple(Graph g1, Graph g2, Graph g3) {
@@ -202,14 +199,11 @@ public class TestGraphSynchronisation {
 		// | |
 		// g1 <--------------------/
 
-		testGraphSyncCycleProblem(new MultiGraph("g1"), new MultiGraph("g2"),
-				new MultiGraph("g3"));
-		testGraphSyncCycleProblem(new SingleGraph("g1"), new SingleGraph("g2"),
-				new SingleGraph("g3"));
-		testGraphSyncCycleProblem(new AdjacencyListGraph("g1"),
-				new AdjacencyListGraph("g2"), new AdjacencyListGraph("g3"));
-		testGraphSyncCycleProblem(new MultiGraph("g1"), new SingleGraph("g2"),
+		testGraphSyncCycleProblem(new MultiGraph("g1"), new MultiGraph("g2"), new MultiGraph("g3"));
+		testGraphSyncCycleProblem(new SingleGraph("g1"), new SingleGraph("g2"), new SingleGraph("g3"));
+		testGraphSyncCycleProblem(new AdjacencyListGraph("g1"), new AdjacencyListGraph("g2"),
 				new AdjacencyListGraph("g3"));
+		testGraphSyncCycleProblem(new MultiGraph("g1"), new SingleGraph("g2"), new AdjacencyListGraph("g3"));
 	}
 
 	protected void testGraphSyncCycleProblem(Graph g1, Graph g2, Graph g3) {
@@ -260,9 +254,9 @@ public class TestGraphSynchronisation {
 
 		// Now attributes.
 
-		g1.addAttribute("foo", "bar");
-		g2.getNode("A").addAttribute("foo", "bar");
-		g3.getEdge("AB").addAttribute("foo", "bar");
+		g1.setAttribute("foo", "bar");
+		g2.getNode("A").setAttribute("foo", "bar");
+		g3.getEdge("AB").setAttribute("foo", "bar");
 
 		assertEquals("bar", g1.getAttribute("foo"));
 		assertEquals("bar", g2.getAttribute("foo"));

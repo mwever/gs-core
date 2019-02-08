@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,13 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2011-05-11
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.stream.file.test;
 
@@ -70,31 +70,30 @@ public abstract class TestFileSourceBase {
 	protected FileSource input;
 
 	/**
-	 * If false, edge identifiers are not tested (some format cannot specify
-	 * edge identifiers).
+	 * If false, edge identifiers are not tested (some format cannot specify edge
+	 * identifiers).
 	 */
 	protected boolean testEdgeIds = true;
 
 	// Access
 
 	/**
-	 * Return a string containing a file defining a simple triangle made of
-	 * three nodes named "A", "B" and "C", tied with three edges "AB", "BC" and
-	 * "CA".
+	 * Return a string containing a file defining a simple triangle made of three
+	 * nodes named "A", "B" and "C", tied with three edges "AB", "BC" and "CA".
 	 */
 	public abstract String anUndirectedTriangle();
 
 	/**
-	 * Return a string containing a file defining a simple triangle made of
-	 * three nodes named "A", "B" and "C", tied with three edges "AB", "BC" and
-	 * "CA", with direction "A" toward "B", undirected between "B" and "C" and
-	 * directed from "A" to "C".
+	 * Return a string containing a file defining a simple triangle made of three
+	 * nodes named "A", "B" and "C", tied with three edges "AB", "BC" and "CA", with
+	 * direction "A" toward "B", undirected between "B" and "C" and directed from
+	 * "A" to "C".
 	 */
 	public abstract String aDirectedTriangle();
 
 	/**
-	 * Return a string containing the triangle of
-	 * {@link #anUndirectedTriangle()}, but each element has attributes :
+	 * Return a string containing the triangle of {@link #anUndirectedTriangle()},
+	 * but each element has attributes :
 	 * <ul>
 	 * <li>node "A" as three attributes</li>
 	 * </ul>
@@ -308,6 +307,6 @@ public abstract class TestFileSourceBase {
 		assertEquals("foo", B.getAttribute("bb"));
 		assertEquals("bar", B.getAttribute("cc"));
 
-		assertEquals(1.234, C.getAttribute("aaa"));
+		assertEquals(1.234, C.getNumber("aaa"), 0);
 	}
 }

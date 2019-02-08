@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,12 +22,21 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2009-02-19
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Stefan Balev <stefan.balev@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.graph.implementations;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -52,8 +54,7 @@ public class MultiNode extends AdjacencyListNode {
 
 	public MultiNode(AbstractGraph graph, String id) {
 		super(graph, id);
-		neighborMap = new HashMap<AbstractNode, List<AbstractEdge>>(
-				4 * INITIAL_EDGE_CAPACITY / 3 + 1);
+		neighborMap = new HashMap<AbstractNode, List<AbstractEdge>>(4 * INITIAL_EDGE_CAPACITY / 3 + 1);
 	}
 
 	// *** Helpers ***
@@ -67,8 +68,7 @@ public class MultiNode extends AdjacencyListNode {
 
 		for (AbstractEdge e : l) {
 			char etype = edgeType(e);
-			if ((type != I_EDGE || etype != O_EDGE)
-					&& (type != O_EDGE || etype != I_EDGE))
+			if ((type != I_EDGE || etype != O_EDGE) && (type != O_EDGE || etype != I_EDGE))
 				return (T) e;
 		}
 		return null;
@@ -76,7 +76,7 @@ public class MultiNode extends AdjacencyListNode {
 
 	@Override
 	protected void removeEdge(int i) {
-		AbstractNode opposite = edges[i].getOpposite(this);
+		AbstractNode opposite = (AbstractNode) edges[i].getOpposite(this);
 		List<AbstractEdge> l = neighborMap.get(opposite);
 		l.remove(edges[i]);
 		if (l.isEmpty())
@@ -88,7 +88,7 @@ public class MultiNode extends AdjacencyListNode {
 
 	@Override
 	protected boolean addEdgeCallback(AbstractEdge edge) {
-		AbstractNode opposite = edge.getOpposite(this);
+		AbstractNode opposite = (AbstractNode) edge.getOpposite(this);
 		List<AbstractEdge> l = neighborMap.get(opposite);
 		if (l == null) {
 			l = new LinkedList<AbstractEdge>();
@@ -105,13 +105,6 @@ public class MultiNode extends AdjacencyListNode {
 	}
 
 	// *** Others ***
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T extends Node> Iterator<T> getNeighborNodeIterator() {
-		return (Iterator<T>) Collections.unmodifiableSet(neighborMap.keySet())
-				.iterator();
-	}
 
 	@SuppressWarnings("unchecked")
 	public <T extends Edge> Collection<T> getEdgeSetBetween(Node node) {

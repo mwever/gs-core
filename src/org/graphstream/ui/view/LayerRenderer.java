@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,13 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2010-02-18
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.ui.view;
 
@@ -56,17 +56,13 @@ public interface LayerRenderer<G> {
 	 * @param heightPx
 	 *            The height in pixels of the view port.
 	 * @param minXGu
-	 *            The minimum visible point abscissa of the graph in graph
-	 *            units.
+	 *            The minimum visible point abscissa of the graph in graph units.
 	 * @param minYGu
-	 *            The minimum visible point ordinate of the graph in graph
-	 *            units.
+	 *            The minimum visible point ordinate of the graph in graph units.
 	 * @param maxXGu
-	 *            The maximum visible point abscissa of the graph in graph
-	 *            units.
+	 *            The maximum visible point abscissa of the graph in graph units.
 	 * @param maxYGu
-	 *            The maximum visible point ordinate of the graph in graph
-	 *            units.
+	 *            The maximum visible point ordinate of the graph in graph units.
 	 */
 	void render(G graphics, GraphicGraph graph, double px2Gu, int widthPx, int heightPx, double minXGu, double minYGu,
 			double maxXGu, double maxYGu);

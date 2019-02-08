@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,6 +22,14 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2009-05-07
+ * 
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.stream.file;
 
 import java.io.IOException;
@@ -41,22 +42,26 @@ import java.util.HashSet;
  * Reader for the "ncol" graph format.
  * 
  * <p>
- * The ncol graph format is a simple format where each line
- * describes an edge by giving two node names and an optional third
- * parameters giving the edge weight. The nodes are created implicitly.
+ * The ncol graph format is a simple format where each line describes an edge by
+ * giving two node names and an optional third parameters giving the edge
+ * weight. The nodes are created implicitly.
  * </p>
  * 
  * <p>
  * Also, the format does not specify any direction for edges. By default all
- * edges are undirected. It is specified in the format that you will never
- * have directed edges and that the lines:
+ * edges are undirected. It is specified in the format that you will never have
+ * directed edges and that the lines:
+ * 
  * <pre>
  *     node1Name node2Name
  * </pre>
+ * 
  * and
+ * 
  * <pre>
  *     node2Name node1Name
  * </pre>
+ * 
  * Cannot both appear at the same time in a file.
  * </p>
  * 
@@ -67,12 +72,13 @@ import java.util.HashSet;
  * issue "add node" events only when a node is encountered for the first time.
  * </p>
  * 
- * </p> This hash set consumes memory, but is the only way to ensure "add node"
+ * </p>
+ * This hash set consumes memory, but is the only way to ensure "add node"
  * events are correctly issued. If this input is directly connected to a graph,
  * as graphs can create non-existing nodes automatically, you can disable the
- * hash set of nodes using the constructor
- * {@link #FileSourceNCol(boolean)}, and giving "false" for the first
- * argument. </p>
+ * hash set of nodes using the constructor {@link #FileSourceNCol(boolean)}, and
+ * giving "false" for the first argument.
+ * </p>
  * 
  * The usual file name extension for this format is ".ncol".
  */
@@ -130,31 +136,31 @@ public class FileSourceNCol extends FileSourceBase {
 
 			String id2 = getWordOrNumberOrStringOrEolOrEof();
 
-			if(!id2.equals("EOL") && !id2.equals("EOF")) {
+			if (!id2.equals("EOL") && !id2.equals("EOF")) {
 				// Loops are not accepted by the format.
 				if (!id1.equals(id2)) {
 					// There may be a weight.
 					String weight = getWordOrNumberOrStringOrEolOrEof();
 					double w = 0.0;
-					
-					if(weight.equals("EOL") || weight.equals("EOF")) {
+
+					if (weight.equals("EOL") || weight.equals("EOF")) {
 						weight = null;
 						pushBack();
 					} else {
 						try {
 							w = Double.parseDouble(weight);
-						} catch(Exception e) {
+						} catch (Exception e) {
 							throw new IOException(String.format("cannot transform weight %s into a number", weight));
 						}
 					}
-					
+
 					String edgeId = Integer.toString(edgeid++);
 
 					declareNode(id2);
 					sendEdgeAdded(graphName, edgeId, id1, id2, false);
-					
-					if(weight != null)
-						sendEdgeAttributeAdded(graphName, edgeId, "weight", (Double)w);
+
+					if (weight != null)
+						sendEdgeAttributeAdded(graphName, edgeId, "weight", (Double) w);
 				}
 			} else {
 				throw new IOException("unexpected EOL or EOF");
@@ -201,8 +207,7 @@ public class FileSourceNCol extends FileSourceBase {
 		st.eolIsSignificant(true);
 		st.commentChar('#');
 
-		graphName = String.format("%s_%d", graphName,
-				System.currentTimeMillis() + ((long) Math.random() * 10));
+		graphName = String.format("%s_%d", graphName, System.currentTimeMillis() + ((long) Math.random() * 10));
 	}
 
 	public boolean nextStep() throws IOException {

@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,6 +22,14 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2012-06-19
+ * 
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.ui.layout.springbox.implementations;
 
 import java.util.Random;
@@ -50,15 +51,15 @@ public class LinLog extends BarnesHutLayout {
 	protected double rFactor = 1f;
 
 	protected boolean edgeBased = true;
-	
+
 	protected double maxR = 0.5;
-	
+
 	protected double a = 0;
-	
+
 	protected double r = -1.2;
-	
-	//protected
-	
+
+	// protected
+
 	/**
 	 * New "LinLog" 2D Barnes-Hut simulation.
 	 */
@@ -89,7 +90,7 @@ public class LinLog extends BarnesHutLayout {
 		setQuality(1);
 		force = 3;
 	}
-	
+
 	public void configure(double a, double r, boolean edgeBased, double force) {
 		this.a = a;
 		this.r = r;
@@ -112,24 +113,24 @@ public class LinLog extends BarnesHutLayout {
 			viewZone = k;
 		}
 	}
-	
+
 	@Override
 	public void compute() {
-		if(viewZone > 0)
-			viewZone = area/1.5;
+		if (viewZone > 0)
+			viewZone = area / 1.5;
 		super.compute();
 	}
 
 	@Override
 	protected void chooseNodePosition(NodeParticle n0, NodeParticle n1) {
-//		double delta = k * 0.1;
-//		if (n0.getEdges().size() == 1 && n1.getEdges().size() > 1) {
-//			org.miv.pherd.geom.Point3 pos = n1.getPosition();
-//			n0.moveTo(pos.x + delta, pos.y + delta, pos.z + delta);
-//		} else if (n1.getEdges().size() == 1 && n0.getEdges().size() > 1) {
-//			org.miv.pherd.geom.Point3 pos = n0.getPosition();
-//			n1.moveTo(pos.x + delta, pos.y + delta, pos.z + delta);
-//		}
+		// double delta = k * 0.1;
+		// if (n0.getEdges().size() == 1 && n1.getEdges().size() > 1) {
+		// org.miv.pherd.geom.Point3 pos = n1.getPosition();
+		// n0.moveTo(pos.x + delta, pos.y + delta, pos.z + delta);
+		// } else if (n1.getEdges().size() == 1 && n0.getEdges().size() > 1) {
+		// org.miv.pherd.geom.Point3 pos = n0.getPosition();
+		// n1.moveTo(pos.x + delta, pos.y + delta, pos.z + delta);
+		// }
 	}
 
 	@Override

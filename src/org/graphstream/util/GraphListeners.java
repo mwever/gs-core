@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,13 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2013-09-20
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.util;
 
@@ -135,7 +135,7 @@ public class GraphListeners extends SourceBase implements Pipe {
 				passYourWay = true;
 
 				try {
-					edge.addAttribute(attribute, value);
+					edge.setAttribute(attribute, value);
 				} finally {
 					passYourWay = false;
 				}
@@ -163,7 +163,7 @@ public class GraphListeners extends SourceBase implements Pipe {
 					oldValue = edge.getAttribute(attribute);
 
 				try {
-					edge.changeAttribute(attribute, newValue);
+					edge.setAttribute(attribute, newValue);
 				} finally {
 					passYourWay = false;
 				}
@@ -207,7 +207,7 @@ public class GraphListeners extends SourceBase implements Pipe {
 			passYourWay = true;
 
 			try {
-				g.addAttribute(attribute, value);
+				g.setAttribute(attribute, value);
 			} finally {
 				passYourWay = false;
 			}
@@ -231,7 +231,7 @@ public class GraphListeners extends SourceBase implements Pipe {
 				oldValue = g.getAttribute(attribute);
 
 			try {
-				g.changeAttribute(attribute, newValue);
+				g.setAttribute(attribute, newValue);
 			} finally {
 				passYourWay = false;
 			}
@@ -272,7 +272,7 @@ public class GraphListeners extends SourceBase implements Pipe {
 				passYourWay = true;
 
 				try {
-					node.addAttribute(attribute, value);
+					node.setAttribute(attribute, value);
 				} finally {
 					passYourWay = false;
 				}
@@ -300,7 +300,7 @@ public class GraphListeners extends SourceBase implements Pipe {
 					oldValue = node.getAttribute(attribute);
 
 				try {
-					node.changeAttribute(attribute, newValue);
+					node.setAttribute(attribute, newValue);
 				} finally {
 					passYourWay = false;
 				}
@@ -356,8 +356,8 @@ public class GraphListeners extends SourceBase implements Pipe {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.graphstream.stream.ElementSink#edgeRemoved(java.lang.String,
-	 * long, java.lang.String)
+	 * @see org.graphstream.stream.ElementSink#edgeRemoved(java.lang.String, long,
+	 * java.lang.String)
 	 */
 	public void edgeRemoved(String sourceId, long timeId, String edgeId) {
 		if (sinkTime.isNewEvent(sourceId, timeId)) {
@@ -375,8 +375,7 @@ public class GraphListeners extends SourceBase implements Pipe {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.graphstream.stream.ElementSink#graphCleared(java.lang.String,
-	 * long)
+	 * @see org.graphstream.stream.ElementSink#graphCleared(java.lang.String, long)
 	 */
 	public void graphCleared(String sourceId, long timeId) {
 		if (sinkTime.isNewEvent(sourceId, timeId)) {
@@ -414,8 +413,8 @@ public class GraphListeners extends SourceBase implements Pipe {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.graphstream.stream.ElementSink#nodeRemoved(java.lang.String,
-	 * long, java.lang.String)
+	 * @see org.graphstream.stream.ElementSink#nodeRemoved(java.lang.String, long,
+	 * java.lang.String)
 	 */
 	public void nodeRemoved(String sourceId, long timeId, String nodeId) {
 		if (sinkTime.isNewEvent(sourceId, timeId)) {
@@ -435,8 +434,8 @@ public class GraphListeners extends SourceBase implements Pipe {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.graphstream.stream.ElementSink#stepBegins(java.lang.String,
-	 * long, double)
+	 * @see org.graphstream.stream.ElementSink#stepBegins(java.lang.String, long,
+	 * double)
 	 */
 	public void stepBegins(String sourceId, long timeId, double step) {
 		if (sinkTime.isNewEvent(sourceId, timeId)) {

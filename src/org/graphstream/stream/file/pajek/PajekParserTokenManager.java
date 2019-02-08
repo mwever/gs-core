@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,14 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2011-07-08
+ * 
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.stream.file.pajek;
 
@@ -630,8 +631,7 @@ public class PajekParserTokenManager implements PajekParserConstants {
 		return jjMoveNfa_0(state, pos + 1);
 	}
 
-	static final long[] jjbitVec0 = { 0x0L, 0x0L, 0xffffffffffffffffL,
-			0xffffffffffffffffL };
+	static final long[] jjbitVec0 = { 0x0L, 0x0L, 0xffffffffffffffffL, 0xffffffffffffffffL };
 
 	private int jjMoveNfa_0(int startState, int curPos) {
 		int startsAt = 0;
@@ -879,12 +879,10 @@ public class PajekParserTokenManager implements PajekParserConstants {
 	static final int[] jjnextStates = { 21, 22, 23, 17, 19, 2, 3, 5, 6, 8, 9, };
 
 	/** Token literal values. */
-	public static final String[] jjstrLiteralImages = { "", null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, };
+	public static final String[] jjstrLiteralImages = { "", null, null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, };
 
 	/** Lexer state names. */
 	public static final String[] lexStateNames = { "DEFAULT", };
@@ -898,8 +896,7 @@ public class PajekParserTokenManager implements PajekParserConstants {
 	/** Constructor. */
 	public PajekParserTokenManager(SimpleCharStream stream) {
 		if (SimpleCharStream.staticFlag)
-			throw new Error(
-					"ERROR: Cannot use a static CharStream class with a non-static lexical analyzer.");
+			throw new Error("ERROR: Cannot use a static CharStream class with a non-static lexical analyzer.");
 		input_stream = stream;
 	}
 
@@ -933,8 +930,7 @@ public class PajekParserTokenManager implements PajekParserConstants {
 	/** Switch to specified lex state. */
 	public void SwitchTo(int lexState) {
 		if (lexState >= 1 || lexState < 0)
-			throw new TokenMgrError("Error: Ignoring invalid lexical state : "
-					+ lexState + ". State unchanged.",
+			throw new TokenMgrError("Error: Ignoring invalid lexical state : " + lexState + ". State unchanged.",
 					TokenMgrError.INVALID_LEXICAL_STATE);
 		else
 			curLexState = lexState;
@@ -1024,8 +1020,7 @@ public class PajekParserTokenManager implements PajekParserConstants {
 				input_stream.backup(1);
 				error_after = curPos <= 1 ? "" : input_stream.GetImage();
 			}
-			throw new TokenMgrError(EOFSeen, curLexState, error_line,
-					error_column, error_after, curChar,
+			throw new TokenMgrError(EOFSeen, curLexState, error_line, error_column, error_after, curChar,
 					TokenMgrError.LEXICAL_ERROR);
 		}
 	}

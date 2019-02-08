@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,6 +22,15 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2009-02-19
+ * 
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.stream.file;
 
 import java.io.BufferedReader;
@@ -50,8 +52,8 @@ import org.graphstream.util.parser.ParserFactory;
  * <p>
  * The DGS file format is especially designed for storing dynamic graph
  * definitions into a file. More information about the DGS file format will be
- * found on the GraphStream web site: <a
- * href="http://graphstream-project.org/">http://graphstream-project.org/</a>
+ * found on the GraphStream web site:
+ * <a href="http://graphstream-project.org/">http://graphstream-project.org/</a>
  * </p>
  * 
  * The usual file name extension used for this format is ".dgs".
@@ -116,7 +118,7 @@ public class FileSourceDGS extends FileSourceParser {
 					//
 					e2.printStackTrace();
 				}
-				
+
 				is = new FileInputStream(filename);
 			}
 		}

@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,14 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2011-10-04
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.stream.file.dgs;
 
@@ -194,13 +195,11 @@ public class DGSParser implements Parser {
 			dgs[i] = nextChar();
 
 		if (dgs[0] != 'D' || dgs[1] != 'G' || dgs[2] != 'S')
-			throw parseException(String.format(
-					"bad magic header, 'DGS' expected, got '%c%c%c'", dgs[0],
-					dgs[1], dgs[2]));
+			throw parseException(
+					String.format("bad magic header, 'DGS' expected, got '%c%c%c'", dgs[0], dgs[1], dgs[2]));
 
 		if (dgs[3] != '0' || dgs[4] != '0' || dgs[5] < '0' || dgs[5] > '5')
-			throw parseException(String.format("bad version \"%c%c%c\"",
-					dgs[0], dgs[1], dgs[2]));
+			throw parseException(String.format("bad version \"%c%c%c\"", dgs[0], dgs[1], dgs[2]));
 
 		if (nextChar() != '\n')
 			throw parseException("end-of-line is missing");
@@ -338,8 +337,7 @@ public class DGSParser implements Parser {
 		return r;
 	}
 
-	protected void attributes(ElementType type, String id) throws IOException,
-			ParseException {
+	protected void attributes(ElementType type, String id) throws IOException, ParseException {
 		int c;
 
 		skipWhitespaces();
@@ -353,8 +351,7 @@ public class DGSParser implements Parser {
 		pushback(c);
 	}
 
-	protected void attribute(ElementType type, String elementId)
-			throws IOException, ParseException {
+	protected void attribute(ElementType type, String elementId) throws IOException, ParseException {
 		String key;
 		Object value = null;
 		int c;
@@ -389,8 +386,7 @@ public class DGSParser implements Parser {
 			}
 		}
 
-		dgs.sendAttributeChangedEvent(sourceId, elementId, type, key, ch, null,
-				value);
+		dgs.sendAttributeChangedEvent(sourceId, elementId, type, key, ch, null, value);
 	}
 
 	protected Object value(boolean array) throws IOException, ParseException {
@@ -497,8 +493,7 @@ public class DGSParser implements Parser {
 		for (int i = 0; i < 6; i++) {
 			c = nextChar();
 
-			if ((c >= 0 && c <= '9') || (c >= 'a' && c <= 'f')
-					|| (c >= 'A' && c <= 'F'))
+			if ((c >= 0 && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'))
 				hexa.appendCodePoint(c);
 			else
 				throw parseException("hexadecimal value expected");
@@ -510,14 +505,12 @@ public class DGSParser implements Parser {
 
 		c = nextChar();
 
-		if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f')
-				|| (c >= 'A' && c <= 'F')) {
+		if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')) {
 			hexa.appendCodePoint(c);
 
 			c = nextChar();
 
-			if ((c >= 0 && c <= '9') || (c >= 'a' && c <= 'f')
-					|| (c >= 'A' && c <= 'F'))
+			if ((c >= 0 && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'))
 				hexa.appendCodePoint(c);
 			else
 				throw parseException("hexadecimal value expected");
@@ -551,8 +544,7 @@ public class DGSParser implements Parser {
 			c = nextChar();
 
 			if (c != ARRAY_CLOSE && c != ',')
-				throw parseException("'%c' or ',' expected, got '%c'",
-						ARRAY_CLOSE, c);
+				throw parseException("'%c' or ',' expected, got '%c'", ARRAY_CLOSE, c);
 
 			if (c == ',') {
 				skipWhitespaces();
@@ -603,8 +595,7 @@ public class DGSParser implements Parser {
 			c = nextChar();
 
 			if (c != MAP_CLOSE && c != ',')
-				throw parseException("'%c' or ',' expected, got '%c'",
-						MAP_CLOSE, c);
+				throw parseException("'%c' or ',' expected, got '%c'", MAP_CLOSE, c);
 
 			if (c == ',') {
 				skipWhitespaces();
@@ -776,8 +767,8 @@ public class DGSParser implements Parser {
 	}
 
 	/*
-	 * protected long timestamp() throws IOException, ParseException { int c;
-	 * String time;
+	 * protected long timestamp() throws IOException, ParseException { int c; String
+	 * time;
 	 * 
 	 * c = nextChar(); pushback(c);
 	 * 
@@ -792,7 +783,7 @@ public class DGSParser implements Parser {
 	 */
 
 	protected ParseException parseException(String message, Object... args) {
-		return new ParseException(String.format(String.format(
-				"parse error at (%d;%d) : %s", line, column, message), args));
+		return new ParseException(
+				String.format(String.format("parse error at (%d;%d) : %s", line, column, message), args));
 	}
 }

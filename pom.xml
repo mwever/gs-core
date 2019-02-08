@@ -19,12 +19,6 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.sonatype.oss</groupId>
-		<artifactId>oss-parent</artifactId>
-		<version>7</version>
-	</parent>
-
 	<groupId>org.graphstream</groupId>
 	<artifactId>gs-core</artifactId>
 	<version>2.0.0-SNAPSHOT</version>
@@ -34,7 +28,7 @@
 		The GraphStream library. With GraphStream you deal with
 		graphs. Static and Dynamic. You create them from scratch, from a file
 		or any source. You display and render them. This is the core package
-		that contains the minimal needed to read, display and write a graph.
+		that contains the minimal needed to read and write a graph.
 	</description>
 	<url>http://graphstream-project.org</url>
 
@@ -55,65 +49,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-	<!-- The GraphStream Team. Members are sorted in alphabetically. -->
-	<developers>
-		<developer>
-			<id>sbalev</id>
-			<name>Stefan Balev</name>
-			<email>stefan.balev@graphstream-project.org</email>
-			<organization>LITIS</organization>
-			<organizationUrl>http://www.litislab.eu</organizationUrl>
-		</developer>
-
-		<developer>
-			<id>jbaudry</id>
-			<name>Julien Baudry</name>
-			<email>julien.baudry@graphstream-project.org</email>
-			<organization>LITIS</organization>
-			<organizationUrl>http://www.litislab.eu</organizationUrl>
-		</developer>
-
-		<developer>
-			<id>adutot</id>
-			<name>Antoine Dutot</name>
-			<email>antoine.dutot@graphstream-project.org</email>
-			<organization>LITIS</organization>
-			<organizationUrl>http://www.litislab.eu</organizationUrl>
-		</developer>
-
-		<developer>
-			<id>ypigne</id>
-			<name>Yoann Pigné</name>
-			<email>yoann.pigne@graphstream-project.org</email>
-			<organization>University of Luxembourg</organization>
-			<organizationUrl>http://www.uni.lu</organizationUrl>
-		</developer>
-
-		<developer>
-			<id>gsavin</id>
-			<name>Guilhelm Savin</name>
-			<email>guilhelm.savin@graphstream-project.org</email>
-			<organization>LITIS</organization>
-			<organizationUrl>http://www.litislab.eu</organizationUrl>
-		</developer>
-	</developers>
-
-	<contributors>
-		<contributor>
-			<name>Frédéric Guinand</name>
-			<email>frederic.guinand@univ-lehavre.fr</email>
-			<organization>LITIS</organization>
-			<organizationUrl>http://www.litislab.eu</organizationUrl>
-		</contributor>
-
-		<contributor>
-			<name>Richard O. Legendi</name>
-			<email>richard.legendi@univ-lehavre.fr</email>
-			<organization>Eötvös Loránd University, Faculty of Informatics</organization>
-			<organizationUrl>http://people.inf.elte.hu/legendi/</organizationUrl>
-		</contributor>
-	</contributors>
-
 	<licenses>
 		<license>
 			<name>LGPL3</name>
@@ -128,28 +63,6 @@
 	</licenses>
 
 	<profiles>
-		<profile>
-			<!-- This profile includes classes of mbox2 and pherd project to create 
-				a fully usable jar. You need to have a valid gs-deps folder at the same hierarchic 
-				level that the one of your project with mbox2 and pherd compiled (mvn compile). -->
-			<id>nodeps</id>
-			<build>
-				<resources>
-					<resource>
-						<directory>../gs-deps/mbox2/target/classes</directory>
-						<includes>
-							<include>org/**/*.class</include>
-						</includes>
-					</resource>
-					<resource>
-						<directory>../gs-deps/pherd/target/classes</directory>
-						<includes>
-							<include>org/**/*.class</include>
-						</includes>
-					</resource>
-				</resources>
-			</build>
-		</profile>
 		<profile>
 			<!-- This profile has to be enabled when releasing the package. It will 
 				enable the sign phase. -->
@@ -207,10 +120,10 @@
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
-				<version>3.3</version>
+				<version>3.6.2</version>
 			</plugin>
 
 			<plugin>
@@ -227,7 +140,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.6</version>
+				<version>3.0.0</version>
 			</plugin>
 
 			<plugin>
@@ -253,13 +166,13 @@
 					<nonavbar>false</nonavbar>
 					<notree>false</notree>
 					<show>public</show>
-					<source>1.5</source>
+					<source>1.8</source>
 					<splitindex>true</splitindex>
 					<use>true</use>
 					<version>true</version>
 					<windowtitle>The GraphStream ${project.version} API</windowtitle>
 				</configuration>
-				<version>2.10.2</version>
+				<version>3.0.0-M1</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -270,7 +183,7 @@
 						<exclude>**/*$*</exclude>
 					</excludes>
 				</configuration>
-				<version>2.18.1</version>
+				<version>2.20</version>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
@@ -295,6 +208,33 @@
 						<goals>
 							<goal>check</goal>
 						</goals>
+						<configuration>
+							<rules>
+								<!-- TODO : Add rules to force code quality (e.g. % of coverage) -->
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<archive>
+					<manifest>
+						<mainClass>org.graphstream.util.GraphDiff</mainClass>
+					</manifest>
+					</archive>
+					<descriptorRefs>
+					<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+				<executions>
+					<execution>
+					<id>make-assembly</id> <!-- this is used for inheritance merges -->
+					<phase>prepare-package</phase> <!-- bind to the prepare-packaging phase so that it can be signed -->
+					<goals>
+						<goal>single</goal>
+					</goals>
 					</execution>
 				</executions>
 			</plugin>

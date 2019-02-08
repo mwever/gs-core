@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,6 +22,13 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2013-09-18
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.stream.file.gexf;
 
 import javax.xml.stream.XMLStreamException;
@@ -47,8 +47,7 @@ public class GEXFEdge implements GEXFElement {
 	GEXFAttValues attvalues;
 	GEXFSpells spells;
 
-	public GEXFEdge(GEXF root, String id, String source, String target,
-			boolean directed) {
+	public GEXFEdge(GEXF root, String id, String source, String target, boolean directed) {
 		this.root = root;
 
 		this.id = id;
@@ -75,8 +74,7 @@ public class GEXFEdge implements GEXFElement {
 		stream.stream.writeAttribute("label", label);
 		stream.stream.writeAttribute("source", source);
 		stream.stream.writeAttribute("target", target);
-		stream.stream.writeAttribute("type", directed ? "directed"
-				: "undirected");
+		stream.stream.writeAttribute("type", directed ? "directed" : "undirected");
 
 		if (!Double.isNaN(weight))
 			stream.stream.writeAttribute("weight", Double.toString(weight));

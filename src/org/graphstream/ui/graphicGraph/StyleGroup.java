@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,14 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2009-07-05
+ * 
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.ui.graphicGraph;
 
@@ -111,15 +112,14 @@ public class StyleGroup extends Style implements Iterable<Element> {
 	protected StyleGroupSet.EventSet eventSet;
 
 	/**
-	 * Set of elements whose style is actually modified individually by an
-	 * event. Such elements must be rendered one by one, not in groups like
-	 * others.
+	 * Set of elements whose style is actually modified individually by an event.
+	 * Such elements must be rendered one by one, not in groups like others.
 	 */
 	protected HashMap<Element, ElementEvents> eventsFor;
 
 	/**
-	 * Set of elements that have some dynamic style values. Such elements must
-	 * be rendered one by one, not in groups, like others.
+	 * Set of elements that have some dynamic style values. Such elements must be
+	 * rendered one by one, not in groups, like others.
 	 */
 	protected HashSet<Element> dynamicOnes;
 
@@ -155,8 +155,8 @@ public class StyleGroup extends Style implements Iterable<Element> {
 	 * @param firstElement
 	 *            The first element to construct the group.
 	 */
-	public StyleGroup(String identifier, Collection<Rule> rules,
-			Element firstElement, StyleGroupSet.EventSet eventSet) {
+	public StyleGroup(String identifier, Collection<Rule> rules, Element firstElement,
+			StyleGroupSet.EventSet eventSet) {
 		this.id = identifier;
 		this.rules.addAll(rules);
 		this.elements.put(firstElement.getId(), firstElement);
@@ -180,8 +180,7 @@ public class StyleGroup extends Style implements Iterable<Element> {
 	}
 
 	/**
-	 * Type of graph element concerned by this style (node, edge, sprite,
-	 * graph).
+	 * Type of graph element concerned by this style (node, edge, sprite, graph).
 	 * 
 	 * @return The type of the style group elements.
 	 */
@@ -190,9 +189,9 @@ public class StyleGroup extends Style implements Iterable<Element> {
 	}
 
 	/**
-	 * True if at least one of the style properties is dynamic (set according to
-	 * an attribute of the element to draw). Such elements cannot therefore be
-	 * drawn in a group operation, but one by one.
+	 * True if at least one of the style properties is dynamic (set according to an
+	 * attribute of the element to draw). Such elements cannot therefore be drawn in
+	 * a group operation, but one by one.
 	 * 
 	 * @return True if one property is dynamic.
 	 */
@@ -202,8 +201,8 @@ public class StyleGroup extends Style implements Iterable<Element> {
 
 	/**
 	 * If true this group contains some elements that are actually changed by an
-	 * event. Such elements cannot therefore be drawn in a group operation, but
-	 * one by one.
+	 * event. Such elements cannot therefore be drawn in a group operation, but one
+	 * by one.
 	 * 
 	 * @return True if the group contains some elements changed by an event.
 	 */
@@ -237,8 +236,8 @@ public class StyleGroup extends Style implements Iterable<Element> {
 	/**
 	 * Get the value of a given property.
 	 * 
-	 * This is a redefinition of the method in {@link Style} to consider the
-	 * fact a style group aggregates several style rules.
+	 * This is a redefinition of the method in {@link Style} to consider the fact a
+	 * style group aggregates several style rules.
 	 * 
 	 * @param property
 	 *            The style property the value is searched for.
@@ -326,15 +325,15 @@ public class StyleGroup extends Style implements Iterable<Element> {
 	}
 
 	/**
-	 * Iterable set of elements. This the complete set of elements contained in
-	 * this group without regard to the fact they are modified by an event or
-	 * are dynamic. If you plan to respect events or dynamic elements, you must
-	 * check the elements are not modified by events using
+	 * Iterable set of elements. This the complete set of elements contained in this
+	 * group without regard to the fact they are modified by an event or are
+	 * dynamic. If you plan to respect events or dynamic elements, you must check
+	 * the elements are not modified by events using
 	 * {@link #elementHasEvents(Element)} and are not dynamic by using
 	 * {@link #elementIsDynamic(Element)} and then draw modified elements using
-	 * {@link #elementsEvents()} and {@link #dynamicElements()}. But the easiest
-	 * way of drawing is to use first {@link #bulkElements()} for all non
-	 * dynamic non event elements, then the {@link #dynamicElements()} and
+	 * {@link #elementsEvents()} and {@link #dynamicElements()}. But the easiest way
+	 * of drawing is to use first {@link #bulkElements()} for all non dynamic non
+	 * event elements, then the {@link #dynamicElements()} and
 	 * {@link #elementsEvents()} to draw all dynamic and event elements.
 	 * 
 	 * @return All the elements in no particular order.
@@ -344,8 +343,8 @@ public class StyleGroup extends Style implements Iterable<Element> {
 	}
 
 	/**
-	 * Iterable set of elements that can be drawn in a bulk operation, that is
-	 * the subset of all elements that are not dynamic or modified by an event.
+	 * Iterable set of elements that can be drawn in a bulk operation, that is the
+	 * subset of all elements that are not dynamic or modified by an event.
 	 * 
 	 * @return The iterable set of bulk elements.
 	 */
@@ -355,8 +354,8 @@ public class StyleGroup extends Style implements Iterable<Element> {
 
 	/**
 	 * Subset of elements that are actually modified by one or more events. The
-	 * {@link ElementEvents} class contains the element and an array of events
-	 * that can be pushed on the style group set.
+	 * {@link ElementEvents} class contains the element and an array of events that
+	 * can be pushed on the style group set.
 	 * 
 	 * @return The subset of elements modified by one or more events.
 	 */
@@ -366,10 +365,10 @@ public class StyleGroup extends Style implements Iterable<Element> {
 
 	/**
 	 * Subset of elements that have dynamic style values and therefore must be
-	 * rendered one by one, not in groups like others. Even though elements
-	 * style can specify some dynamics, the elements must individually have
-	 * attributes that specify the dynamic value. If the elements do not have
-	 * these attributes they can be rendered in bulk operations.
+	 * rendered one by one, not in groups like others. Even though elements style
+	 * can specify some dynamics, the elements must individually have attributes
+	 * that specify the dynamic value. If the elements do not have these attributes
+	 * they can be rendered in bulk operations.
 	 * 
 	 * @return The subset of dynamic elements of the group.
 	 */
@@ -394,8 +393,8 @@ public class StyleGroup extends Style implements Iterable<Element> {
 	}
 
 	/**
-	 * Set of events for a given element or null if the element has not
-	 * currently occurring events.
+	 * Set of events for a given element or null if the element has not currently
+	 * occurring events.
 	 * 
 	 * @return A set of events or null if none occurring at that time.
 	 */
@@ -481,26 +480,28 @@ public class StyleGroup extends Style implements Iterable<Element> {
 	 */
 	protected void popEventFor(Element element, String event) {
 		if (elements.containsKey(element.getId())) {
-			ElementEvents evs = eventsFor.get(element);
+			if ( eventsFor != null ) {
+				ElementEvents evs = eventsFor.get(element);
+				
+				if (evs != null) {
+					evs.popEvent(event);
 
-			if (evs != null) {
-				evs.popEvent(event);
+					if (evs.eventCount() == 0)
+						eventsFor.remove(element);
+				}
 
-				if (evs.eventCount() == 0)
-					eventsFor.remove(element);
+				if (eventsFor.isEmpty())
+					eventsFor = null;
+	
 			}
-
-			if (eventsFor.isEmpty())
-				eventsFor = null;
 		}
 	}
 
 	/**
-	 * Before drawing an element that has events, use this method to activate
-	 * the events, the style values will be modified accordingly. Events for
-	 * this element must have been registered via
-	 * {@link #pushEventFor(Element, String)}. After rendering the
-	 * {@link #deactivateEvents()} MUST be called.
+	 * Before drawing an element that has events, use this method to activate the
+	 * events, the style values will be modified accordingly. Events for this
+	 * element must have been registered via {@link #pushEventFor(Element, String)}.
+	 * After rendering the {@link #deactivateEvents()} MUST be called.
 	 * 
 	 * @param element
 	 *            The element to push events for.
@@ -513,8 +514,8 @@ public class StyleGroup extends Style implements Iterable<Element> {
 	}
 
 	/**
-	 * De-activate any events activated for an element. This method MUST be
-	 * called if {@link #activateEventsFor(Element)} has been called.
+	 * De-activate any events activated for an element. This method MUST be called
+	 * if {@link #activateEventsFor(Element)} has been called.
 	 */
 	public void deactivateEvents() {
 		curEvents = null;
@@ -549,8 +550,8 @@ public class StyleGroup extends Style implements Iterable<Element> {
 	}
 
 	/**
-	 * Remove all graph elements of this group, and remove this group from the
-	 * group list of each style rule.
+	 * Remove all graph elements of this group, and remove this group from the group
+	 * list of each style rule.
 	 */
 	public void release() {
 		for (Rule rule : rules)
@@ -564,8 +565,7 @@ public class StyleGroup extends Style implements Iterable<Element> {
 	 */
 	@Override
 	public void setValue(String property, Object value) {
-		throw new RuntimeException(
-				"you cannot change the values of a style group.");
+		throw new RuntimeException("you cannot change the values of a style group.");
 	}
 
 	/**
@@ -767,8 +767,7 @@ public class StyleGroup extends Style implements Iterable<Element> {
 	}
 
 	/**
-	 * Iterator on the set of elements that have no event or dynamic style
-	 * values.
+	 * Iterator on the set of elements that have no event or dynamic style values.
 	 */
 	protected class BulkIterator implements Iterator<Element> {
 		/**
@@ -782,8 +781,8 @@ public class StyleGroup extends Style implements Iterable<Element> {
 		Element next;
 
 		/**
-		 * New bulk iterator positioned on the first element with no event or
-		 * dynamic style attribute.
+		 * New bulk iterator positioned on the first element with no event or dynamic
+		 * style attribute.
 		 * 
 		 * @param iterator
 		 *            Iterator on the set of all elements.
@@ -825,8 +824,7 @@ public class StyleGroup extends Style implements Iterable<Element> {
 		}
 
 		public void remove() {
-			throw new UnsupportedOperationException(
-					"this iterator does not allows removing elements");
+			throw new UnsupportedOperationException("this iterator does not allows removing elements");
 		}
 	}
 }

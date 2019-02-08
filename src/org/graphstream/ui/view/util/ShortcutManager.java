@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,26 +22,34 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2009-07-26
+ * 
+ * @author Alex Bowen <bowen.a@gmail.com>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ */
 package org.graphstream.ui.view.util;
 
 import org.graphstream.ui.graphicGraph.GraphicGraph;
 import org.graphstream.ui.view.View;
 
-import java.awt.event.KeyListener;
-
 /**
  * Utility to centralise the shortcuts and actions for all view instances.
  */
-public interface ShortcutManager extends KeyListener {
+public interface ShortcutManager {
 	/**
 	 * Make the manager active on the given graph and view.
+	 * 
 	 * @param graph
 	 *            The graph to control.
 	 * @param view
 	 *            The view to control.
 	 */
 	void init(GraphicGraph graph, View view);
-	
+
 	/**
 	 * Release the links between this manager and the view and the graph.
 	 */

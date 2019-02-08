@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,16 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2009-12-22
+ * 
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Alex Bowen <bowen.a@gmail.com>
+ * @author kitskub <kitskub@gmail.com>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.ui.geom;
 
@@ -94,28 +97,34 @@ public class Point3 extends Point2 implements java.io.Serializable {
 	public Point3(Vector3 vec) {
 		copy(vec);
 	}
-	
+
 	public Point3(float data[]) {
 		this(0, data);
 	}
-	
+
 	public Point3(double data[]) {
 		this(0, data);
 	}
 
 	public Point3(int start, float data[]) {
-		if(data != null) {
-			if(data.length>start+0) x = data[start+0];
-			if(data.length>start+1) y = data[start+1];
-			if(data.length>start+2) z = data[start+2];
+		if (data != null) {
+			if (data.length > start + 0)
+				x = data[start + 0];
+			if (data.length > start + 1)
+				y = data[start + 1];
+			if (data.length > start + 2)
+				z = data[start + 2];
 		}
 	}
-	
+
 	public Point3(int start, double data[]) {
-		if(data != null) {
-			if(data.length>start+0) x = data[start+0];
-			if(data.length>start+1) y = data[start+1];
-			if(data.length>start+2) z = data[start+2];
+		if (data != null) {
+			if (data.length > start + 0)
+				x = data[start + 0];
+			if (data.length > start + 1)
+				y = data[start + 1];
+			if (data.length > start + 2)
+				z = data[start + 2];
 		}
 	}
 
@@ -141,14 +150,13 @@ public class Point3 extends Point2 implements java.io.Serializable {
 	// }
 
 	/**
-	 * Create a new point linear interpolation of this and <code>other</code>.
-	 * The new point is located between this and <code>other</code> if
+	 * Create a new point linear interpolation of this and <code>other</code>. The
+	 * new point is located between this and <code>other</code> if
 	 * <code>factor</code> is between 0 and 1 (0 yields this point, 1 yields the
 	 * <code>other</code> point).
 	 */
 	public Point3 interpolate(Point3 other, double factor) {
-		Point3 p = new Point3(x + ((other.x - x) * factor), y
-				+ ((other.y - y) * factor), z + ((other.z - z) * factor));
+		Point3 p = new Point3(x + ((other.x - x) * factor), y + ((other.y - y) * factor), z + ((other.z - z) * factor));
 
 		return p;
 	}
@@ -329,41 +337,33 @@ public class Point3 extends Point2 implements java.io.Serializable {
 		return buf.toString();
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		if (!super.equals(o)) {
+			return false;
+		}
 
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o)
-        {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass())
-        {
-            return false;
-        }
-        if (!super.equals(o))
-        {
-            return false;
-        }
+		Point3 point3 = (Point3) o;
 
-        Point3 point3 = (Point3) o;
+		if (Double.compare(point3.z, z) != 0) {
+			return false;
+		}
 
-        if (Double.compare(point3.z, z) != 0)
-        {
-            return false;
-        }
+		return true;
+	}
 
-        return true;
-    }
-
-
-    @Override
-    public int hashCode()
-    {
-        int result = super.hashCode();
-        long temp;
-        temp = Double.doubleToLongBits(z);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        return result;
-    }
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		long temp;
+		temp = Double.doubleToLongBits(z);
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
 }

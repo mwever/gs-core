@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,16 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2009-02-19
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author kitskub <kitskub@gmail.com>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.ui.layout;
 
@@ -72,8 +75,8 @@ import org.graphstream.ui.geom.Point3;
  * </p>
  * 
  * <p>
- * To be notified of the layout changes dynamically, you must register as a
- * sink of the layout.
+ * To be notified of the layout changes dynamically, you must register as a sink
+ * of the layout.
  * </p>
  * 
  * <p>
@@ -90,8 +93,8 @@ public interface Layout extends Pipe {
 	String getLayoutAlgorithmName();
 
 	/**
-	 * How many nodes moved during the last step?. When this method returns
-	 * zero, the layout stabilized.
+	 * How many nodes moved during the last step?. When this method returns zero,
+	 * the layout stabilized.
 	 */
 	int getNodeMovedCount();
 
@@ -150,9 +153,9 @@ public interface Layout extends Pipe {
 	void clear();
 
 	/**
-	 * The general "speed" of the algorithm. For some algorithm this will have
-	 * no effect. For most "dynamic" algorithms, this change the way iterations
-	 * toward stabilization are done.
+	 * The general "speed" of the algorithm. For some algorithm this will have no
+	 * effect. For most "dynamic" algorithms, this change the way iterations toward
+	 * stabilization are done.
 	 * 
 	 * @param value
 	 *            A number in [0..1].
@@ -164,21 +167,21 @@ public interface Layout extends Pipe {
 	 * 
 	 * <p>
 	 * The stabilization is a number between 0 and 1 that indicates how close to
-	 * stabilization (no nodes need to move) the layout is. The value 1 means
-	 * the layout is fully stabilized. Naturally this is often only an
-	 * indication only, for some algorithms, it is difficult to determine if the
-	 * layout is correct or acceptable enough. You can get the actual
-	 * stabilization limit using {@link #getStabilizationLimit()}. You can get
-	 * the actual stabilization using {@link #getStabilization()}.
+	 * stabilization (no nodes need to move) the layout is. The value 1 means the
+	 * layout is fully stabilized. Naturally this is often only an indication only,
+	 * for some algorithms, it is difficult to determine if the layout is correct or
+	 * acceptable enough. You can get the actual stabilization limit using
+	 * {@link #getStabilizationLimit()}. You can get the actual stabilization using
+	 * {@link #getStabilization()}.
 	 * </p>
 	 * 
 	 * <p>
 	 * Be careful, most layout classes do not use the stabilization limit, this
 	 * number is mostly used the process that control the layout, like the
 	 * {@link LayoutRunner} for example. The stabilization limit is only an
-	 * indication with a default set for each layout algorithm. However this
-	 * default can be changed using this method, or by storing on the graph an
-	 * attribute "layout.stabilization-limit" (or "layout.stabilisation-limit").
+	 * indication with a default set for each layout algorithm. However this default
+	 * can be changed using this method, or by storing on the graph an attribute
+	 * "layout.stabilization-limit" (or "layout.stabilisation-limit").
 	 * </p>
 	 * 
 	 * <p>
@@ -188,14 +191,14 @@ public interface Layout extends Pipe {
 	 * </p>
 	 * 
 	 * @param value
-	 *            The new stabilization limit, 0 means no need to stabilize.
-	 *            Else a value larger than zero or equal to 1 is accepted.
+	 *            The new stabilization limit, 0 means no need to stabilize. Else a
+	 *            value larger than zero or equal to 1 is accepted.
 	 */
 	void setStabilizationLimit(double value);
 
 	/**
-	 * Set the overall quality level, a number between 0 and 1 with 1 the
-	 * highest quality available, but often with a slower computation.
+	 * Set the overall quality level, a number between 0 and 1 with 1 the highest
+	 * quality available, but often with a slower computation.
 	 * 
 	 * @param qualityLevel
 	 *            The quality level, a number between 0 and 1.
@@ -203,10 +206,10 @@ public interface Layout extends Pipe {
 	void setQuality(double qualityLevel);
 
 	/**
-	 * If true, node informations messages are sent for every node. This is
-	 * mainly for debugging and slows down the process a lot. The contents of
-	 * the node information is specific to the algorithm, and sent via a
-	 * specific "layout.info" attribute.
+	 * If true, node informations messages are sent for every node. This is mainly
+	 * for debugging and slows down the process a lot. The contents of the node
+	 * information is specific to the algorithm, and sent via a specific
+	 * "layout.info" attribute.
 	 * 
 	 * @param send
 	 *            If true, send node informations to a "layout.info" attribute.
@@ -214,14 +217,14 @@ public interface Layout extends Pipe {
 	void setSendNodeInfos(boolean send);
 
 	/**
-	 * Add a random vector whose length is 10% of the size of the graph to all
-	 * node positions.
+	 * Add a random vector whose length is 10% of the size of the graph to all node
+	 * positions.
 	 */
 	void shake();
 
 	/**
-	 * Move a node by force to a new location. It is preferable to first freeze
-	 * the node before moving it by force, and then un-freeze it.
+	 * Move a node by force to a new location. It is preferable to first freeze the
+	 * node before moving it by force, and then un-freeze it.
 	 * 
 	 * @param id
 	 *            The node identifier.
@@ -235,8 +238,8 @@ public interface Layout extends Pipe {
 	void moveNode(String id, double x, double y, double z);
 
 	/**
-	 * Freeze or un-freeze a node. The freezed node position will not be changed
-	 * by the algorithm until un-freezed.
+	 * Freeze or un-freeze a node. The freezed node position will not be changed by
+	 * the algorithm until un-freezed.
 	 * 
 	 * @param id
 	 *            The node identifier.
@@ -249,10 +252,10 @@ public interface Layout extends Pipe {
 	 * Method to call repeatedly to compute the layout.
 	 * 
 	 * <p>
-	 * This method implements the layout algorithm proper. It must be called in
-	 * a loop, until the layout stabilizes. You can know if the layout is stable
-	 * by using the {@link #getNodeMovedCount()} method that returns the number
-	 * of node that have moved during the last call to step().
+	 * This method implements the layout algorithm proper. It must be called in a
+	 * loop, until the layout stabilizes. You can know if the layout is stable by
+	 * using the {@link #getNodeMovedCount()} method that returns the number of node
+	 * that have moved during the last call to step().
 	 * </p>
 	 * 
 	 * <p>

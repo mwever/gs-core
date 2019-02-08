@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,6 +22,15 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2009-03-22
+ * 
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.stream;
 
 /**
@@ -50,8 +52,7 @@ public interface AttributeSink {
 	 * @param value
 	 *            The attribute new value.
 	 */
-	void graphAttributeAdded(String sourceId, long timeId, String attribute,
-			Object value);
+	void graphAttributeAdded(String sourceId, long timeId, String attribute, Object value);
 
 	/**
 	 * A graph attribute was changed.
@@ -65,8 +66,7 @@ public interface AttributeSink {
 	 * @param newValue
 	 *            The attribute new value.
 	 */
-	void graphAttributeChanged(String sourceId, long timeId, String attribute,
-			Object oldValue, Object newValue);
+	void graphAttributeChanged(String sourceId, long timeId, String attribute, Object oldValue, Object newValue);
 
 	/**
 	 * A graph attribute was removed.
@@ -90,8 +90,7 @@ public interface AttributeSink {
 	 * @param value
 	 *            The attribute new value.
 	 */
-	void nodeAttributeAdded(String sourceId, long timeId, String nodeId,
-			String attribute, Object value);
+	void nodeAttributeAdded(String sourceId, long timeId, String nodeId, String attribute, Object value);
 
 	/**
 	 * A node attribute was changed.
@@ -107,8 +106,8 @@ public interface AttributeSink {
 	 * @param newValue
 	 *            The attribute new value.
 	 */
-	void nodeAttributeChanged(String sourceId, long timeId, String nodeId,
-			String attribute, Object oldValue, Object newValue);
+	void nodeAttributeChanged(String sourceId, long timeId, String nodeId, String attribute, Object oldValue,
+			Object newValue);
 
 	/**
 	 * A node attribute was removed.
@@ -120,8 +119,7 @@ public interface AttributeSink {
 	 * @param attribute
 	 *            The removed attribute name.
 	 */
-	void nodeAttributeRemoved(String sourceId, long timeId, String nodeId,
-			String attribute);
+	void nodeAttributeRemoved(String sourceId, long timeId, String nodeId, String attribute);
 
 	/**
 	 * A edge attribute was added.
@@ -135,8 +133,7 @@ public interface AttributeSink {
 	 * @param value
 	 *            The attribute new value.
 	 */
-	void edgeAttributeAdded(String sourceId, long timeId, String edgeId,
-			String attribute, Object value);
+	void edgeAttributeAdded(String sourceId, long timeId, String edgeId, String attribute, Object value);
 
 	/**
 	 * A edge attribute was changed.
@@ -152,8 +149,8 @@ public interface AttributeSink {
 	 * @param newValue
 	 *            The attribute new value.
 	 */
-	void edgeAttributeChanged(String sourceId, long timeId, String edgeId,
-			String attribute, Object oldValue, Object newValue);
+	void edgeAttributeChanged(String sourceId, long timeId, String edgeId, String attribute, Object oldValue,
+			Object newValue);
 
 	/**
 	 * A edge attribute was removed.
@@ -165,6 +162,5 @@ public interface AttributeSink {
 	 * @param attribute
 	 *            The removed attribute name.
 	 */
-	void edgeAttributeRemoved(String sourceId, long timeId, String edgeId,
-			String attribute);
+	void edgeAttributeRemoved(String sourceId, long timeId, String edgeId, String attribute);
 }

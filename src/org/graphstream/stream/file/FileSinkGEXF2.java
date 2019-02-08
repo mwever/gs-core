@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,13 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2013-09-18
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.stream.file;
 
@@ -106,8 +106,8 @@ public class FileSinkGEXF2 extends PipeBase implements FileSink {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.graphstream.stream.file.FileSink#writeAll(org.graphstream.graph.Graph
-	 * , java.lang.String)
+	 * org.graphstream.stream.file.FileSink#writeAll(org.graphstream.graph.Graph ,
+	 * java.lang.String)
 	 */
 	public void writeAll(Graph graph, String fileName) throws IOException {
 		Context ctx = createContext(fileName);
@@ -118,8 +118,8 @@ public class FileSinkGEXF2 extends PipeBase implements FileSink {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.graphstream.stream.file.FileSink#writeAll(org.graphstream.graph.Graph
-	 * , java.io.OutputStream)
+	 * org.graphstream.stream.file.FileSink#writeAll(org.graphstream.graph.Graph ,
+	 * java.io.OutputStream)
 	 */
 	public void writeAll(Graph graph, OutputStream stream) throws IOException {
 		Context ctx = createContext(stream);
@@ -130,8 +130,8 @@ public class FileSinkGEXF2 extends PipeBase implements FileSink {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.graphstream.stream.file.FileSink#writeAll(org.graphstream.graph.Graph
-	 * , java.io.Writer)
+	 * org.graphstream.stream.file.FileSink#writeAll(org.graphstream.graph.Graph ,
+	 * java.io.Writer)
 	 */
 	public void writeAll(Graph graph, Writer writer) throws IOException {
 		Context ctx = createContext(writer);
@@ -145,8 +145,7 @@ public class FileSinkGEXF2 extends PipeBase implements FileSink {
 	 */
 	public void begin(String fileName) throws IOException {
 		if (currentContext != null)
-			throw new IOException(
-					"cannot call begin() twice without calling end() before.");
+			throw new IOException("cannot call begin() twice without calling end() before.");
 
 		currentContext = createContext(fileName);
 		addSink(currentContext.gexf);
@@ -159,8 +158,7 @@ public class FileSinkGEXF2 extends PipeBase implements FileSink {
 	 */
 	public void begin(OutputStream stream) throws IOException {
 		if (currentContext != null)
-			throw new IOException(
-					"cannot call begin() twice without calling end() before.");
+			throw new IOException("cannot call begin() twice without calling end() before.");
 
 		currentContext = createContext(stream);
 		addSink(currentContext.gexf);
@@ -173,8 +171,7 @@ public class FileSinkGEXF2 extends PipeBase implements FileSink {
 	 */
 	public void begin(Writer writer) throws IOException {
 		if (currentContext != null)
-			throw new IOException(
-					"cannot call begin() twice without calling end() before.");
+			throw new IOException("cannot call begin() twice without calling end() before.");
 
 		currentContext = createContext(writer);
 		addSink(currentContext.gexf);

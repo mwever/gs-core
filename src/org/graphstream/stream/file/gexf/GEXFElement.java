@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,6 +22,13 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2013-09-18
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.stream.file.gexf;
 
 import java.text.DecimalFormat;
@@ -45,12 +45,10 @@ public interface GEXFElement {
 	}
 
 	public static enum TimeFormat {
-		INTEGER("integer", new DecimalFormat("#", new DecimalFormatSymbols(
-				Locale.ROOT))), DOUBLE("double",
-				new DecimalFormat("#.0###################",
-						new DecimalFormatSymbols(Locale.ROOT))), DATE("date",
-				new SimpleDateFormat("yyyy-MM-dd")), DATETIME("datetime",
-				new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSZ"));
+		INTEGER("integer", new DecimalFormat("#", new DecimalFormatSymbols(Locale.ROOT))), DOUBLE("double",
+				new DecimalFormat("#.0###################", new DecimalFormatSymbols(Locale.ROOT))), DATE("date",
+						new SimpleDateFormat("yyyy-MM-dd")), DATETIME("datetime",
+								new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSZ"));
 		String qname;
 		Format format;
 
@@ -101,9 +99,8 @@ public interface GEXFElement {
 	}
 
 	public static enum AttrType {
-		INTEGER("integer"), LONG("long"), DOUBLE("double"), FLOAT("float"), BOOLEAN(
-				"boolean"), LISTSTRING("liststring"), STRING("string"), ANYURI(
-				"anyURI");
+		INTEGER("integer"), LONG("long"), DOUBLE("double"), FLOAT("float"), BOOLEAN("boolean"), LISTSTRING(
+				"liststring"), STRING("string"), ANYURI("anyURI");
 
 		final String qname;
 

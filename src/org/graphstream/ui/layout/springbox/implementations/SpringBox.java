@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,6 +22,14 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2012-06-19
+ * 
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.ui.layout.springbox.implementations;
 
 import java.util.Random;
@@ -41,17 +42,17 @@ import org.graphstream.ui.layout.springbox.NodeParticle;
  * The GraphStream Spring-Box layout.
  * 
  * <p>
- * This layout is the default GraphStream layout that handles dynamic graphs.
- * It can constantly evolve according to the changes in the graph. And works
- * well with the {@link LayoutRunner} class so that the computations stops
- * when the layout is stable enougth. 
+ * This layout is the default GraphStream layout that handles dynamic graphs. It
+ * can constantly evolve according to the changes in the graph. And works well
+ * with the {@link LayoutRunner} class so that the computations stops when the
+ * layout is stable enougth.
  * </p>
  * 
  * <p>
  * This algorithm is based on the Frutcherman-Reingold force layout algorithm
  * modified on the attraction (the degree of nodes is taken into account to
- * stabilize the layout as we are not only interested in the result, but also
- * in the steps in between).
+ * stabilize the layout as we are not only interested in the result, but also in
+ * the steps in between).
  * </p>
  */
 public class SpringBox extends BarnesHutLayout {
@@ -120,10 +121,10 @@ public class SpringBox extends BarnesHutLayout {
 
 	@Override
 	protected void chooseNodePosition(NodeParticle n0, NodeParticle n1) {
-		if(n0.frozen || n1.frozen)
+		if (n0.frozen || n1.frozen)
 			return;
-		
-		double delta = random.nextDouble(); //k * 0.1;
+
+		double delta = random.nextDouble(); // k * 0.1;
 		if (n0.getEdges().size() == 1 && n1.getEdges().size() > 1) {
 			org.miv.pherd.geom.Point3 pos = n1.getPosition();
 			n0.moveTo(pos.x + delta, pos.y + delta, pos.z + delta);

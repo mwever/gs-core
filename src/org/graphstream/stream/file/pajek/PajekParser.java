@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,14 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2011-07-08
+ * 
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.stream.file.pajek;
 
@@ -362,8 +363,7 @@ public class PajekParser implements Parser, PajekParserConstants {
 						jj_consume_token(-1);
 						throw new ParseException();
 					}
-					System.err.printf("%d:%d: unparsed garbage in .net (%s)%n",
-							k.beginLine, k.beginColumn, k.image);
+					System.err.printf("%d:%d: unparsed garbage in .net (%s)%n", k.beginLine, k.beginColumn, k.image);
 				}
 			} else {
 				;
@@ -646,8 +646,7 @@ public class PajekParser implements Parser, PajekParserConstants {
 					jj_consume_token(-1);
 					throw new ParseException();
 				}
-				System.err.printf("%d:%d: unparsed garbage in .net (%s)%n",
-						k.beginLine, k.beginColumn, k.image);
+				System.err.printf("%d:%d: unparsed garbage in .net (%s)%n", k.beginLine, k.beginColumn, k.image);
 			}
 		} else {
 			;
@@ -708,8 +707,7 @@ public class PajekParser implements Parser, PajekParserConstants {
 		ctx.addEdges(mat);
 	}
 
-	final public ArrayList<String> matrixline(EdgeMatrix mat)
-			throws ParseException {
+	final public ArrayList<String> matrixline(EdgeMatrix mat) throws ParseException {
 		Token k;
 		ArrayList<String> line = new ArrayList<String>(nodeCount);
 		label_15: while (true) {
@@ -4960,8 +4958,7 @@ public class PajekParser implements Parser, PajekParserConstants {
 		if (jj_scanpos == jj_lastpos) {
 			jj_la--;
 			if (jj_scanpos.next == null) {
-				jj_lastpos = jj_scanpos = jj_scanpos.next = token_source
-						.getNextToken();
+				jj_lastpos = jj_scanpos = jj_scanpos.next = token_source.getNextToken();
 			} else {
 				jj_lastpos = jj_scanpos = jj_scanpos.next;
 			}
@@ -5031,8 +5028,7 @@ public class PajekParser implements Parser, PajekParserConstants {
 			for (int i = 0; i < jj_endpos; i++) {
 				jj_expentry[i] = jj_lasttokens[i];
 			}
-			jj_entries_loop: for (java.util.Iterator<?> it = jj_expentries
-					.iterator(); it.hasNext();) {
+			jj_entries_loop: for (java.util.Iterator<?> it = jj_expentries.iterator(); it.hasNext();) {
 				int[] oldentry = (int[]) (it.next());
 				if (oldentry.length == jj_expentry.length) {
 					for (int i = 0; i < jj_expentry.length; i++) {

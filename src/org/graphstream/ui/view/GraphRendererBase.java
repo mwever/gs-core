@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,13 +22,19 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2009-12-03
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.ui.view;
 
 import org.graphstream.ui.graphicGraph.GraphicGraph;
 import org.graphstream.ui.graphicGraph.StyleGroupListener;
 
-public abstract class GraphRendererBase<S, G> implements GraphRenderer<S, G>,
-		StyleGroupListener {
+public abstract class GraphRendererBase<S, G> implements GraphRenderer<S, G>, StyleGroupListener {
 	// Attribute
 
 	/**
@@ -57,8 +56,7 @@ public abstract class GraphRendererBase<S, G> implements GraphRenderer<S, G>,
 
 	public void open(GraphicGraph graph, S renderingSurface) {
 		if (this.graph != null)
-			throw new RuntimeException(
-					"renderer already open, cannot open twice");
+			throw new RuntimeException("renderer already open, cannot open twice");
 
 		this.graph = graph;
 		this.renderingSurface = renderingSurface;

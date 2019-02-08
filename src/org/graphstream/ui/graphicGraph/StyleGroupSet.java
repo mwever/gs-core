@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,15 +22,27 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2009-07-05
+ * 
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Alex Bowen <bowen.a@gmail.com>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.ui.graphicGraph;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Element;
 import org.graphstream.graph.Graph;
@@ -93,26 +98,26 @@ public class StyleGroupSet implements StyleSheetListener {
 	protected final Map<String, String> byGraphIdGroups = new TreeMap<String, String>();
 
 	/**
-	 * Virtual set of nodes. This set provides fake methods to make it appear as
-	 * a set of nodes whereas it only maps on the node style groups.
+	 * Virtual set of nodes. This set provides fake methods to make it appear as a
+	 * set of nodes whereas it only maps on the node style groups.
 	 */
 	protected NodeSet nodeSet = new NodeSet();
 
 	/**
-	 * Virtual set of edges. This set provides fake methods to make it appear as
-	 * a set of edges whereas it only maps on the edge style groups.
+	 * Virtual set of edges. This set provides fake methods to make it appear as a
+	 * set of edges whereas it only maps on the edge style groups.
 	 */
 	protected EdgeSet edgeSet = new EdgeSet();
 
 	/**
-	 * Virtual set of sprites. This set provides fake methods to make it appear
-	 * as a set of sprites whereas it only maps on the sprite style groups.
+	 * Virtual set of sprites. This set provides fake methods to make it appear as a
+	 * set of sprites whereas it only maps on the sprite style groups.
 	 */
 	protected SpriteSet spriteSet = new SpriteSet();
 
 	/**
-	 * Virtual set of graphs. This set provides fake methods to make it appear
-	 * as a set of graphs whereas it only maps on the graph style groups.
+	 * Virtual set of graphs. This set provides fake methods to make it appear as a
+	 * set of graphs whereas it only maps on the graph style groups.
 	 */
 	protected GraphSet graphSet = new GraphSet();
 
@@ -139,14 +144,14 @@ public class StyleGroupSet implements StyleSheetListener {
 	/**
 	 * Set of listeners.
 	 */
-	protected ArrayList<StyleGroupListener> listeners = new ArrayList<StyleGroupListener>();
+	protected ArrayList<StyleGroupListener> listeners = new ArrayList<>();
 
 	// Construction
 
 	/**
 	 * New empty style group set, using the given style sheet to create style
-	 * groups. The group set installs itself as a listener of the style sheet.
-	 * So in order to completely stop using such a group, you must call
+	 * groups. The group set installs itself as a listener of the style sheet. So in
+	 * order to completely stop using such a group, you must call
 	 * {@link #release()}.
 	 * 
 	 * @param stylesheet
@@ -209,8 +214,8 @@ public class StyleGroupSet implements StyleSheetListener {
 	}
 
 	/**
-	 * Iterable set of "subsets of groups" sorted by Z level. Each subset of
-	 * groups is at the same Z level.
+	 * Iterable set of "subsets of groups" sorted by Z level. Each subset of groups
+	 * is at the same Z level.
 	 * 
 	 * @return The z levels.
 	 */
@@ -389,13 +394,22 @@ public class StyleGroupSet implements StyleSheetListener {
 		return new ElementIterator<Graph>(byGraphIdGroups);
 	}
 
-	/**
-	 * Iterable set of nodes.
-	 * 
-	 * @return The set of all nodes.
-	 */
-	public Iterable<? extends Node> nodes() {
-		return nodeSet;
+	public Stream<Node> nodes() {
+		return byNodeIdGroups.entrySet().stream().map(entry -> {
+			return (Node) groups.get(entry.getValue()).getElement(entry.getKey());
+		});
+	}
+
+	public Stream<Edge> edges() {
+		return byEdgeIdGroups.entrySet().stream().map(entry -> {
+			return (Edge) groups.get(entry.getValue()).getElement(entry.getKey());
+		});
+	}
+
+	public Stream<GraphicSprite> sprites() {
+		return bySpriteIdGroups.entrySet().stream().map(entry -> {
+			return (GraphicSprite) groups.get(entry.getValue()).getElement(entry.getKey());
+		});
 	}
 
 	/**
@@ -417,15 +431,6 @@ public class StyleGroupSet implements StyleSheetListener {
 	}
 
 	/**
-	 * Iterable set of edges.
-	 * 
-	 * @return The set of all edges.
-	 */
-	public Iterable<? extends Edge> edges() {
-		return edgeSet;
-	}
-
-	/**
 	 * Iterator on the set of sprite.
 	 * 
 	 * @return An iterator on all sprite elements contained in style groups.
@@ -435,17 +440,7 @@ public class StyleGroupSet implements StyleSheetListener {
 	}
 
 	/**
-	 * Iterable set of sprites.
-	 * 
-	 * @return The set of all sprites.
-	 */
-	public Iterable<? extends GraphicSprite> sprites() {
-		return spriteSet;
-	}
-
-	/**
-	 * Retrieve the group identifier of an element knowing the element
-	 * identifier.
+	 * Retrieve the group identifier of an element knowing the element identifier.
 	 * 
 	 * @param element
 	 *            The element to search for.
@@ -527,10 +522,9 @@ public class StyleGroupSet implements StyleSheetListener {
 	}
 
 	/**
-	 * True if groups are removed when becoming empty. This setting allows to
-	 * keep empty group when the set of elements is quite dynamic. This allows
-	 * to avoid recreting groups when an element appears and disappears
-	 * regularly.
+	 * True if groups are removed when becoming empty. This setting allows to keep
+	 * empty group when the set of elements is quite dynamic. This allows to avoid
+	 * recreting groups when an element appears and disappears regularly.
 	 * 
 	 * @return True if the groups are removed when empty.
 	 */
@@ -566,8 +560,8 @@ public class StyleGroupSet implements StyleSheetListener {
 	}
 
 	/**
-	 * Empties this style group set. The style sheet is listener is not removed,
-	 * use {@link #release()} to do that.
+	 * Empties this style group set. The style sheet is listener is not removed, use
+	 * {@link #release()} to do that.
 	 */
 	public void clear() {
 		byEdgeIdGroups.clear();
@@ -580,9 +574,9 @@ public class StyleGroupSet implements StyleSheetListener {
 	}
 
 	/**
-	 * Remove or keep groups that becomes empty, if true the groups are removed.
-	 * If this setting was set to false, and is now true, the group set is
-	 * purged of the empty groups.
+	 * Remove or keep groups that becomes empty, if true the groups are removed. If
+	 * this setting was set to false, and is now true, the group set is purged of
+	 * the empty groups.
 	 * 
 	 * @param on
 	 *            If true the groups will be removed.
@@ -602,8 +596,7 @@ public class StyleGroupSet implements StyleSheetListener {
 		removeEmptyGroups = on;
 	}
 
-	protected StyleGroup addGroup(String id, ArrayList<Rule> rules,
-			Element firstElement) {
+	protected StyleGroup addGroup(String id, ArrayList<Rule> rules, Element firstElement) {
 		StyleGroup group = new StyleGroup(id, rules, firstElement, eventSet);
 
 		groups.put(id, group);
@@ -653,21 +646,19 @@ public class StyleGroupSet implements StyleSheetListener {
 	}
 
 	/**
-	 * Remove an element from the group set. If the group becomes empty after
-	 * the element removal, depending on the setting of
-	 * {@link #areEmptyGroupRemoved()}, the group is deleted or kept. Keeping
-	 * groups allows to handle faster elements that constantly appear and
-	 * disappear.
+	 * Remove an element from the group set. If the group becomes empty after the
+	 * element removal, depending on the setting of {@link #areEmptyGroupRemoved()},
+	 * the group is deleted or kept. Keeping groups allows to handle faster elements
+	 * that constantly appear and disappear.
 	 * 
 	 * @param element
 	 *            The element to remove.
 	 */
 	public void removeElement(Element element) {
 		String gid = getElementGroup(element);
-        if (null == gid)
-        {
-            return;
-        }
+		if (null == gid) {
+			return;
+		}
 		StyleGroup group = groups.get(gid);
 
 		if (group != null) {
@@ -684,19 +675,19 @@ public class StyleGroupSet implements StyleSheetListener {
 	 * 
 	 * <p>
 	 * When an element can have potentially changed style due to some of its
-	 * attributes (ui.class for example), instead of removing it then reading
-	 * it, use this method to move the element from its current style group to a
+	 * attributes (ui.class for example), instead of removing it then reading it,
+	 * use this method to move the element from its current style group to a
 	 * potentially different style group.
 	 * </p>
 	 * 
 	 * <p>
-	 * Explanation of this method : checking the style of an element may be done
-	 * by removing it ({@link #removeElement(Element)}) and then re-adding it (
+	 * Explanation of this method : checking the style of an element may be done by
+	 * removing it ({@link #removeElement(Element)}) and then re-adding it (
 	 * {@link #addElement(Element)}). This must be done by the element since it
-	 * knows when to check this. However you cannot only remove and add, since
-	 * the style group inside which the element is can have events occurring on
-	 * it, and these events must be passed from its old style to its new style.
-	 * This method does all this information passing.
+	 * knows when to check this. However you cannot only remove and add, since the
+	 * style group inside which the element is can have events occurring on it, and
+	 * these events must be passed from its old style to its new style. This method
+	 * does all this information passing.
 	 * </p>
 	 * 
 	 * @param element
@@ -771,10 +762,10 @@ public class StyleGroupSet implements StyleSheetListener {
 	}
 
 	/**
-	 * Push a global event on the event stack. Events trigger the replacement of
-	 * a style by an alternative style (or meta-class) when possible. If an
-	 * event is on the event stack, each time a style has an alternative
-	 * corresponding to the event, the alternative is used instead of the style.
+	 * Push a global event on the event stack. Events trigger the replacement of a
+	 * style by an alternative style (or meta-class) when possible. If an event is
+	 * on the event stack, each time a style has an alternative corresponding to the
+	 * event, the alternative is used instead of the style.
 	 * 
 	 * @param event
 	 *            The event to push.
@@ -841,8 +832,7 @@ public class StyleGroupSet implements StyleSheetListener {
 
 	/**
 	 * Remove the given element from the subset of elements having dynamic style
-	 * attribute values. This is normally done automatically by the graphic
-	 * element.
+	 * attribute values. This is normally done automatically by the graphic element.
 	 * 
 	 * @param element
 	 *            The element to remove from the dynamic subset.
@@ -907,27 +897,19 @@ public class StyleGroupSet implements StyleSheetListener {
 		for (Element element : graphs())
 			elements.add(element);
 
-		for (Element element : nodes())
-			elements.add(element);
-
-		for (Element element : edges())
-			elements.add(element);
-
-		for (Element element : sprites())
-			elements.add(element);
+		nodes().forEach(elements::add);
+		edges().forEach(elements::add);
+		sprites().forEach(elements::add);
 
 		clear();
 
-		for (Element element : elements)
-			removeElement(element);
-
-		for (Element element : elements)
-			addElement(element);
+		elements.forEach(this::removeElement);
+		elements.forEach(this::addElement);
 	}
 
 	/**
-	 * Check each group that may have changed, for example to rebuild the Z
-	 * index and the shadow set.
+	 * Check each group that may have changed, for example to rebuild the Z index
+	 * and the shadow set.
 	 * 
 	 * @param oldRule
 	 *            The old rule that changed.
@@ -936,8 +918,7 @@ public class StyleGroupSet implements StyleSheetListener {
 	 */
 	protected void checkZIndexAndShadow(Rule oldRule, Rule newRule) {
 		if (oldRule != null) {
-			if (oldRule.selector.getId() != null
-					|| oldRule.selector.getClazz() != null) {
+			if (oldRule.selector.getId() != null || oldRule.selector.getClazz() != null) {
 				// We may accelerate things a bit when a class or id style is
 				// modified,
 				// since only the groups listed in the style are concerned (we
@@ -979,15 +960,15 @@ public class StyleGroupSet implements StyleSheetListener {
 	 * <li>The style is an specific (id) style. In this case a new group may be
 	 * added.
 	 * <ul>
-	 * <li>check an element matches the style and in this case create the group
-	 * by adding the element.</li>
+	 * <li>check an element matches the style and in this case create the group by
+	 * adding the element.</li>
 	 * <li>else do nothing.</li>
 	 * </ul>
 	 * </li>
 	 * <li>The style is a kind or class style.
 	 * <ul>
-	 * <li>check all the groups in the kind of the style (graph, node, edge,
-	 * sprite) and only in this kind (since other will never be affected).</li>
+	 * <li>check all the groups in the kind of the style (graph, node, edge, sprite)
+	 * and only in this kind (since other will never be affected).</li>
 	 * <li>remove all groups of this kind.</li>
 	 * <li>add all elements of this kind anew to recreate the group.</li>
 	 * </ul>
@@ -1034,8 +1015,7 @@ public class StyleGroupSet implements StyleSheetListener {
 	 * @param elt2grp
 	 *            The name space.
 	 */
-	protected void checkForNewIdStyle(Rule newRule,
-			Map<String, String> elt2grp) {
+	protected void checkForNewIdStyle(Rule newRule, Map<String, String> elt2grp) {
 		// There is only one element that matches the identifier.
 
 		Element element = getElement(newRule.selector.getId(), elt2grp);
@@ -1058,18 +1038,9 @@ public class StyleGroupSet implements StyleSheetListener {
 	 * @param elt2grp
 	 *            The name space.
 	 */
-	protected void checkForNewStyle(Rule newRule,
-			Map<String, String> elt2grp) {
-		Collection<Element> elementsToCheck = new ArrayList<Element>();
-
-		for (String eltId : elt2grp.keySet())
-			elementsToCheck.add(getElement(eltId, elt2grp));
-
-		for (Element element : elementsToCheck) {
-			checkElementStyleGroup(element);
-			// removeElement( element );
-			// addElement( element );
-		}
+	protected void checkForNewStyle(Rule newRule, Map<String, String> elt2grp) {
+		elt2grp.keySet().stream().map(eltId -> getElement(eltId, elt2grp)).collect(Collectors.toList())
+				.forEach(this::checkElementStyleGroup);
 	}
 
 	// Utility
@@ -1094,9 +1065,9 @@ public class StyleGroupSet implements StyleSheetListener {
 	 * Set of events (meta-classes) actually active.
 	 * 
 	 * <p>
-	 * The event set contains the set of events actually occurring. This is used
-	 * to select alternate styles. The events actually occurring are in
-	 * precedence order. The last one is the most important.
+	 * The event set contains the set of events actually occurring. This is used to
+	 * select alternate styles. The events actually occurring are in precedence
+	 * order. The last one is the most important.
 	 * </p>
 	 * 
 	 * @author Antoine Dutot
@@ -1178,8 +1149,8 @@ public class StyleGroupSet implements StyleSheetListener {
 		}
 
 		/**
-		 * Iterator on the set of Z index cells. Each item is a set of style
-		 * groups that pertain to the same Z index.
+		 * Iterator on the set of Z index cells. Each item is a set of style groups that
+		 * pertain to the same Z index.
 		 * 
 		 * @return Iterator on the Z index.
 		 */
@@ -1328,8 +1299,7 @@ public class StyleGroupSet implements StyleSheetListener {
 			}
 
 			public void remove() {
-				throw new RuntimeException(
-						"This iterator does not support removal.");
+				throw new RuntimeException("This iterator does not support removal.");
 			}
 		}
 	}
@@ -1401,8 +1371,8 @@ public class StyleGroupSet implements StyleSheetListener {
 
 	/**
 	 * Iterator that allows to browse all graph elements of a given kind (nodes,
-	 * edges, sprites, graphs) as if they where in a single set, whereas they
-	 * are in style groups.
+	 * edges, sprites, graphs) as if they where in a single set, whereas they are in
+	 * style groups.
 	 * 
 	 * @author Antoine Dutot
 	 * @param <E>
@@ -1432,8 +1402,7 @@ public class StyleGroupSet implements StyleSheetListener {
 		}
 
 		public void remove() {
-			throw new RuntimeException(
-					"remove not implemented in this iterator");
+			throw new RuntimeException("remove not implemented in this iterator");
 		}
 	}
 

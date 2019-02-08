@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,13 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2011-05-11
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.stream.file.test;
 
@@ -54,8 +54,8 @@ import org.junit.Test;
  * This files does all the tests. To implement a test for a specific file
  * format, you have only to implement/override two methods :
  * <ul>
- * <li>Override the {@link #aTemporaryGraphFileName()} method that will return
- * the name of a file with the correct extension for the file format.</li>
+ * <li>Override the {@link #graphFileExtension()} method that will return the
+ * name of a file with the correct extension for the file format.</li>
  * <li>Implement the {@link #setup()} method that initialise the {@link #input}
  * and {@link #output} fields. These fields contain an instance of the
  * {@link org.graphstream.stream.file.FileSink} you want to test and the
@@ -90,11 +90,22 @@ public abstract class TestFileSinkBase {
 	protected boolean formatHandlesAttributes = true;
 	protected boolean formatHandleDynamics = true;
 
+	protected File theFile;
+
 	// To implement or override
 
+	@Before
+	public void createTheFile() {
+		try {
+			theFile = File.createTempFile("test_", graphFileExtension());
+		} catch (IOException e) {
+			fail("Can not create temporary file");
+		}
+	}
+
 	/**
-	 * Method to implement to create the {@link #input} and {@link #output}
-	 * fields. These fields contain the instance of the
+	 * Method to implement to create the {@link #input} and {@link #output} fields.
+	 * These fields contain the instance of the
 	 * {@link org.graphstream.stream.file.FileSource} and
 	 * {@link org.graphstream.stream.file.FileSink} to test.
 	 */
@@ -102,10 +113,10 @@ public abstract class TestFileSinkBase {
 	public abstract void setup();
 
 	/**
-	 * Return the name of a graph file in the current graph output format. The
-	 * name of the file must remain the same.
+	 * Return the name of a graph file in the current graph output format. The name
+	 * of the file must remain the same.
 	 */
-	protected abstract String aTemporaryGraphFileName();
+	protected abstract String graphFileExtension();
 
 	// Test
 
@@ -120,14 +131,13 @@ public abstract class TestFileSinkBase {
 		createUndirectedTriangle();
 
 		try {
-			output.writeAll(outGraph, aTemporaryGraphFileName());
+			output.writeAll(outGraph, theFile.getAbsolutePath());
 			input.addSink(inGraph);
-			input.readAll(aTemporaryGraphFileName());
-			removeFile(aTemporaryGraphFileName());
+			input.readAll(theFile.getAbsolutePath());
 			testUndirectedTriangle();
 		} catch (IOException e) {
 			e.printStackTrace();
-			assertTrue("Should not happen !", false);
+			fail("Should not happen !");
 		}
 	}
 
@@ -136,22 +146,20 @@ public abstract class TestFileSinkBase {
 		createUndirectedTriangle();
 
 		try {
-			output.writeAll(outGraph, new FileOutputStream(
-					aTemporaryGraphFileName()));
+			output.writeAll(outGraph, new FileOutputStream(theFile.getAbsolutePath()));
 			input.addSink(inGraph);
-			input.readAll(aTemporaryGraphFileName());
-			removeFile(aTemporaryGraphFileName());
+			input.readAll(theFile.getAbsolutePath());
 			testUndirectedTriangle();
 		} catch (IOException e) {
 			e.printStackTrace();
-			assertTrue("Should not happen !", false);
+			fail("Should not happen !");
 		}
 	}
 
 	@Test
 	public void test_UndirectedTriangle_ByEvent() {
 		try {
-			output.begin(aTemporaryGraphFileName());
+			output.begin(theFile.getAbsolutePath());
 			output.nodeAdded("?", 1, "A");
 			output.nodeAdded("?", 2, "B");
 			output.nodeAdded("?", 3, "C");
@@ -161,12 +169,11 @@ public abstract class TestFileSinkBase {
 			output.end();
 
 			input.addSink(inGraph);
-			input.readAll(aTemporaryGraphFileName());
-			removeFile(aTemporaryGraphFileName());
+			input.readAll(theFile.getAbsolutePath());
 			testUndirectedTriangle();
 		} catch (IOException e) {
 			e.printStackTrace();
-			assertTrue("Should not happen !", false);
+			fail("Should not happen !");
 		}
 	}
 
@@ -175,15 +182,13 @@ public abstract class TestFileSinkBase {
 		createDirectedTriangle();
 
 		try {
-			output.writeAll(outGraph, new FileOutputStream(
-					aTemporaryGraphFileName()));
+			output.writeAll(outGraph, new FileOutputStream(theFile.getAbsolutePath()));
 			input.addSink(inGraph);
-			input.readAll(aTemporaryGraphFileName());
-			removeFile(aTemporaryGraphFileName());
+			input.readAll(theFile.getAbsolutePath());
 			testDirectedTriangle();
 		} catch (IOException e) {
 			e.printStackTrace();
-			assertTrue("Should not happen !", false);
+			fail("Should not happen !");
 		}
 	}
 
@@ -193,17 +198,16 @@ public abstract class TestFileSinkBase {
 			createAttributedTriangle();
 
 			try {
-				output.writeAll(outGraph, new FileOutputStream(
-						aTemporaryGraphFileName()));
+				output.writeAll(outGraph, new FileOutputStream(theFile.getAbsolutePath()));
 				input.addSink(inGraph);
-				input.readAll(aTemporaryGraphFileName());
+				input.readAll(theFile.getAbsolutePath());
 
 				testAttributedTriangle();
 			} catch (IOException e) {
 				e.printStackTrace();
 				fail("Should not happen !");
 			} finally {
-				// removeFile(aTemporaryGraphFileName());
+				// removeFile(theFile.getAbsolutePath());
 			}
 		}
 	}
@@ -212,7 +216,7 @@ public abstract class TestFileSinkBase {
 	public void test_Dynamic() {
 		if (formatHandleDynamics) {
 			try {
-				output.begin(new FileOutputStream(aTemporaryGraphFileName()));
+				output.begin(new FileOutputStream(theFile.getAbsolutePath()));
 				outGraph.addSink(output);
 				outGraph.stepBegins(0);
 				outGraph.addNode("A");
@@ -223,11 +227,11 @@ public abstract class TestFileSinkBase {
 				outGraph.addEdge("BC", "B", "C");
 				outGraph.addEdge("CA", "C", "A");
 				outGraph.stepBegins(2);
-				outGraph.addAttribute("a", 1);
-				outGraph.addAttribute("b", "foo");
-				outGraph.getNode("A").addAttribute("a", 1);
-				outGraph.getNode("B").addAttribute("b", "foo");
-				outGraph.getNode("C").addAttribute("c", "bar");
+				outGraph.setAttribute("a", 1);
+				outGraph.setAttribute("b", "foo");
+				outGraph.getNode("A").setAttribute("a", 1);
+				outGraph.getNode("B").setAttribute("b", "foo");
+				outGraph.getNode("C").setAttribute("c", "bar");
 				outGraph.stepBegins(3);
 				outGraph.removeNode("A");
 				outGraph.stepBegins(4);
@@ -235,7 +239,7 @@ public abstract class TestFileSinkBase {
 				output.end();
 
 				input.addSink(inGraph);
-				input.begin(aTemporaryGraphFileName());
+				input.begin(theFile.getAbsolutePath());
 				testDynamicTriangleStep0();
 				input.nextStep();
 				testDynamicTriangleStep0_1();
@@ -248,10 +252,9 @@ public abstract class TestFileSinkBase {
 				input.nextStep();
 				testDynamicTriangleStep4();
 				input.end();
-				removeFile(aTemporaryGraphFileName());
 			} catch (IOException e) {
 				e.printStackTrace();
-				assertTrue("Should not happen !", false);
+				fail("Should not happen !");
 			}
 		}
 	}
@@ -287,11 +290,11 @@ public abstract class TestFileSinkBase {
 		outGraph.addEdge("AB", "A", "B", true);
 		outGraph.addEdge("BC", "B", "C", false);
 		outGraph.addEdge("CA", "A", "C", true);
-		outGraph.addAttribute("a", 1);
-		outGraph.addAttribute("b", "foo");
-		outGraph.getNode("A").addAttribute("a", 1);
-		outGraph.getNode("B").addAttribute("b", "foo");
-		outGraph.getNode("C").addAttribute("c", "bar");
+		outGraph.setAttribute("a", 1);
+		outGraph.setAttribute("b", "foo");
+		outGraph.getNode("A").setAttribute("a", 1);
+		outGraph.getNode("B").setAttribute("b", "foo");
+		outGraph.getNode("C").setAttribute("c", "bar");
 	}
 
 	protected void testUndirectedTriangle() {
@@ -360,8 +363,7 @@ public abstract class TestFileSinkBase {
 		assertNotNull(B);
 		assertNotNull(C);
 
-		assertEquals(1.0, ((Number) inGraph.getAttribute("a")).doubleValue(),
-				1E-12);
+		assertEquals(1.0, ((Number) inGraph.getAttribute("a")).doubleValue(), 1E-12);
 		assertEquals("foo", inGraph.getAttribute("b"));
 
 		assertEquals(1.0, ((Number) A.getAttribute("a")).doubleValue(), 1E-12);
@@ -429,9 +431,9 @@ public abstract class TestFileSinkBase {
 		assertTrue(B.hasAttribute("b"));
 		assertTrue(C.hasAttribute("c"));
 
-		assertEquals(1, inGraph.getAttribute("a"));
+		assertEquals(Integer.valueOf(1), inGraph.getAttribute("a"));
 		assertEquals("foo", inGraph.getAttribute("b"));
-		assertEquals(1, A.getAttribute("a"));
+		assertEquals(Integer.valueOf(1), A.getAttribute("a"));
 		assertEquals("foo", B.getAttribute("b"));
 		assertEquals("bar", C.getAttribute("c"));
 	}
@@ -470,13 +472,5 @@ public abstract class TestFileSinkBase {
 		assertFalse(B.hasEdgeToward("C"));
 		assertFalse(C.hasEdgeToward("A"));
 		assertFalse(C.hasEdgeToward("B"));
-	}
-
-	protected void removeFile(String fileName) {
-		File file = new File(aTemporaryGraphFileName());
-		boolean ok = file.delete();
-
-		if (!ok)
-			System.err.printf("Cannot remove file %s !!%n", fileName);
 	}
 }

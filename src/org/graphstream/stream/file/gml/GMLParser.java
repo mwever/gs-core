@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,14 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2011-07-04
+ * 
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.stream.file.gml;
 
@@ -162,8 +163,8 @@ public class GMLParser implements Parser, GMLParserConstants {
 	 * The top-level method to be called by the file source. Returns a set of
 	 * top-level key values or null if the end of the file was reached.
 	 * 
-	 * Top-level key values are nodes and edges as well as all key-values
-	 * defined before and after the graph.
+	 * Top-level key values are nodes and edges as well as all key-values defined
+	 * before and after the graph.
 	 */
 	final public KeyValues nextEvents() throws ParseException {
 		KeyValues values = new KeyValues();
@@ -234,10 +235,10 @@ public class GMLParser implements Parser, GMLParserConstants {
 	}
 
 	/**
-	 * A set of key and value, the value can recursively be a list of
-	 * key-values. Only the key-value list "graph [ ... ]" is not parsed by this
-	 * rule, and parsed by another rules, so that the nextEvent() rule can be
-	 * called repeatedly.
+	 * A set of key and value, the value can recursively be a list of key-values.
+	 * Only the key-value list "graph [ ... ]" is not parsed by this rule, and
+	 * parsed by another rules, so that the nextEvent() rule can be called
+	 * repeatedly.
 	 */
 	final public String keyValue(KeyValues values) throws ParseException {
 		Token k;
@@ -340,8 +341,7 @@ public class GMLParser implements Parser, GMLParserConstants {
 	}
 
 	private static void jj_la1_init_0() {
-		jj_la1_0 = new int[] { 0x3000, 0xc800, 0xfa01, 0xc800, 0x8000, 0x4800,
-				0x4d00, };
+		jj_la1_0 = new int[] { 0x3000, 0xc800, 0xfa01, 0xc800, 0x8000, 0x4800, 0x4d00, };
 	}
 
 	/** Constructor with InputStream. */

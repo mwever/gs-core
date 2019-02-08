@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,12 +22,23 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2009-02-19
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Stefan Balev <stefan.balev@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.graph;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
-public class BreadthFirstIterator<T extends Node> implements Iterator<T> {
+public class BreadthFirstIterator implements Iterator<Node> {
 	protected boolean directed;
 	protected Graph graph;
 	protected Node[] queue;
@@ -64,28 +68,28 @@ public class BreadthFirstIterator<T extends Node> implements Iterator<T> {
 		return qHead < qTail;
 	}
 
-	@SuppressWarnings("unchecked")
-	public T next() {
+	public Node next() {
 		if (qHead >= qTail)
 			throw new NoSuchElementException();
 		Node current = queue[qHead++];
 		int level = depth[current.getIndex()] + 1;
-		Iterable<Edge> edges = directed ? current.getEachLeavingEdge()
-				: current.getEachEdge();
-		for (Edge e : edges) {
+		Stream<Edge> edges = directed ? current.leavingEdges() : current.edges();
+
+		edges.forEach(e -> {
 			Node node = e.getOpposite(current);
 			int j = node.getIndex();
+
 			if (depth[j] == -1) {
 				queue[qTail++] = node;
 				depth[j] = level;
 			}
-		}
-		return (T)current;
+		});
+
+		return current;
 	}
 
 	public void remove() {
-		throw new UnsupportedOperationException(
-				"This iterator does not support remove");
+		throw new UnsupportedOperationException("This iterator does not support remove");
 	}
 
 	public int getDepthOf(Node node) {

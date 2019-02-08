@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,12 +22,22 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2009-02-19
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Stefan Balev <stefan.balev@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.graph;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class DepthFirstIterator<T extends Node> implements Iterator<T> {
+public class DepthFirstIterator implements Iterator<Node> {
 	boolean directed;
 	Graph graph;
 
@@ -67,8 +70,7 @@ public class DepthFirstIterator<T extends Node> implements Iterator<T> {
 				int j = neighbor.getIndex();
 				if (iterator[j] == null) {
 					parent[j] = next;
-					iterator[j] = directed ? neighbor.getLeavingEdgeIterator()
-							: neighbor.getEnteringEdgeIterator();
+					iterator[j] = directed ? neighbor.leavingEdges().iterator() : neighbor.enteringEdges().iterator();
 					depth[j] = depth[i] + 1;
 					if (depth[j] > maxDepth)
 						maxDepth = depth[j];
@@ -88,20 +90,17 @@ public class DepthFirstIterator<T extends Node> implements Iterator<T> {
 		return next != null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public T next() {
+	public Node next() {
 		if (next == null)
 			throw new NoSuchElementException();
-		iterator[next.getIndex()] = directed ? next.getLeavingEdgeIterator()
-				: next.getEnteringEdgeIterator();
+		iterator[next.getIndex()] = directed ? next.leavingEdges().iterator() : next.enteringEdges().iterator();
 		Node previous = next;
 		gotoNext();
-		return (T) previous;
+		return previous;
 	}
 
 	public void remove() {
-		throw new UnsupportedOperationException(
-				"This iterator does not support remove");
+		throw new UnsupportedOperationException("This iterator does not support remove");
 	}
 
 	public int getDepthOf(Node node) {

@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,15 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2011-05-11
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Tim Wundke <gtwundke@gmail.com>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.ui.graphicGraph.parser.test;
 
@@ -52,7 +54,7 @@ import static org.junit.Assert.*;
 
 /**
  * Run several tests on the style sheet package.
- * 
+ *
  * @author Antoine Dutot
  */
 public class TestStyleSheet {
@@ -85,22 +87,22 @@ public class TestStyleSheet {
 		CD = graph.addEdge("CD", "C", "D");
 		DA = graph.addEdge("DA", "D", "A");
 
-		B.addAttribute("ui.class", "foo");
-		C.addAttribute("ui.class", "foo");
-		D.addAttribute("ui.class", "bar", "foo");
+		B.setAttribute("ui.class", "foo");
+		C.setAttribute("ui.class", "foo");
+		D.setAttribute("ui.class", "bar", "foo");
 
-		AB.addAttribute("ui.class", "foo");
-		BC.addAttribute("ui.class", "foo");
+		AB.setAttribute("ui.class", "foo");
+		BC.setAttribute("ui.class", "foo");
 
-		//       B (foo)
-		//     _/ \_
-		//   _/     \_(foo)
-		//  / (foo)   \
-		// A           C (foo)
-		//  \_       _/
-		//    \_   _/
-		//      \ /
-		//       D (bar,foo)
+		// B (foo)
+		// _/ \_
+		// _/ \_(foo)
+		// / (foo) \
+		// A C (foo)
+		// \_ _/
+		// \_ _/
+		// \ /
+		// D (bar,foo)
 
 		stylesheet = new StyleSheet();
 
@@ -114,23 +116,17 @@ public class TestStyleSheet {
 	}
 
 	public static String styleSheet1 = "graph            { fill-color: white,black; }"
-			+ "node             { fill-color: blue;        }"
-			+ "edge             { fill-color: green;       }"
-			+ "sprite           { fill-color: cyan;        }"
-			+ "node#A           { fill-color: magenta;     }"
-			+ "edge#AB          { fill-color: yellow;      }"
-			+ "node.foo         { fill-color: orange;      }"
-			+ "node.bar         { fill-color: grey;        }"
-			+ "node:clicked     { stroke-width: 1px;       }"
-			+ "node#A:clicked   { stroke-width: 2px;       }"
-			+ "node.foo:clicked { stroke-width: 3px;       }"
+			+ "node             { fill-color: blue;        }" + "edge             { fill-color: green;       }"
+			+ "sprite           { fill-color: cyan;        }" + "node#A           { fill-color: magenta;     }"
+			+ "edge#AB          { fill-color: yellow;      }" + "node.foo         { fill-color: orange;      }"
+			+ "node.bar         { fill-color: grey;        }" + "node:clicked     { stroke-width: 1px;       }"
+			+ "node#A:clicked   { stroke-width: 2px;       }" + "node.foo:clicked { stroke-width: 3px;       }"
 			+ "node#A:selected  { stroke-width: 4px;       }";
 
 	@Test
 	public void testInitialParsing() {
 		assertEquals(0, stylesheet.getGraphStyleNameSpace().getIdRulesCount());
-		assertEquals(0, stylesheet.getGraphStyleNameSpace()
-				.getClassRulesCount());
+		assertEquals(0, stylesheet.getGraphStyleNameSpace().getClassRulesCount());
 
 		assertEquals(1, stylesheet.getNodeStyleNameSpace().getIdRulesCount());
 		assertEquals(2, stylesheet.getNodeStyleNameSpace().getClassRulesCount());
@@ -139,8 +135,7 @@ public class TestStyleSheet {
 		assertEquals(0, stylesheet.getEdgeStyleNameSpace().getClassRulesCount());
 
 		assertEquals(0, stylesheet.getSpriteStyleNameSpace().getIdRulesCount());
-		assertEquals(0, stylesheet.getSpriteStyleNameSpace()
-				.getClassRulesCount());
+		assertEquals(0, stylesheet.getSpriteStyleNameSpace().getClassRulesCount());
 	}
 
 	@Test
@@ -228,23 +223,17 @@ public class TestStyleSheet {
 		assertEquals(1, sB.getFillColorCount());
 		assertEquals(1, sC.getFillColorCount());
 		assertEquals(1, sD.getFillColorCount());
-		assertTrue(sG.getFillColor(0).getRed() == 255
-				&& sG.getFillColor(0).getGreen() == 255
+		assertTrue(sG.getFillColor(0).getRed() == 255 && sG.getFillColor(0).getGreen() == 255
 				&& sG.getFillColor(0).getBlue() == 255);
-		assertTrue(sG.getFillColor(1).getRed() == 0
-				&& sG.getFillColor(1).getGreen() == 0
+		assertTrue(sG.getFillColor(1).getRed() == 0 && sG.getFillColor(1).getGreen() == 0
 				&& sG.getFillColor(1).getBlue() == 0);
-		assertTrue(sA.getFillColor(0).getRed() == 255
-				&& sA.getFillColor(0).getGreen() == 0
+		assertTrue(sA.getFillColor(0).getRed() == 255 && sA.getFillColor(0).getGreen() == 0
 				&& sA.getFillColor(0).getBlue() == 255);
-		assertTrue(sB.getFillColor(0).getRed() == 255
-				&& sB.getFillColor(0).getGreen() == 165
+		assertTrue(sB.getFillColor(0).getRed() == 255 && sB.getFillColor(0).getGreen() == 165
 				&& sB.getFillColor(0).getBlue() == 0);
-		assertTrue(sC.getFillColor(0).getRed() == 255
-				&& sC.getFillColor(0).getGreen() == 165
+		assertTrue(sC.getFillColor(0).getRed() == 255 && sC.getFillColor(0).getGreen() == 165
 				&& sC.getFillColor(0).getBlue() == 0);
-		assertTrue(sD.getFillColor(0).getRed() == 190
-				&& sD.getFillColor(0).getGreen() == 190
+		assertTrue(sD.getFillColor(0).getRed() == 190 && sD.getFillColor(0).getGreen() == 190
 				&& sD.getFillColor(0).getBlue() == 190);
 
 		assertEquals(1, sA.getStrokeWidth().value, 0);
@@ -252,17 +241,13 @@ public class TestStyleSheet {
 		assertEquals(1, sC.getStrokeWidth().value, 0);
 		assertEquals(1, sD.getStrokeWidth().value, 0);
 
-		assertTrue(sAB.getFillColor(0).getRed() == 255
-				&& sAB.getFillColor(0).getGreen() == 255
+		assertTrue(sAB.getFillColor(0).getRed() == 255 && sAB.getFillColor(0).getGreen() == 255
 				&& sAB.getFillColor(0).getBlue() == 0);
-		assertTrue(sBC.getFillColor(0).getRed() == 0
-				&& sBC.getFillColor(0).getGreen() == 255
+		assertTrue(sBC.getFillColor(0).getRed() == 0 && sBC.getFillColor(0).getGreen() == 255
 				&& sBC.getFillColor(0).getBlue() == 0);
-		assertTrue(sCD.getFillColor(0).getRed() == 0
-				&& sCD.getFillColor(0).getGreen() == 255
+		assertTrue(sCD.getFillColor(0).getRed() == 0 && sCD.getFillColor(0).getGreen() == 255
 				&& sCD.getFillColor(0).getBlue() == 0);
-		assertTrue(sDA.getFillColor(0).getRed() == 0
-				&& sDA.getFillColor(0).getGreen() == 255
+		assertTrue(sDA.getFillColor(0).getRed() == 0 && sDA.getFillColor(0).getGreen() == 255
 				&& sDA.getFillColor(0).getBlue() == 0);
 
 		sgs.release();
@@ -315,6 +300,16 @@ public class TestStyleSheet {
 		assertEquals(3, sC.getStrokeWidth().value, 0);
 		assertEquals(3, sD.getStrokeWidth().value, 0);
 
+		// Ensure that inherited styles are still correct
+		assertTrue(sA.getFillColor(0).getRed() == 255 && sA.getFillColor(0).getGreen() == 0
+				&& sA.getFillColor(0).getBlue() == 255);
+		assertTrue(sB.getFillColor(0).getRed() == 255 && sB.getFillColor(0).getGreen() == 165
+				&& sB.getFillColor(0).getBlue() == 0);
+		assertTrue(sC.getFillColor(0).getRed() == 255 && sC.getFillColor(0).getGreen() == 165
+				&& sC.getFillColor(0).getBlue() == 0);
+		assertTrue(sD.getFillColor(0).getRed() == 190 && sD.getFillColor(0).getGreen() == 190
+				&& sD.getFillColor(0).getBlue() == 190);
+
 		sgs.popEvent("clicked"); // This is normally done automatically by the
 									// GraphicElement
 
@@ -341,6 +336,16 @@ public class TestStyleSheet {
 		assertEquals(3, sC.getStrokeWidth().value, 0);
 		assertEquals(3, sD.getStrokeWidth().value, 0);
 
+		// Ensure that inherited styles are still correct
+		assertTrue(sA.getFillColor(0).getRed() == 255 && sA.getFillColor(0).getGreen() == 0
+				&& sA.getFillColor(0).getBlue() == 255);
+		assertTrue(sB.getFillColor(0).getRed() == 255 && sB.getFillColor(0).getGreen() == 165
+				&& sB.getFillColor(0).getBlue() == 0);
+		assertTrue(sC.getFillColor(0).getRed() == 255 && sC.getFillColor(0).getGreen() == 165
+				&& sC.getFillColor(0).getBlue() == 0);
+		assertTrue(sD.getFillColor(0).getRed() == 190 && sD.getFillColor(0).getGreen() == 190
+				&& sD.getFillColor(0).getBlue() == 190);
+
 		sgs.popEvent("clicked"); // This is normally done automatically by the
 									// GraphicElement
 		sgs.popEvent("selected"); // This is normally done automatically by the
@@ -366,9 +371,9 @@ public class TestStyleSheet {
 		assertTrue(sA.hasEventElements());
 
 		assertEquals(1, sA.getStrokeWidth().value, 0); // Individual events must be
-													// activated
+														// activated
 		assertEquals(1, sB.getStrokeWidth().value, 0); // to work, so just pushing
-													// them is not
+														// them is not
 		assertEquals(1, sC.getStrokeWidth().value, 0); // sufficient.
 		assertEquals(1, sD.getStrokeWidth().value, 0);
 
@@ -381,7 +386,7 @@ public class TestStyleSheet {
 		sB.activateEventsFor(B);
 		assertEquals(1, sA.getStrokeWidth().value, 0);
 		assertEquals(3, sB.getStrokeWidth().value, 0); // B and all its group
-													// change.
+														// change.
 		assertEquals(3, sC.getStrokeWidth().value, 0); // Therefore C also changes.
 		assertEquals(1, sD.getStrokeWidth().value, 0);
 		sB.deactivateEvents();
@@ -404,17 +409,17 @@ public class TestStyleSheet {
 		sD = sgs.getStyleForElement(D);
 
 		assertEquals(1, sA.getStrokeWidth().value, 0); // Individual events must be
-													// activated
+														// activated
 		assertEquals(1, sB.getStrokeWidth().value, 0); // to work, so just pushing
-													// them is not
+														// them is not
 		assertEquals(1, sC.getStrokeWidth().value, 0); // sufficient.
 		assertEquals(1, sD.getStrokeWidth().value, 0);
 
 		sA.activateEventsFor(A);
 		assertEquals(4, sA.getStrokeWidth().value, 0); // Only A should change,
-													// "selected" has
+														// "selected" has
 		assertEquals(1, sB.getStrokeWidth().value, 0); // precedence over "clicked"
-													// since added
+														// since added
 		assertEquals(1, sC.getStrokeWidth().value, 0); // after.
 		assertEquals(1, sD.getStrokeWidth().value, 0);
 		sA.deactivateEvents();
@@ -448,15 +453,13 @@ public class TestStyleSheet {
 
 		assertEquals(6, sgs.getGroupCount());
 		assertEquals(0, stylesheet.getGraphStyleNameSpace().getIdRulesCount());
-		assertEquals(0, stylesheet.getGraphStyleNameSpace()
-				.getClassRulesCount());
+		assertEquals(0, stylesheet.getGraphStyleNameSpace().getClassRulesCount());
 		assertEquals(1, stylesheet.getNodeStyleNameSpace().getIdRulesCount());
 		assertEquals(2, stylesheet.getNodeStyleNameSpace().getClassRulesCount());
 		assertEquals(1, stylesheet.getEdgeStyleNameSpace().getIdRulesCount());
 		assertEquals(0, stylesheet.getEdgeStyleNameSpace().getClassRulesCount());
 		assertEquals(0, stylesheet.getSpriteStyleNameSpace().getIdRulesCount());
-		assertEquals(0, stylesheet.getSpriteStyleNameSpace()
-				.getClassRulesCount());
+		assertEquals(0, stylesheet.getSpriteStyleNameSpace().getClassRulesCount());
 
 		// All nodes should have a border of 10px except the clicked ones.
 
@@ -499,16 +502,14 @@ public class TestStyleSheet {
 
 		assertEquals(7, sgs.getGroupCount());
 		assertEquals(0, stylesheet.getGraphStyleNameSpace().getIdRulesCount());
-		assertEquals(0, stylesheet.getGraphStyleNameSpace()
-				.getClassRulesCount());
+		assertEquals(0, stylesheet.getGraphStyleNameSpace().getClassRulesCount());
 		assertEquals(2, stylesheet.getNodeStyleNameSpace().getIdRulesCount()); // <--
 																				// +1
 		assertEquals(2, stylesheet.getNodeStyleNameSpace().getClassRulesCount());
 		assertEquals(1, stylesheet.getEdgeStyleNameSpace().getIdRulesCount());
 		assertEquals(0, stylesheet.getEdgeStyleNameSpace().getClassRulesCount());
 		assertEquals(0, stylesheet.getSpriteStyleNameSpace().getIdRulesCount());
-		assertEquals(0, stylesheet.getSpriteStyleNameSpace()
-				.getClassRulesCount());
+		assertEquals(0, stylesheet.getSpriteStyleNameSpace().getClassRulesCount());
 
 		sA = sgs.getStyleForElement(A);
 		sB = sgs.getStyleForElement(B);
@@ -517,7 +518,7 @@ public class TestStyleSheet {
 
 		assertEquals(10, sA.getStrokeWidth().value, 0);
 		assertEquals(5, sB.getStrokeWidth().value, 0); // <-- The specific style
-													// changed.
+														// changed.
 		assertEquals(10, sC.getStrokeWidth().value, 0);
 		assertEquals(10, sD.getStrokeWidth().value, 0);
 
@@ -529,16 +530,14 @@ public class TestStyleSheet {
 		assertEquals(8, sgs.getGroupCount()); // (e_AB disappears, e_AB(foo) and
 												// e(foo) appear)
 		assertEquals(0, stylesheet.getGraphStyleNameSpace().getIdRulesCount());
-		assertEquals(0, stylesheet.getGraphStyleNameSpace()
-				.getClassRulesCount());
+		assertEquals(0, stylesheet.getGraphStyleNameSpace().getClassRulesCount());
 		assertEquals(2, stylesheet.getNodeStyleNameSpace().getIdRulesCount());
 		assertEquals(2, stylesheet.getNodeStyleNameSpace().getClassRulesCount());
 		assertEquals(1, stylesheet.getEdgeStyleNameSpace().getIdRulesCount());
 		assertEquals(1, stylesheet.getEdgeStyleNameSpace().getClassRulesCount()); // <--
 																					// +1
 		assertEquals(0, stylesheet.getSpriteStyleNameSpace().getIdRulesCount());
-		assertEquals(0, stylesheet.getSpriteStyleNameSpace()
-				.getClassRulesCount());
+		assertEquals(0, stylesheet.getSpriteStyleNameSpace().getClassRulesCount());
 
 		Style sAB = sgs.getStyleForElement(AB);
 		Style sBC = sgs.getStyleForElement(BC);
@@ -550,9 +549,7 @@ public class TestStyleSheet {
 		assertEquals(1, sCD.getStrokeWidth().value, 0);
 		assertEquals(1, sDA.getStrokeWidth().value, 0);
 
-		System.err.printf(
-				"After adding new style sheets, there are %d groups !!%n",
-				sgs.getGroupCount());
+		System.err.printf("After adding new style sheets, there are %d groups !!%n", sgs.getGroupCount());
 		Iterator<? extends StyleGroup> i = sgs.getGroupIterator();
 		while (i.hasNext())
 			System.err.printf("  %s", i.next().toString());
@@ -841,7 +838,7 @@ public class TestStyleSheet {
 
 		// Now test the fact
 
-		B.addAttribute("ui.color", 2);
+		B.setAttribute("ui.color", 2);
 		sgs.pushEventFor(B, "clicked"); // This is normally done automatically
 										// by the GraphicElement
 		sgs.pushElementAsDynamic(B); // This is normally done automatically by
@@ -888,8 +885,7 @@ public class TestStyleSheet {
 		sgs.popEventFor(B, "clicked");
 	}
 
-	public static String styleSheet5 = "node { z-index: 1; }"
-			+ "edge { z-index: 2; }";
+	public static String styleSheet5 = "node { z-index: 1; }" + "edge { z-index: 2; }";
 
 	public static String styleSheet6 = "node.foo { z-index: 5; }";
 

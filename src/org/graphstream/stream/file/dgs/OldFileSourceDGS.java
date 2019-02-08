@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,13 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2009-02-19
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.stream.file.dgs;
 
@@ -53,8 +53,8 @@ import org.graphstream.stream.file.FileSourceBase;
  * <p>
  * The DGS file format is especially designed for storing dynamic graph
  * definitions into a file. More information about the DGS file format will be
- * found on the GraphStream web site: <a
- * href="http://graphstream-project.org/">http://graphstream-project.org/</a>
+ * found on the GraphStream web site:
+ * <a href="http://graphstream-project.org/">http://graphstream-project.org/</a>
  * </p>
  * 
  * The usual file name extension used for this format is ".dgs".
@@ -134,9 +134,9 @@ public class OldFileSourceDGS extends FileSourceBase {
 	 * Read either one event or several.
 	 * 
 	 * @param readSteps
-	 *            If true, read several events (usually starting with a step
-	 *            event, but it may be preceded by other events), until another
-	 *            step is encountered.
+	 *            If true, read several events (usually starting with a step event,
+	 *            but it may be preceded by other events), until another step is
+	 *            encountered.
 	 * @param stop
 	 *            If true stop at the next step encountered (and push it back so
 	 *            that is is readable at the next call to this method).
@@ -338,8 +338,7 @@ public class OldFileSourceDGS extends FileSourceBase {
 			pushBack();
 	}
 
-	protected void readAttributes(HashMap<String, Object> attributes)
-			throws IOException {
+	protected void readAttributes(HashMap<String, Object> attributes) throws IOException {
 		boolean del = false;
 		String key = getWordOrSymbolOrStringOrEolOrEof();
 
@@ -441,8 +440,7 @@ public class OldFileSourceDGS extends FileSourceBase {
 	 * @return a vector
 	 * @throws IOException
 	 */
-	protected ArrayList<Object> readAttributeArray(String key)
-			throws IOException {
+	protected ArrayList<Object> readAttributeArray(String key) throws IOException {
 		ArrayList<Object> list = new ArrayList<Object>();
 
 		Object value;
@@ -504,8 +502,7 @@ public class OldFileSourceDGS extends FileSourceBase {
 		else
 			graphName = "DGS_";
 
-		graphName = String.format("%s_%d", graphName,
-				System.currentTimeMillis() + ((long) Math.random() * 10));
+		graphName = String.format("%s_%d", graphName, System.currentTimeMillis() + ((long) Math.random() * 10));
 	}
 
 	@Override
@@ -547,7 +544,7 @@ public class OldFileSourceDGS extends FileSourceBase {
 					//
 					e2.printStackTrace();
 				}
-				
+
 				is = new FileInputStream(file);
 			}
 		}

@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,6 +22,13 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2011-07-21
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.stream.file;
 
 import java.io.Reader;
@@ -41,11 +41,11 @@ import org.graphstream.util.parser.ParserFactory;
 /**
  * A parser for the Pajek NET format.
  * 
- * This should support most the NET file format. However this format seems
- * to have numerous derivative that may not be known to us. It parses the
- * edges/arcs, edgeslist/arclist, and matrix notations. It understands a
- * large part of the formating notation, and transform it to CSS "ui.style"
- * attribute stored on nodes and edges.
+ * This should support most the NET file format. However this format seems to
+ * have numerous derivative that may not be known to us. It parses the
+ * edges/arcs, edgeslist/arclist, and matrix notations. It understands a large
+ * part of the formating notation, and transform it to CSS "ui.style" attribute
+ * stored on nodes and edges.
  * 
  * The standard extension for such files is ".net".
  */

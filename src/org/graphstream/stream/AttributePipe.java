@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,15 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2009-04-17
+ * 
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.stream;
 
@@ -57,8 +59,8 @@ public class AttributePipe extends PipeBase {
 	protected AttributePredicate edgePredicate = new FalsePredicate();
 
 	/**
-	 * Set an attribute filter for graph, node and edge attributes. If the
-	 * filter is null, attributes will not be filtered globally.
+	 * Set an attribute filter for graph, node and edge attributes. If the filter is
+	 * null, attributes will not be filtered globally.
 	 * 
 	 * @param filter
 	 *            The filter to use, it can be null to disable global attribute
@@ -72,9 +74,9 @@ public class AttributePipe extends PipeBase {
 	}
 
 	/**
-	 * Set an attribute filter for graph attributes only (node an edge
-	 * attributes are not filtered by this filter). If the filter is null, graph
-	 * attributes will not be filtered.
+	 * Set an attribute filter for graph attributes only (node an edge attributes
+	 * are not filtered by this filter). If the filter is null, graph attributes
+	 * will not be filtered.
 	 * 
 	 * @param filter
 	 *            The filter to use, it can be null to disable graph attribute
@@ -88,9 +90,9 @@ public class AttributePipe extends PipeBase {
 	}
 
 	/**
-	 * Set an attribute filter for node attributes only (graph an edge
-	 * attributes are not filtered by this filter). If the filter is null, node
-	 * attributes will not be filtered.
+	 * Set an attribute filter for node attributes only (graph an edge attributes
+	 * are not filtered by this filter). If the filter is null, node attributes will
+	 * not be filtered.
 	 * 
 	 * @param filter
 	 *            The filter to use, it can be null to disable node attribute
@@ -104,9 +106,9 @@ public class AttributePipe extends PipeBase {
 	}
 
 	/**
-	 * Set an attribute filter for edge attributes only (graph an node
-	 * attributes are not filtered by this filter). If the filter is null, edge
-	 * attributes will not be filtered.
+	 * Set an attribute filter for edge attributes only (graph an node attributes
+	 * are not filtered by this filter). If the filter is null, edge attributes will
+	 * not be filtered.
 	 * 
 	 * @param filter
 	 *            The filter to use, it can be null to disable edge attribute
@@ -120,8 +122,7 @@ public class AttributePipe extends PipeBase {
 	}
 
 	/**
-	 * The filter for all graph, node and edge attributes. This filter can be
-	 * null.
+	 * The filter for all graph, node and edge attributes. This filter can be null.
 	 * 
 	 * @return The global attribute filter or null if there is no global filter.
 	 */
@@ -141,8 +142,7 @@ public class AttributePipe extends PipeBase {
 	/**
 	 * The filter for all node attributes. This filter can be null.
 	 * 
-	 * @return The node global attribute filter or null if there is no node
-	 *         filter.
+	 * @return The node global attribute filter or null if there is no node filter.
 	 */
 	public AttributePredicate getNodeAttributeFilter() {
 		return nodePredicate;
@@ -160,30 +160,26 @@ public class AttributePipe extends PipeBase {
 	// GraphListener
 
 	@Override
-	public void edgeAttributeAdded(String graphId, long timeId, String edgeId,
-			String attribute, Object value) {
+	public void edgeAttributeAdded(String graphId, long timeId, String edgeId, String attribute, Object value) {
 		if (!edgePredicate.matches(attribute, value)) {
 			if (!globalPredicate.matches(attribute, value)) {
-				sendEdgeAttributeAdded(graphId, timeId, edgeId, attribute,
-						value);
+				sendEdgeAttributeAdded(graphId, timeId, edgeId, attribute, value);
 			}
 		}
 	}
 
 	@Override
-	public void edgeAttributeChanged(String graphId, long timeId,
-			String edgeId, String attribute, Object oldValue, Object newValue) {
+	public void edgeAttributeChanged(String graphId, long timeId, String edgeId, String attribute, Object oldValue,
+			Object newValue) {
 		if (!edgePredicate.matches(attribute, newValue)) {
 			if (!globalPredicate.matches(attribute, newValue)) {
-				sendEdgeAttributeChanged(graphId, timeId, edgeId, attribute,
-						oldValue, newValue);
+				sendEdgeAttributeChanged(graphId, timeId, edgeId, attribute, oldValue, newValue);
 			}
 		}
 	}
 
 	@Override
-	public void edgeAttributeRemoved(String graphId, long timeId,
-			String edgeId, String attribute) {
+	public void edgeAttributeRemoved(String graphId, long timeId, String edgeId, String attribute) {
 		if (!edgePredicate.matches(attribute, null)) {
 			if (!globalPredicate.matches(attribute, null)) {
 				sendEdgeAttributeRemoved(graphId, timeId, edgeId, attribute);
@@ -192,8 +188,7 @@ public class AttributePipe extends PipeBase {
 	}
 
 	@Override
-	public void graphAttributeAdded(String graphId, long timeId,
-			String attribute, Object value) {
+	public void graphAttributeAdded(String graphId, long timeId, String attribute, Object value) {
 		if (!graphPredicate.matches(attribute, value)) {
 			if (!globalPredicate.matches(attribute, value)) {
 				sendGraphAttributeAdded(graphId, timeId, attribute, value);
@@ -202,19 +197,16 @@ public class AttributePipe extends PipeBase {
 	}
 
 	@Override
-	public void graphAttributeChanged(String graphId, long timeId,
-			String attribute, Object oldValue, Object newValue) {
+	public void graphAttributeChanged(String graphId, long timeId, String attribute, Object oldValue, Object newValue) {
 		if (!graphPredicate.matches(attribute, newValue)) {
 			if (!globalPredicate.matches(attribute, newValue)) {
-				sendGraphAttributeChanged(graphId, timeId, attribute, oldValue,
-						newValue);
+				sendGraphAttributeChanged(graphId, timeId, attribute, oldValue, newValue);
 			}
 		}
 	}
 
 	@Override
-	public void graphAttributeRemoved(String graphId, long timeId,
-			String attribute) {
+	public void graphAttributeRemoved(String graphId, long timeId, String attribute) {
 		if (!graphPredicate.matches(attribute, null)) {
 			if (!globalPredicate.matches(attribute, null)) {
 				sendGraphAttributeRemoved(graphId, timeId, attribute);
@@ -223,30 +215,26 @@ public class AttributePipe extends PipeBase {
 	}
 
 	@Override
-	public void nodeAttributeAdded(String graphId, long timeId, String nodeId,
-			String attribute, Object value) {
+	public void nodeAttributeAdded(String graphId, long timeId, String nodeId, String attribute, Object value) {
 		if (!nodePredicate.matches(attribute, value)) {
 			if (!globalPredicate.matches(attribute, value)) {
-				sendNodeAttributeAdded(graphId, timeId, nodeId, attribute,
-						value);
+				sendNodeAttributeAdded(graphId, timeId, nodeId, attribute, value);
 			}
 		}
 	}
 
 	@Override
-	public void nodeAttributeChanged(String graphId, long timeId,
-			String nodeId, String attribute, Object oldValue, Object newValue) {
+	public void nodeAttributeChanged(String graphId, long timeId, String nodeId, String attribute, Object oldValue,
+			Object newValue) {
 		if (!nodePredicate.matches(attribute, newValue)) {
 			if (!globalPredicate.matches(attribute, newValue)) {
-				sendNodeAttributeChanged(graphId, timeId, nodeId, attribute,
-						oldValue, newValue);
+				sendNodeAttributeChanged(graphId, timeId, nodeId, attribute, oldValue, newValue);
 			}
 		}
 	}
 
 	@Override
-	public void nodeAttributeRemoved(String graphId, long timeId,
-			String nodeId, String attribute) {
+	public void nodeAttributeRemoved(String graphId, long timeId, String nodeId, String attribute) {
 		if (!nodePredicate.matches(attribute, null)) {
 			if (!globalPredicate.matches(attribute, null)) {
 				sendNodeAttributeRemoved(graphId, timeId, nodeId, attribute);

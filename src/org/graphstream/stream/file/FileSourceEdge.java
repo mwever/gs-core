@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,15 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2009-05-07
+ * 
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.stream.file;
 
@@ -67,12 +69,14 @@ import java.util.HashSet;
  * issue "add node" events only when a node is encountered for the first time.
  * </p>
  * 
- * </p> This hash set consumes memory, but is the only way to ensure "add node"
+ * </p>
+ * This hash set consumes memory, but is the only way to ensure "add node"
  * events are correctly issued. If this input is directly connected to a graph,
  * as graphs can create non-existing nodes automatically, you can disable the
  * hash set of nodes using the constructor
  * {@link #FileSourceEdge(boolean, boolean)}, and giving "false" for the second
- * argument. </p>
+ * argument.
+ * </p>
  * 
  * The usual file name extension for this format is ".edge".
  */
@@ -200,8 +204,7 @@ public class FileSourceEdge extends FileSourceBase {
 		st.eolIsSignificant(true);
 		st.commentChar('#');
 
-		graphName = String.format("%s_%d", graphName,
-				System.currentTimeMillis() + ((long) Math.random() * 10));
+		graphName = String.format("%s_%d", graphName, System.currentTimeMillis() + ((long) Math.random() * 10));
 	}
 
 	public boolean nextStep() throws IOException {

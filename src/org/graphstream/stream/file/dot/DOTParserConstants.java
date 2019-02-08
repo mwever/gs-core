@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,13 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2011-07-21
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.stream.file.dot;
 
@@ -84,12 +84,10 @@ public interface DOTParserConstants {
 	int DEFAULT = 0;
 
 	/** Literal token values. */
-	String[] tokenImage = { "<EOF>", "\" \"", "\"\\r\"", "\"\\t\"", "\"\\n\"",
-			"<token of kind 5>", "<token of kind 6>", "<EOL>", "<DIGIT>",
-			"<HEXDIGIT>", "\"[\"", "\"]\"", "\"{\"", "\"}\"", "\":\"", "\",\"",
-			"\"=\"", "\"graph\"", "\"digraph\"", "\"subgraph\"", "\"node\"",
-			"\"edge\"", "\"strict\"", "<EDGE_OP>", "<REAL>", "<STRING>",
-			"<WORD>", "\";\"", "\"n\"", "\"ne\"", "\"e\"", "\"se\"", "\"s\"",
-			"\"sw\"", "\"w\"", "\"nw\"", "\"c\"", "\"_\"", };
+	String[] tokenImage = { "<EOF>", "\" \"", "\"\\r\"", "\"\\t\"", "\"\\n\"", "<token of kind 5>", "<token of kind 6>",
+			"<EOL>", "<DIGIT>", "<HEXDIGIT>", "\"[\"", "\"]\"", "\"{\"", "\"}\"", "\":\"", "\",\"", "\"=\"",
+			"\"graph\"", "\"digraph\"", "\"subgraph\"", "\"node\"", "\"edge\"", "\"strict\"", "<EDGE_OP>", "<REAL>",
+			"<STRING>", "<WORD>", "\";\"", "\"n\"", "\"ne\"", "\"e\"", "\"se\"", "\"s\"", "\"sw\"", "\"w\"", "\"nw\"",
+			"\"c\"", "\"_\"", };
 
 }

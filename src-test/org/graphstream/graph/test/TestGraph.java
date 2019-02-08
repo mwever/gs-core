@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,15 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2011-05-11
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Stefan Balev <stefan.balev@graphstream-project.org>
+ * @author Richard O. Legendi <richard.legendi@gmail.com>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.graph.test;
 
@@ -76,13 +78,13 @@ public class TestGraph {
 		Edge BC1 = g1.addEdge("BC", "B", "C");
 		Edge CA1 = g1.addEdge("CA", "C", "A");
 
-		A1.addAttribute("string", "an example");
-		B1.addAttribute("double", 42.0);
-		C1.addAttribute("array", new int[] { 1, 2, 3 });
+		A1.setAttribute("string", "an example");
+		B1.setAttribute("double", 42.0);
+		C1.setAttribute("array", new int[] { 1, 2, 3 });
 
-		AB1.addAttribute("string", "an example");
-		BC1.addAttribute("double", 42.0);
-		CA1.addAttribute("array", new int[] { 1, 2, 3 });
+		AB1.setAttribute("string", "an example");
+		BC1.setAttribute("double", 42.0);
+		CA1.setAttribute("array", new int[] { 1, 2, 3 });
 
 		Replayable.Controller controller = g1.getReplayController();
 		controller.addSink(g2);
@@ -114,13 +116,12 @@ public class TestGraph {
 	}
 
 	protected void checkAttribute(Element e1, Element e2) {
-		for (String key : e1.getAttributeKeySet()) {
+		e1.attributeKeys().forEach(key -> {
 			assertTrue(e2.hasAttribute(key));
 			assertEquals(e1.getAttribute(key), e2.getAttribute(key));
-		}
+		});
 
-		for (String key : e2.getAttributeKeySet())
-			assertTrue(e1.hasAttribute(key));
+		e2.attributeKeys().forEach(key -> assertTrue(e1.hasAttribute(key)));
 	}
 
 	protected void testBasic(Graph graph) {
@@ -225,14 +226,14 @@ public class TestGraph {
 		assertNull(A.getEdgeToward("Z"));
 		assertNull(B.getEdgeToward("Z"));
 		assertNull(C.getEdgeToward("Z"));
-		
+
 		// Loop edges
 		assertFalse(A.hasEdgeBetween(A));
 		assertFalse(A.hasEdgeToward(A));
 		assertFalse(A.hasEdgeFrom(A));
 		assertNull(A.getEdgeBetween(A));
 		assertNull(A.getEdgeToward(A));
-		assertNull(A.getEdgeFrom(A));		
+		assertNull(A.getEdgeFrom(A));
 		Edge AA = graph.addEdge("AA", "A", "A");
 		assertEquals(4, graph.getEdgeCount());
 		assertEquals(3, A.getDegree());
@@ -245,7 +246,7 @@ public class TestGraph {
 		assertEquals(AA, A.getEdgeToward(A));
 		assertEquals(AA, A.getEdgeFrom(A));
 		assertEquals(A, AA.getSourceNode());
-		assertEquals(A, AA.getTargetNode());		
+		assertEquals(A, AA.getTargetNode());
 	}
 
 	@Test
@@ -347,14 +348,14 @@ public class TestGraph {
 		assertNull(B.getEdgeToward("C"));
 		assertEquals(CA, C.getEdgeToward("A"));
 		assertEquals(BC, C.getEdgeToward("B"));
-		
+
 		// Directed loop edges
 		assertFalse(A.hasEdgeBetween(A));
 		assertFalse(A.hasEdgeToward(A));
 		assertFalse(A.hasEdgeFrom(A));
 		assertNull(A.getEdgeBetween(A));
 		assertNull(A.getEdgeToward(A));
-		assertNull(A.getEdgeFrom(A));		
+		assertNull(A.getEdgeFrom(A));
 		Edge AA = graph.addEdge("AA", "A", "A", true);
 		assertEquals(4, graph.getEdgeCount());
 		assertEquals(3, A.getDegree());
@@ -365,27 +366,27 @@ public class TestGraph {
 		assertTrue(A.hasEdgeFrom(A));
 		assertEquals(AA, A.getEdgeBetween(A));
 		assertEquals(AA, A.getEdgeToward(A));
-		assertEquals(AA, A.getEdgeFrom(A));		
+		assertEquals(AA, A.getEdgeFrom(A));
 		assertEquals(A, AA.getSourceNode());
-		assertEquals(A, AA.getTargetNode());		
+		assertEquals(A, AA.getTargetNode());
 	}
 
 	@Test
 	public void testMulti() {
 		MultiGraph graph = new MultiGraph("g");
-		MultiNode A = graph.addNode("A");
-		MultiNode B = graph.addNode("B");
+		MultiNode A = (MultiNode) graph.addNode("A");
+		MultiNode B = (MultiNode) graph.addNode("B");
 
 		graph.addEdge("AB1", "A", "B");
 		graph.addEdge("AB2", "A", "B");
 
 		assertEquals(2, A.getDegree());
 		assertEquals(2, B.getDegree());
-		
+
 		// loop edges
 		graph.addEdge("AA1", "A", "B");
 		graph.addEdge("AA2", "A", "B", true);
-		
+
 		assertEquals(4, A.getDegree());
 	}
 
@@ -441,8 +442,7 @@ public class TestGraph {
 		assertTrue(nodes.contains(C));
 		nodes.clear();
 
-		for (Node node : graph.getEachNode())
-			nodes.add(node);
+		graph.nodes().forEach(node -> nodes.add(node));
 
 		assertEquals(3, nodes.size());
 		assertTrue(nodes.contains(A));
@@ -450,8 +450,7 @@ public class TestGraph {
 		assertTrue(nodes.contains(C));
 		nodes.clear();
 
-		for (Edge edge : graph.getEachEdge())
-			edges.add(edge);
+		graph.edges().forEach(edge -> edges.add(edge));
 
 		assertEquals(3, edges.size());
 		assertTrue(edges.contains(AB));
@@ -469,24 +468,21 @@ public class TestGraph {
 		assertTrue(edges.contains(CA));
 		edges.clear();
 
-		for (Edge edge : A.getEdgeSet())
-			edges.add(edge);
+		A.edges().forEach(edge -> edges.add(edge));
 
 		assertEquals(2, edges.size());
 		assertTrue(edges.contains(AB));
 		assertTrue(edges.contains(CA));
 		edges.clear();
 
-		for (Edge edge : B.getEdgeSet())
-			edges.add(edge);
+		B.edges().forEach(edge -> edges.add(edge));
 
 		assertEquals(2, edges.size());
 		assertTrue(edges.contains(AB));
 		assertTrue(edges.contains(BC));
 		edges.clear();
 
-		for (Edge edge : C.getEdgeSet())
-			edges.add(edge);
+		C.edges().forEach(edge -> edges.add(edge));
 
 		assertEquals(2, edges.size());
 		assertTrue(edges.contains(BC));
@@ -506,45 +502,39 @@ public class TestGraph {
 		// v \
 		// B--->C
 
-		for (Edge edge : A.getEnteringEdgeSet())
-			edges.add(edge);
+		A.enteringEdges().forEach(edge -> edges.add(edge));
 
 		assertEquals(1, edges.size());
 		assertTrue(edges.contains(CA));
 		edges.clear();
 
-		for (Edge edge : B.getEnteringEdgeSet())
-			edges.add(edge);
+		B.enteringEdges().forEach(edge -> edges.add(edge));
 
 		assertEquals(1, edges.size());
 		assertTrue(edges.contains(AB));
 		edges.clear();
 
-		for (Edge edge : C.getEnteringEdgeSet())
-			edges.add(edge);
+		C.enteringEdges().forEach(edge -> edges.add(edge));
 
 		assertEquals(2, edges.size());
 		assertTrue(edges.contains(BC));
 		assertTrue(edges.contains(CA));
 		edges.clear();
 
-		for (Edge edge : A.getLeavingEdgeSet())
-			edges.add(edge);
+		A.leavingEdges().forEach(edge -> edges.add(edge));
 
 		assertEquals(2, edges.size());
 		assertTrue(edges.contains(AB));
 		assertTrue(edges.contains(CA));
 		edges.clear();
 
-		for (Edge edge : B.getLeavingEdgeSet())
-			edges.add(edge);
+		B.leavingEdges().forEach(edge -> edges.add(edge));
 
 		assertEquals(1, edges.size());
 		assertTrue(edges.contains(BC));
 		edges.clear();
 
-		for (Edge edge : C.getLeavingEdgeSet())
-			edges.add(edge);
+		C.leavingEdges().forEach(edge -> edges.add(edge));
 
 		assertEquals(1, edges.size());
 		assertTrue(edges.contains(CA));
@@ -627,7 +617,7 @@ public class TestGraph {
 		assertNotNull(graph.getNode("B"));
 		assertNotNull(graph.getNode("C"));
 		assertNotNull(graph.getEdge("BC"));
-		
+
 		// loop edges
 		Edge AA = graph.addEdge("AA", "A", "A");
 		assertEquals(2, graph.getEdgeCount());
@@ -636,7 +626,7 @@ public class TestGraph {
 		assertEquals(AA, e);
 		assertEquals(0, A.getDegree());
 		assertNull(graph.getEdge("AA"));
-		
+
 		Edge BB = graph.addEdge("BB", "B", "B", true);
 		assertEquals(2, graph.getEdgeCount());
 		e = graph.removeEdge("BB");
@@ -647,7 +637,7 @@ public class TestGraph {
 		graph.removeNode("B");
 		assertNull(graph.getEdge("BB"));
 		assertEquals(0, graph.getEdgeCount());
-		
+
 		graph.addEdge("AC", "A", "C");
 		graph.addEdge("AA", "A", "A");
 
@@ -688,8 +678,8 @@ public class TestGraph {
 		Edge BC = input.addEdge("BC", "B", "C");
 		input.addEdge("CA", "C", "A");
 
-		A.addAttribute("foo", "bar");
-		BC.addAttribute("foo", "bar");
+		A.setAttribute("foo", "bar");
+		BC.setAttribute("foo", "bar");
 
 		assertEquals(3, input.getNodeCount());
 		assertEquals(3, output.getNodeCount());
@@ -723,7 +713,7 @@ public class TestGraph {
 
 		// Now check that attribute change works.
 
-		BC.changeAttribute("foo", "truc");
+		BC.setAttribute("foo", "truc");
 
 		assertEquals("truc", BC.getAttribute("foo"));
 		assertEquals("truc", output.getEdge("BC").getAttribute("foo"));

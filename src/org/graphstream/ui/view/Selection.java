@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,61 +22,58 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2009-04-17
+ * 
+ * @author Alex Bowen <bowen.a@gmail.com>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.ui.view;
 
-public class Selection
-{
-    public double x1, y1, x2, y2;
+public class Selection {
+	public double x1, y1, x2, y2;
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o)
-        {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass())
-        {
-            return false;
-        }
+		Selection selection = (Selection) o;
 
-        Selection selection = (Selection) o;
+		if (Double.compare(selection.x1, x1) != 0) {
+			return false;
+		}
+		if (Double.compare(selection.x2, x2) != 0) {
+			return false;
+		}
+		if (Double.compare(selection.y1, y1) != 0) {
+			return false;
+		}
+		if (Double.compare(selection.y2, y2) != 0) {
+			return false;
+		}
 
-        if (Double.compare(selection.x1, x1) != 0)
-        {
-            return false;
-        }
-        if (Double.compare(selection.x2, x2) != 0)
-        {
-            return false;
-        }
-        if (Double.compare(selection.y1, y1) != 0)
-        {
-            return false;
-        }
-        if (Double.compare(selection.y2, y2) != 0)
-        {
-            return false;
-        }
+		return true;
+	}
 
-        return true;
-    }
-
-
-    @Override
-    public int hashCode()
-    {
-        int result;
-        long temp;
-        temp = Double.doubleToLongBits(x1);
-        result = (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(y1);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(x2);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(y2);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        return result;
-    }
+	@Override
+	public int hashCode() {
+		int result;
+		long temp;
+		temp = Double.doubleToLongBits(x1);
+		result = (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(y1);
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(x2);
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(y2);
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
 }

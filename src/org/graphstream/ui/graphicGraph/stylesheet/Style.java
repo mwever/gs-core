@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,9 +22,18 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2009-02-19
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Tim Wundke <gtwundke@gmail.com>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.ui.graphicGraph.stylesheet;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -101,16 +103,16 @@ public class Style extends StyleConstants {
 	/**
 	 * Get the value of a given property.
 	 * 
-	 * This code is the same for all "getX" methods so we explain it once here.
-	 * This is the implementation of style inheritance.
+	 * This code is the same for all "getX" methods so we explain it once here. This
+	 * is the implementation of style inheritance.
 	 * 
 	 * First if some event is actually occurring, the alternative styles are
 	 * searched first. If these events have unset values for the property, their
 	 * parent are then searched.
 	 * 
 	 * If the value for the property is not found in the alternative styles,
-	 * alternative styles parents, or if there is no event occurring actually,
-	 * this style is checked.
+	 * alternative styles parents, or if there is no event occurring actually, this
+	 * style is checked.
 	 * 
 	 * If its value is unset, the parents of this style are checked.
 	 * 
@@ -170,17 +172,26 @@ public class Style extends StyleConstants {
 	 * @return True if this style has a value for the given field.
 	 */
 	public boolean hasValue(String field, String... events) {
+		boolean hasValue = false;
+
 		if (events != null && events.length > 0 && alternates != null) {
 			for (String event : events) {
 				Rule rule = alternates.get(event);
 
 				if (rule != null) {
-					return rule.getStyle().hasValue(field);
+					if (rule.getStyle().hasValue(field)) {
+						hasValue = true;
+						break;
+					}
 				}
 			}
 		}
 
-		return (values.get(field) != null);
+		if (!hasValue) {
+			hasValue = (values.get(field) != null);
+		}
+
+		return hasValue;
 	}
 
 	// Individual style properties.
@@ -456,7 +467,7 @@ public class Style extends StyleConstants {
 
 		return null;
 	}
-	
+
 	/**
 	 * Offset of the text from its computed position.
 	 */
@@ -616,9 +627,9 @@ public class Style extends StyleConstants {
 	}
 
 	/**
-	 * Copy all the settings of the other style that are set, excepted the
-	 * parent. Only the settings that have a value (different from "unset") are
-	 * copied. The parent field is never copied.
+	 * Copy all the settings of the other style that are set, excepted the parent.
+	 * Only the settings that have a value (different from "unset") are copied. The
+	 * parent field is never copied.
 	 * 
 	 * @param other
 	 *            Another style.
@@ -753,14 +764,6 @@ public class Style extends StyleConstants {
 
 		}
 
-		if (alternates != null && alternates.size() > 0) {
-			builder.append(String.format(" /"));
-			for (Rule rule : alternates.values()) {
-				builder.append(' ');
-				builder.append(rule.selector.toString());
-			}
-		}
-
 		builder.append(String.format("%n"));
 
 		Iterator<String> i = values.keySet().iterator();
@@ -773,26 +776,31 @@ public class Style extends StyleConstants {
 				ArrayList<?> array = (ArrayList<?>) o;
 
 				if (array.size() > 0) {
-					builder.append(String.format("%s%s%s%s: ", prefix, sprefix,
-							sprefix, key));
+					builder.append(String.format("%s%s%s%s: ", prefix, sprefix, sprefix, key));
 
 					for (Object p : array)
 						builder.append(String.format("%s ", p.toString()));
 
 					builder.append(String.format("%n"));
 				} else {
-					builder.append(String.format("%s%s%s%s: <empty>%n", prefix,
-							sprefix, sprefix, key));
+					builder.append(String.format("%s%s%s%s: <empty>%n", prefix, sprefix, sprefix, key));
 				}
 			} else {
-				builder.append(String.format("%s%s%s%s: %s%n", prefix, sprefix,
-						sprefix, key, o != null ? o.toString() : "<null>"));
+				builder.append(String.format("%s%s%s%s: %s%n", prefix, sprefix, sprefix, key,
+						o != null ? o.toString() : "<null>"));
+			}
+		}
+
+		if (alternates != null && alternates.size() > 0) {
+			for (Rule rule : alternates.values()) {
+				// We use "level-1" to ensure that these styles line up with those above
+				builder.append(rule.toString(level - 1));
 			}
 		}
 
 		/*
-		 * if( level >= 0 ) { if( parent != null ) { String rec =
-		 * parent.style.toString( level + 1 );
+		 * if( level >= 0 ) { if( parent != null ) { String rec = parent.style.toString(
+		 * level + 1 );
 		 * 
 		 * builder.append( rec ); } }
 		 */

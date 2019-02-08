@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,15 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2009-05-09
+ * 
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.stream.file;
 
@@ -57,17 +59,16 @@ public class FileSourceFactory {
 	 * Create a file input for the given file name.
 	 * 
 	 * <p>
-	 * This method first tests if the file is a regular file and is readable. If
-	 * so, it opens it and reads the magic cookie to test the known file formats
-	 * that can be inferred from their header. If it works, it returns a file
-	 * input for the format. Else it looks at the file name extension, and
-	 * returns a file input for the extension. Finally if all fail, it throws a
-	 * NotFoundException.
+	 * This method first tests if the file is a regular file and is readable. If so,
+	 * it opens it and reads the magic cookie to test the known file formats that
+	 * can be inferred from their header. If it works, it returns a file input for
+	 * the format. Else it looks at the file name extension, and returns a file
+	 * input for the extension. Finally if all fail, it throws a NotFoundException.
 	 * </p>
 	 * 
 	 * <p>
-	 * Notice that this method only creates the file input and does not connect
-	 * it to a graph.
+	 * Notice that this method only creates the file input and does not connect it
+	 * to a graph.
 	 * </p>
 	 * 
 	 * @param fileName
@@ -118,8 +119,8 @@ public class FileSourceFactory {
 		// but not sure, you may create a GML file that starts by a comment, an
 		// empty line, with any kind of spaces, etc.
 
-		if (n >= 7 && b[0] == 'g' && b[1] == 'r' && b[2] == 'a' && b[3] == 'p'
-				&& b[4] == 'h' && b[5] == ' ' && b[6] == '[') {
+		if (n >= 7 && b[0] == 'g' && b[1] == 'r' && b[2] == 'a' && b[3] == 'p' && b[4] == 'h' && b[5] == ' '
+				&& b[6] == '[') {
 			return new org.graphstream.stream.file.FileSourceGML();
 		}
 
@@ -173,7 +174,7 @@ public class FileSourceFactory {
 
 			if (root.equalsIgnoreCase("gexf"))
 				return new FileSourceGEXF();
-			
+
 			return new FileSourceGraphML();
 		}
 
@@ -198,8 +199,7 @@ public class FileSourceFactory {
 			} while (!e.isStartElement() && !e.isEndDocument());
 
 			if (e.isEndDocument())
-				throw new IOException(
-						"document ended before catching root element");
+				throw new IOException("document ended before catching root element");
 
 			root = e.asStartElement().getName().getLocalPart();
 			reader.close();

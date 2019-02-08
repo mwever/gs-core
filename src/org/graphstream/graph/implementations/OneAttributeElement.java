@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,16 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2009-02-19
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Alex Bowen <bowen.a@gmail.com>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.graph.implementations;
 
@@ -80,14 +83,12 @@ public abstract class OneAttributeElement implements Element {
 		return id;
 	}
 
-	@SuppressWarnings("all")
-	public <T> T getAttribute(String key) {
-		return (T) attribute;
+	public Object getAttribute(String key) {
+		return attribute;
 	}
 
-	@SuppressWarnings("all")
-	public <T> T getFirstAttributeOf(String... keys) {
-		return (T) attribute;
+	public Object getFirstAttributeOf(String... keys) {
+		return attribute;
 	}
 
 	@SuppressWarnings("all")
@@ -183,7 +184,7 @@ public abstract class OneAttributeElement implements Element {
 		addAttribute(attribute, value);
 	}
 
-	public void addAttributes(Map<String, Object> attributes) {
+	public void setAttributes(Map<String, Object> attributes) {
 		if (attributes.size() >= 1)
 			addAttribute("", attributes.get((attributes.keySet().toArray()[0])));
 	}
@@ -197,9 +198,8 @@ public abstract class OneAttributeElement implements Element {
 	};
 
 	/**
-	 * Called for each change in the attribute set. This method must be
-	 * implemented by sub-elements in order to send events to the graph
-	 * listeners.
+	 * Called for each change in the attribute set. This method must be implemented
+	 * by sub-elements in order to send events to the graph listeners.
 	 * 
 	 * @param sourceId
 	 *            The source of the change.
@@ -210,13 +210,11 @@ public abstract class OneAttributeElement implements Element {
 	 * @param event
 	 *            The type of event among ADD, CHANGE and REMOVE.
 	 * @param oldValue
-	 *            The old value of the attribute, null if the attribute was
-	 *            added.
+	 *            The old value of the attribute, null if the attribute was added.
 	 * @param newValue
-	 *            The new value of the attribute, null if the attribute is about
-	 *            to be removed.
+	 *            The new value of the attribute, null if the attribute is about to
+	 *            be removed.
 	 */
-	protected abstract void attributeChanged(String sourceId, long timeId,
-			String attribute, AttributeChangeEvent event, Object oldValue,
-			Object newValue);
+	protected abstract void attributeChanged(String sourceId, long timeId, String attribute, AttributeChangeEvent event,
+			Object oldValue, Object newValue);
 }

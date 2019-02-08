@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,10 +22,20 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2009-07-26
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Beau Tremblay <trembb01@nightcrawler.pfizer.com>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ */
 package org.graphstream.ui.view;
 
 import org.graphstream.ui.graphicGraph.GraphicElement;
 import org.graphstream.ui.graphicGraph.GraphicGraph;
+import org.graphstream.ui.view.camera.Camera;
 import org.graphstream.ui.view.util.InteractiveElement;
 
 import java.util.Collection;
@@ -73,26 +76,26 @@ public interface GraphRenderer<S, G> {
 	Camera getCamera();
 
 	/**
-	 * Search for the first GraphicElement among the specified types (precedence: node, edge, sprite) that contains the
-	 * point at coordinates (x, y).
+	 * Search for the first GraphicElement among the specified types (precedence:
+	 * node, edge, sprite) that contains the point at coordinates (x, y).
 	 *
 	 * @param types
-	 * 			  The types to check
+	 *            The types to check
 	 * @param x
 	 *            The point abscissa.
 	 * @param y
 	 *            The point ordinate.
-	 * @return The first GraphicElement among the specified types at the given coordinates or null if
-	 *         nothing found.
+	 * @return The first GraphicElement among the specified types at the given
+	 *         coordinates or null if nothing found.
 	 */
 	GraphicElement findGraphicElementAt(EnumSet<InteractiveElement> types, double x, double y);
 
 	/**
-	 * Search for all the graphic elements of the specified types contained inside the rectangle
-	 * (x1,y1)-(x2,y2).
+	 * Search for all the graphic elements of the specified types contained inside
+	 * the rectangle (x1,y1)-(x2,y2).
 	 *
 	 * @param types
-	 * 			  The types to check
+	 *            The types to check
 	 * @param x1
 	 *            The rectangle lowest point abscissa.
 	 * @param y1
@@ -103,7 +106,8 @@ public interface GraphRenderer<S, G> {
 	 *            The rectangle highest point ordinate.
 	 * @return The set of GraphicElements in the given rectangle.
 	 */
-	Collection<GraphicElement> allGraphicElementsIn(EnumSet<InteractiveElement> types, double x1, double y1, double x2, double y2);
+	Collection<GraphicElement> allGraphicElementsIn(EnumSet<InteractiveElement> types, double x1, double y1, double x2,
+			double y2);
 
 	// Command
 
@@ -177,7 +181,5 @@ public interface GraphRenderer<S, G> {
 	 *            The renderer (or null to remove it).
 	 */
 	void setForeLayoutRenderer(LayerRenderer<G> renderer);
-
-
 
 }

@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,6 +22,15 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2009-12-23
+ * 
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.stream;
 
 /**
@@ -44,9 +46,9 @@ package org.graphstream.stream;
  */
 public interface Source {
 	/**
-	 * Add a sink for all graph events (attributes and graph elements) coming
-	 * from this source. This is similar to registering a sink for attributes an
-	 * another for elements.
+	 * Add a sink for all graph events (attributes and graph elements) coming from
+	 * this source. This is similar to registering a sink for attributes an another
+	 * for elements.
 	 * 
 	 * @param sink
 	 *            The sink to register.
@@ -81,8 +83,8 @@ public interface Source {
 	void removeAttributeSink(AttributeSink sink);
 
 	/**
-	 * Add a sink for elements events only. Elements events include, addition
-	 * and removal of nodes and edges, as well as step events.
+	 * Add a sink for elements events only. Elements events include, addition and
+	 * removal of nodes and edges, as well as step events.
 	 * 
 	 * @param sink
 	 *            The sink to register.

@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,16 +22,23 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2009-02-19
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Alex Bowen <bowen.a@gmail.com>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.ui.graphicGraph;
 
-import org.graphstream.graph.Node;
 import org.graphstream.stream.SourceBase.ElementType;
 import org.graphstream.ui.graphicGraph.stylesheet.Selector;
 import org.graphstream.ui.graphicGraph.stylesheet.Style;
 import org.graphstream.ui.graphicGraph.stylesheet.StyleConstants;
 import org.graphstream.ui.graphicGraph.stylesheet.Values;
-
-import java.util.Iterator;
 
 /**
  * A small gentle sprite.
@@ -77,9 +77,7 @@ public class GraphicSprite extends GraphicElement {
 		// Get the position of a random node.
 
 		if (graph.getNodeCount() > 0) {
-			Iterator<? extends Node> nodes = graph.getNodeIterator();
-
-			GraphicNode node = (GraphicNode) nodes.next();
+			GraphicNode node = (GraphicNode) graph.nodes().findFirst().get();
 
 			position.setValue(0, node.x);
 			position.setValue(1, node.y);
@@ -89,7 +87,7 @@ public class GraphicSprite extends GraphicElement {
 		String myPrefix = String.format("ui.sprite.%s", id);
 
 		if (mygraph.getAttribute(myPrefix) == null)
-			mygraph.addAttribute(myPrefix, position);
+			mygraph.setAttribute(myPrefix, position);
 	}
 
 	// Access
@@ -113,8 +111,7 @@ public class GraphicSprite extends GraphicElement {
 	}
 
 	/**
-	 * Return the graphic object this sprite is attached to or null if not
-	 * attached.
+	 * Return the graphic object this sprite is attached to or null if not attached.
 	 * 
 	 * @return A graphic object or null if no attachment.
 	 */
@@ -177,23 +174,23 @@ public class GraphicSprite extends GraphicElement {
 	@Override
 	public void move(double x, double y, double z) {
 
-		if (isAttachedToNode()){
+		if (isAttachedToNode()) {
 			GraphicNode n = getNodeAttachment();
 			x -= n.x;
 			y -= n.y;
 			z -= n.z;
 			setPosition(x, y, z, Style.Units.GU);
 
-		} else if (isAttachedToEdge()){
+		} else if (isAttachedToEdge()) {
 			GraphicEdge e = getEdgeAttachment();
 			double len = e.to.x - e.from.x;
 			double diff = x - e.from.x;
-			x = diff/len;
+			x = diff / len;
 			setPosition(x);
 
 		} else {
 			setPosition(x, y, z, Style.Units.GU);
-			
+
 		}
 	}
 
@@ -210,7 +207,7 @@ public class GraphicSprite extends GraphicElement {
 		String prefix = String.format("ui.sprite.%s", getId());
 
 		if (this.node.getAttribute(prefix) == null)
-			this.node.addAttribute(prefix);
+			this.node.setAttribute(prefix);
 
 		mygraph.graphChanged = true;
 	}
@@ -228,7 +225,7 @@ public class GraphicSprite extends GraphicElement {
 		String prefix = String.format("ui.sprite.%s", getId());
 
 		if (this.edge.getAttribute(prefix) == null)
-			this.edge.addAttribute(prefix);
+			this.edge.setAttribute(prefix);
 
 		mygraph.graphChanged = true;
 	}
@@ -269,8 +266,7 @@ public class GraphicSprite extends GraphicElement {
 	 * @param z
 	 *            Third coordinate.
 	 * @param units
-	 *            The units to use for lengths and radii, null means
-	 *            "unchanged".
+	 *            The units to use for lengths and radii, null means "unchanged".
 	 */
 	public void setPosition(double x, double y, double z, Style.Units units) {
 		/*
@@ -338,19 +334,17 @@ public class GraphicSprite extends GraphicElement {
 	}
 
 	@Override
-	protected void attributeChanged(AttributeChangeEvent event,
-			String attribute, Object oldValue, Object newValue) {
+	protected void attributeChanged(AttributeChangeEvent event, String attribute, Object oldValue, Object newValue) {
 		super.attributeChanged(event, attribute, oldValue, newValue);
 
 		// if( attribute.equals( "ui.clicked" ) ) // Filter the clicks to avoid
 		// loops XXX BAD !!! XXX
 		// return;
 
-		String completeAttr = String.format("ui.sprite.%s.%s", getId(),
-				attribute);
+		String completeAttr = String.format("ui.sprite.%s.%s", getId(), attribute);
 
-		mygraph.listeners.sendAttributeChangedEvent(mygraph.getId(),
-				ElementType.GRAPH, completeAttr, event, oldValue, newValue);
+		mygraph.listeners.sendAttributeChangedEvent(mygraph.getId(), ElementType.GRAPH, completeAttr, event, oldValue,
+				newValue);
 	}
 
 	@Override
