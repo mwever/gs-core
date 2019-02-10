@@ -42,6 +42,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
 import org.graphstream.graph.Graph;
+import org.graphstream.stream.AttributeSink;
 import org.graphstream.stream.ProxyPipe;
 import org.graphstream.stream.Replayable;
 import org.graphstream.stream.Replayable.Controller;
@@ -240,7 +241,18 @@ public class ThreadProxyPipe extends SourceBase implements ProxyPipe {
 		String dest = "nil";
 
 		if (this.attrSinks.size() > 0) {
-			dest = this.attrSinks.get(0).toString();
+			dest = "";
+
+			boolean first = true;
+			for (AttributeSink sink : this.attrSinks) {
+				if (first) {
+					first = false;
+				} else {
+					dest += " & ";
+				}
+				dest += sink.toString();
+			}
+
 		}
 
 		return String.format("thread-proxy(from %s to %s)", this.from, dest);
@@ -275,7 +287,12 @@ public class ThreadProxyPipe extends SourceBase implements ProxyPipe {
 			}
 
 			if (e != null) {
-				this.processMessage(e, data);
+				try {
+					this.processMessage(e, data);
+				} catch (Exception exp) {
+					exp.printStackTrace();
+					// System.exit(0);
+				}
 			}
 		} while (e != null);
 	}
